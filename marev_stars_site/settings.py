@@ -1,6 +1,14 @@
 from pathlib import Path
 import os
 
+# Optional import for production Postgres URL parsing. If not installed
+# or `DATABASE_URL` is not provided, we fall back to local SQLite.
+try:
+    import dj_database_url
+except Exception:
+    dj_database_url = None
+
+
 # 1. Core Directory Setup
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -69,12 +77,18 @@ TEMPLATES = [
 WSGI_APPLICATION = 'marev_stars_site.wsgi.application'
 
 # 4. Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+database_url = os.environ.get('DATABASE_URL')
+if dj_database_url and database_url:
+    DATABASES = {
+        'default': dj_database_url.parse(database_url, conn_max_age=600, ssl_require=True)
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # 5. User Profile Strategy
 AUTH_USER_MODEL = 'team.UserProfile'
