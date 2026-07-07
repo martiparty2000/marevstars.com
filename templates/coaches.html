@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
-{% load static %}  {% block content %}
+{% load static %}  
+{% block content %}
 <h2 style="color: var(--gold); text-align: center; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 2px;">
     Нашият треньорски състав
 </h2>
 
-<div style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center;">
+<!-- Промяна: flex-wrap: nowrap и justify-content: center -->
+<div style="display: flex; flex-wrap: nowrap; gap: 20px; justify-content: center; overflow-x: auto; padding-bottom: 20px;">
     {% for coach in coaches %}
-    <div class="coach-card" style="background: var(--card-bg); padding: 25px; border-radius: 12px; max-width: 400px; border-top: 4px solid var(--gold); box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: transform 0.3s ease;">
+    <div class="coach-card" style="background: var(--card-bg); padding: 25px; border-radius: 12px; min-width: 300px; max-width: 350px; border-top: 4px solid var(--gold); box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
         
         <img src="{% static 'images/'|add:coach.image %}" 
              alt="{{ coach.name }}" 
