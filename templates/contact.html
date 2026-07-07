@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-container" style="max-width: 500px;">
+    <h2 style="color: var(--gold); margin-top: 0; text-align: center;">Contact Marev Stars FC</h2>
+    <p style="text-align: center; color: #aaa; margin-bottom: 20px;">Have questions? Reach out directly to our administrative office.</p>
+    <div style="background: #111317; padding: 15px; border-radius: 4px; margin-bottom: 25px; border: 1px solid #2a2e39; font-size: 14px;">
+        <p style="margin: 5px 0;">📞 <strong>Phone:</strong> +359 888 123 456</p>
+        <p style="margin: 5px 0;">✉️ <strong>Email:</strong> office@marevstars.com</p>
+    </div>
+    <form>
+        <div class="form-group">
+            <label>Your Name</label>
+            <input type="text" placeholder="John Doe">
+        </div>
+        <div class="form-group">
+            <label>Message/Inquiry</label>
+            <textarea rows="4" placeholder="How can we help you?"></textarea>
+        </div>
+        <button type="button" class="btn-submit" onclick="alert('Message Sent!')">Send Message</button>
+    </form>
+</div>
+{% endblock %}

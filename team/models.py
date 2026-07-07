@@ -1,0 +1,67 @@
+from django.db import models
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+from typing import ClassVar
+
+class UserProfileManager(BaseUserManager):
+    def create_user(self, egn, full_name, email, password=None, **extra_fields):
+        if not egn:
+            raise ValueError('The EGN field must be set')
+        email = self.normalize_email(email)
+        
+        extra_fields.setdefault('username', egn)
+        
+        user = self.model(egn=egn, full_name=full_name, email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, egn, full_name, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_approved', True)
+        extra_fields.setdefault('role', 'head_coach')
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self.create_user(egn, full_name, email, password, **extra_fields)
+
+
+class UserProfile(AbstractUser):
+    ROLE_CHOICES = (
+        ('player', 'Player'),
+        ('coach', 'Coach'),
+        ('head_coach', 'Head Coach'),
+    )
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='player')
+    # ... rest of your fields
+    
+    # Custom fields with explicit type definitions for Pylance
+    username = models.CharField(max_length=150, unique=True, blank=True, null=True)
+    role = models.CharField(max_length=15, choices=ROLE_CHOICES)
+    full_name = models.CharField(max_length=255, help_text="Your 3 names")
+    egn = models.CharField(max_length=10, unique=True, verbose_name="ЕГН")
+    date_of_birth = models.DateField(null=True, blank=True)
+    bio = models.TextField(blank=True, max_length=500)
+    is_approved = models.BooleanField(default=False)
+
+    # Parent linking fields
+    child_egn = models.CharField(max_length=10, blank=True, null=True)
+    child_full_name = models.CharField(max_length=255, blank=True, null=True)
+
+    # Link the custom manager cleanly
+    objects: ClassVar[UserProfileManager] = UserProfileManager() # type: ignore
+
+    USERNAME_FIELD = 'egn'
+    REQUIRED_FIELDS = ['full_name', 'email']
+
+    class Meta:
+        db_table = 'team_userprofile'
+        verbose_name = 'User Profile'
+        verbose_name_plural = 'User Profiles'
+
+    def __str__(self) -> str:
+        role_display = getattr(self, 'get_role_display', lambda: self.role)()
+        return f"{self.full_name} ({role_display})"

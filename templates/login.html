@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-container">
+    <h2 style="color: white; margin-top: 0; border-bottom: 1px solid #2a2e39; padding-bottom: 10px; text-align: center;">Club Registration</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>I am registering as a:</label>
+            <select name="role" id="roleSelect" onchange="toggleFields()">
+                <option value="child">Player / Child</option>
+                <option value="parent">Parent</option>
+                <option value="coach">Coach / Technical Staff</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" name="full_name" required placeholder="John Doe">
+        </div>
+        <div class="form-group">
+            <label>EGN / ID Number</label>
+            <input type="text" name="egn" required placeholder="0000000000">
+        </div>
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" name="email" required placeholder="example@club.com">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" required>
+        </div>
+        
+
+        <div id="parentFields" style="display: none; background: #12141a; padding: 15px; border-radius: 4px; margin-bottom: 20px; border-left: 3px solid var(--gold);">
+            <h4 style="margin: 0 0 10px 0; color: var(--gold);">Child Security Verification</h4>
+            <div class="form-group">
+                <label>Child Full Name</label>
+                <input type="text" name="child_full_name">
+            </div>
+            <div class="form-group">
+                <label>Child EGN</label>
+                <input type="text" name="child_egn">
+            </div>
+            <div class="form-group">
+                <label>Child Password Account Verification</label>
+                <input type="password" name="child_password">
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Submit Membership Request</button>
+    </form>
+</div>
+
+<script>
+function toggleFields() {
+    var role = document.getElementById('roleSelect').value;
+    var dobGroup = document.getElementById('dobGroup');
+    var parentFields = document.getElementById('parentFields');
+    
+    if (role === 'parent') {
+        parentFields.style.display = 'block';
+        dobGroup.style.display = 'none';
+    } else {
+        parentFields.style.display = 'none';
+        dobGroup.style.display = 'block';
+    }
+}
+</script>
+{% endblock %}

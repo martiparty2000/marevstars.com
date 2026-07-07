@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="max-width: 800px; margin: 40px auto; background: var(--card-bg); padding: 30px; border-radius: 12px; border-top: 4px solid var(--gold);">
+    <h2 style="color: var(--gold); margin-top: 0;">Pending Registrations</h2>
+    <p style="color: #ccc;">Review and verify new member requests below.</p>
+
+    {% for user in pending_users %}
+    <div style="background: #0f1115; padding: 20px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--blue);">
+        <div>
+            <strong style="color: white; font-size: 18px;">{{ user.full_name }}</strong>
+            <div style="color: #888; font-size: 14px;">Username: {{ user.username }} | EGN: {{ user.egn }}</div>
+        </div>
+        <form method="POST" style="display: flex; gap: 10px;">
+            {% csrf_token %}
+            <input type="hidden" name="user_id" value="{{ user.id }}">
+            <button type="submit" name="action" value="approve" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">Approve</button>
+            <button type="submit" name="action" value="deny" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Deny</button>
+        </form>
+    </div>
+    {% empty %}
+    <div style="text-align: center; padding: 40px; color: #666;">
+        <h3>All caught up!</h3>
+        <p>There are no pending registration requests at this time.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

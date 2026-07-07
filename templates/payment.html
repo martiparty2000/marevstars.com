@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-container" style="max-width: 550px;">
+    <h2 style="color: var(--gold); margin-top: 0; text-align: center;">Marev Stars Fee Submissions</h2>
+    <p style="text-align: center; color: #aaa; margin-bottom: 25px;">Securely complete outstanding training platform fees.</p>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Select Training Subscriptions</label>
+            <select name="plan">
+                <option value="monthly">Monthly Club Pass — 60 BGN</option>
+                <option value="term">Seasonal Development Block — 250 BGN</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Cardholder Name</label>
+            <input type="text" required placeholder="John Doe">
+        </div>
+        <div class="form-group">
+            <label>Debit / Credit Card Number</label>
+            <input type="text" required placeholder="4000 1234 5678 9010">
+        </div>
+        <div style="display: flex; gap: 15px;">
+            <div class="form-group" style="flex: 1;">
+                <label>Expiration Date</label>
+                <input type="text" required placeholder="MM/YY">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>CVV/CVC Code</label>
+                <input type="text" required placeholder="123">
+            </div>
+        </div>
+        <button type="submit" class="btn-submit" style="background: var(--gold); color: #111;">Authorize Secured Payment</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Assign Roles</h2>
+<table>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.full_name }} ({{ user.email }})</td>
+        <td>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="user_id" value="{{ user.id }}">
+                <select name="role">
+                    <option value="player" {% if user.role == 'player' %}selected{% endif %}>Player</option>
+                    <option value="coach" {% if user.role == 'coach' %}selected{% endif %}>Coach</option>
+                    <option value="head_coach" {% if user.role == 'head_coach' %}selected{% endif %}>Head Coach</option>
+                </select>
+                <button type="submit">Update</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

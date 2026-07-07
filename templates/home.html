@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="text-align: center; padding: 60px 20px; max-width: 1100px; margin: 0 auto;">
+    
+    <h1 style="font-size: 48px; font-weight: 900; margin-bottom: 10px; background: linear-gradient(90deg, #a2c8ff 0%, #ffffff 45%, #91c7ff 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 16px rgba(255,255,255,0.85), 0 0 32px rgba(77,163,255,0.35); -webkit-box-reflect: below 8px linear-gradient(transparent, rgba(255,255,255,0.2) 25%, rgba(255,255,255,0.08) 55%, transparent 90%);">ФУТБОЛЕН КЛУБ МАРЕВ СТАРС</h1>
+    <p style="color: #ccc; font-size: 20px; margin-bottom: 50px;">Грешките ни учат, победите ни вдъхновяват.</p>
+
+    <!-- GRID контейнер -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+        
+        <!-- Карта 1: Къде тренираме -->
+        <div style="background: #111; padding: 30px; border-radius: 12px; border: 1px solid #333; display: flex; flex-direction: column;">
+            <h3 style="color: var(--gold, #FFD700); font-size: 24px; margin-top: 0;">📍 Къде тренираме</h3>
+            <p style="color: #ccc; margin: 20px 0; flex-grow: 1;">Нашите тренировки се провеждат на Стадион Студентска, Варна.</p>
+            <div style="margin-top: auto;">
+                <a href="https://www.google.com/maps/place/Стадион+Студентска" target="_blank" style="color: #4da3ff; text-decoration: none; font-weight: bold;">Виж на картата →</a>
+            </div>
+        </div>
+
+        <!-- Карта 2: Вижте ни -->
+        <div style="background: #111; padding: 30px; border-radius: 12px; border: 1px solid #333; display: flex; flex-direction: column;">
+            <h3 style="color: var(--gold, #FFD700); font-size: 24px; margin-top: 0;">🎥 Вижте ни в действие</h3>
+            <p style="color: #ccc; margin: 20px 0; flex-grow: 1;">Разгледайте нашите тренировки, мачове и вдъхновяващи моменти.</p>
+            <div style="margin-top: auto;">
+                <a href="https://www.youtube.com/@marevstars/videos" target="_blank" style="color: #4da3ff; text-decoration: none; font-weight: bold;">Към YouTube канала →</a>
+            </div>
+        </div>
+
+        <!-- Карта 3: Последвайте ни -->
+        <div style="background: #111; padding: 30px; border-radius: 12px; border: 1px solid #333; display: flex; flex-direction: column;">
+            <h3 style="color: var(--gold, #FFD700); font-size: 24px; margin-top: 0;">📱 Последвайте ни</h3>
+            <p style="color: #ccc; margin: 20px 0; flex-grow: 1;">Бъдете част от нашето футболно семейство .</p>
+            <div style="margin-top: auto; display: flex; gap: 10px; justify-content: center;">
+                <a href="https://www.facebook.com/marevstars/" target="_blank" style="padding: 10px 15px; background: #4267B2; color: #fff; border-radius: 4px; text-decoration: none; font-size: 14px; font-weight: bold;">Facebook</a>
+                <a href="https://www.youtube.com/@marevstars/" target="_blank" style="padding: 10px 15px; background: #FF0000; color: #fff; border-radius: 4px; text-decoration: none; font-size: 14px; font-weight: bold;">YouTube</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

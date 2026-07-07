@@ -1,0 +1,1 @@
+web: gunicorn marev_stars_site.wsgi

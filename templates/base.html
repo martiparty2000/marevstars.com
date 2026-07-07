@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ФК Марев Старс</title>
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+    <style>
+        :root {
+            --blue: #003b7e;
+            --gold: #D4AF37;
+            --dark: #0f1115;
+            --card-bg: #1a1d24;
+            --text-light: #f1f3f5;
+            --main-gradient: linear-gradient(180deg, #0a192f 0%, #000000 100%);
+        }
+        body { 
+                font-family: 'Segoe UI', Arial, sans-serif; 
+                margin: 0; 
+                background: var(--main-gradient); 
+                background-attachment: fixed; /* За да не се повтаря при скрол */
+                color: var(--text-light); 
+                min-height: 100vh;
+            }
+        nav { 
+            background-color: #05070a; 
+            color: white; 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 15px 40px; 
+            align-items: center; 
+            border-bottom: 2px solid var(--gold);
+
+        }
+        nav a { color: #ddd; text-decoration: none; margin: 0 15px; font-weight: 500; transition: color 0.3s; }
+        nav a:hover { color: var(--gold); }
+        .logo-text { font-size: 22px; font-weight: 800; color: var(--gold); letter-spacing: 1px; }
+        .logo-wrap { display: flex; align-items: center; gap: 10px; }
+        .logo-img { height: 60px; width: auto; }
+        .user-section { display: flex; align-items: center; gap: 15px; color: white; }
+        .btn-gold { background-color: var(--gold); color: #05070a !important; padding: 8px 16px; border-radius: 4px; font-weight: bold; text-decoration: none; }
+        .msg { padding: 15px; margin: 20px auto; max-width: 800px; border-radius: 4px; background: #1c3d27; color: #72e08a; border: 1px solid #2b5c3b; }
+        
+        .auth-container { background: var(--card-bg); border: 1px solid #2a2e39; border-top: 4px solid var(--blue); padding: 30px; border-radius: 8px; max-width: 450px; margin: 40px auto; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--gold); font-size: 14px; font-weight: 600; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; background: #111317; border: 1px solid #3a3f50; border-radius: 4px; color: white; box-sizing: border-box; }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--gold); outline: none; }
+        .btn-submit { background: var(--blue); color: white; border: none; padding: 12px; width: 100%; font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer; border-bottom: 3px solid #002754; }
+        .btn-submit:hover { background: #004cb0; }
+
+        .approval-alert {
+            background: var(--gold);
+            color: #05070a;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 2px solid #a6892b;
+        }
+        .approval-alert a { 
+            color: #05070a; 
+            text-decoration: underline; 
+            font-weight: 800; 
+        }
+    
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo-wrap">
+        <img src="{% static 'images/logo.png' %}" alt="MAREV STARS logo" class="logo-img">
+        <div class="logo-text">MAREV STARS</div>
+    </div>
+    <div>
+        <a href="{% url 'team:home' %}">Home</a>
+        <a href="{% url 'team:schedule' %}">Trainings</a>
+        <a href="{% url 'team:coaches' %}">Coaches</a>
+        <a href="{% url 'team:contact' %}">Contact Us</a>
+        
+        {% if user.is_authenticated %}
+            <a href="{% url 'team:payment' %}" style="color: var(--gold);">Pay Training</a>
+            
+            {% if user.is_staff or user.is_superuser %}
+                <a href="{% url 'team:staff_dashboard' %}" style="color: #D4AF37; font-weight: bold; border-left: 1px solid #333; padding-left: 15px;">
+                    🛡️ Staff Portal
+                </a>
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="user-section">
+        {% if user.is_authenticated %}
+            <span>Welcome, <strong>{{ user.full_name|default:user.username }}</strong></span>
+            <a href="{% url 'team:logout' %}" style="color: #ff4d4d;">Sign Out</a>
+        {% else %}
+            <a href="{% url 'team:login' %}">Log In</a>
+            <a href="{% url 'team:register' %}" class="btn-gold">Join Club</a>
+        {% endif %}
+    </div>
+</nav>
+
+
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="msg">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<main style="padding: 40px; max-width: 1200px; margin: 0 auto;">
+    {% block content %} {% endblock %}
+</main>
+
+</body>
+</html>
