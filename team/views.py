@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
-from django.db import IntegrityError
+from django.db import IntegrityError, OperationalError
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core.management import call_command
 from .models import UserProfile
 
 # --- Helper Functions ---
@@ -52,7 +53,11 @@ def login_view(request):
     if request.method == "POST":
         egn = request.POST.get('egn')
         password = request.POST.get('password')
-        user = authenticate(request, username=egn, password=password)
+        try:
+            user = authenticate(request, username=egn, password=password)
+        except OperationalError:
+            call_command('migrate', verbosity=0, interactive=False, run_syncdb=True, no_input=True)
+            user = authenticate(request, username=egn, password=password)
         if user:
             login(request, user)
             return redirect('team:home')
