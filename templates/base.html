@@ -69,7 +69,7 @@
 
 <nav>
     <div class="logo-wrap">
-        <img src="{% static 'images/logo.png' %}" alt="MAREV STARS logo" class="logo-img">
+        <img src="{% static 'static/images/logo.png' %}" alt="MAREV STARS logo" class="logo-img">
         <div class="logo-text">MAREV STARS</div>
     </div>
     <div>
@@ -83,7 +83,7 @@
             
             {% if user.is_staff or user.is_superuser %}
                 <a href="{% url 'team:staff_dashboard' %}" style="color: #D4AF37; font-weight: bold; border-left: 1px solid #333; padding-left: 15px;">
-                    🛡️ Staff Portal
+                     Staff Portal
                 </a>
             {% endif %}
         {% endif %}
