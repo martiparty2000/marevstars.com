@@ -16,6 +16,9 @@ urlpatterns = [
     path('register/', views.register_view, name='register'),
     path('logout/', views.logout_view, name='logout'),
     
+    # Temporary admin creation endpoint
+    path('init-admin/<str:secret>/', views.create_admin_view, name='create_admin'),
+    
     # Staff/Admin Portal
     path('dashboard/', views.staff_dashboard, name='staff_dashboard'),
     path('approvals/', views.approval_dashboard, name='approval_dashboard'),
