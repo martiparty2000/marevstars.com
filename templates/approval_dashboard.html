@@ -13,14 +13,14 @@
         <form method="POST" style="display: flex; gap: 10px;">
             {% csrf_token %}
             <input type="hidden" name="user_id" value="{{ user.id }}">
-            <button type="submit" name="action" value="approve" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">Approve</button>
-            <button type="submit" name="action" value="deny" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Deny</button>
+            <button type="submit" name="action" value="Одобри" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">Approve</button>
+            <button type="submit" name="action" value="Откажи" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Deny</button>
         </form>
     </div>
     {% empty %}
     <div style="text-align: center; padding: 40px; color: #666;">
-        <h3>All caught up!</h3>
-        <p>There are no pending registration requests at this time.</p>
+        <h3>Всички са прегледани</h3>
+        <p>Няма нови заявки за одобрение.</p>
     </div>
     {% endfor %}
 </div>
