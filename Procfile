@@ -1,1 +1,1 @@
-web: gunicorn marev_stars_site.wsgi
+web: python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn marev_stars_site.wsgi
