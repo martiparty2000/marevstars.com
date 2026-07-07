@@ -4,6 +4,14 @@ from django.urls import reverse
 
 
 class AuthFlowTests(TestCase):
+    def test_login_page_renders_login_form(self):
+        response = self.client.get(reverse('team:login'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Log In')
+        self.assertContains(response, 'name="egn"')
+        self.assertContains(response, 'name="password"')
+
     def test_registration_creates_pending_user(self):
         response = self.client.post(
             reverse('team:register'),
