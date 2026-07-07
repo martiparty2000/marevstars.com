@@ -20,5 +20,34 @@
         <p style="margin: 15px 0; color: #e1e4e6;"><strong style="color: var(--gold);">Допълнителна информация:</strong> Разполагаме и с вратарски тренировки</p>
 
     </div>
+    <div style="flex: 1; min-width: 300px; background: #1a1d24; padding: 20px; border-radius: 16px; border: 1px solid #333; border-top: 4px solid var(--gold); transition: transform 0.3s ease; box-shadow: 0 10px 20px rgba(0,0,0,0.2);">
+        <img src="{% static 'images/privateteren.png' %}" alt="Частни тренировки" style="width: 100%; height: auto; border-radius: 12px; margin-bottom: 20px; object-fit: cover; border: 1px solid #2a2e39;">
+        <h3 style="color: white; margin-top: 0; margin-bottom: 20px; border-bottom: 2px solid var(--gold); padding-bottom: 10px; display: inline-block;">
+            Частни Тренировки
+        </h3>
+
+        <ul style="list-style: none; padding: 0; margin: 0;">
+            <li style="margin: 12px 0; color: #e1e4e6; display: flex; align-items: center;">
+                <span style="color: var(--gold); margin-right: 10px;">📅</span>
+                <strong>Дни:</strong> &nbsp; По договаряне
+            </li>
+            <li style="margin: 12px 0; color: #e1e4e6; display: flex; align-items: center;">
+                <span style="color: var(--gold); margin-right: 10px;">🕒</span>
+                <strong>Време:</strong> &nbsp; Гъвкаво
+            </li>
+            <li style="margin: 12px 0; color: #e1e4e6; display: flex; align-items: center;">
+                <span style="color: var(--gold); margin-right: 10px;">📍</span>
+                <strong>Място:</strong> &nbsp; ул. „Фернандо Магелан“
+            </li>
+        </ul>
+
+        <p style="margin-top: 20px; color: #a0a0a0; font-size: 0.9em; font-style: italic;">
+            * За записване и уточняване на график, моля свържете се с нас.
+        </p>
+
+        <a href="{% url 'team:contact' %}" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background: var(--gold); color: black; text-decoration: none; border-radius: 6px; font-weight: bold; transition: background 0.3s;">
+            Запази час
+        </a>
+    </div>
 </div>
 {% endblock %}
