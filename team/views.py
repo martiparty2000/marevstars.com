@@ -1,3 +1,5 @@
+from typing import cast
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
@@ -40,12 +42,34 @@ def register_view(request):
     if request.method == "POST":
         role = request.POST.get('role')
         egn = request.POST.get('egn')
+        full_name = request.POST.get('full_name')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        date_of_birth = request.POST.get('date_of_birth') or None
+
         if UserProfile.objects.filter(egn=egn).exists():
             messages.error(request, "Error: That EGN is already registered.")
             return render(request, 'register.html')
-        
-        # Add your registration creation logic here...
-        messages.info(request, "Registration successful!")
+
+        if not all([full_name, egn, email, password]):
+            messages.error(request, "Please fill in all required fields.")
+            return render(request, 'register.html')
+
+        role_mapping = {'child': 'player', 'parent': 'player', 'coach': 'coach'}
+        role_value = role_mapping.get(role, 'player')
+
+        UserProfile.objects.create_user(
+            egn=egn,
+            full_name=full_name,
+            email=email,
+            password=password,
+            role=role_value,
+            date_of_birth=date_of_birth,
+            child_full_name=request.POST.get('child_full_name') or '',
+            child_egn=request.POST.get('child_egn') or '',
+            is_approved=False,
+        )
+        messages.info(request, "Registration successful! Your account is pending approval.")
         return redirect('team:login')
     return render(request, 'register.html')
 
@@ -58,10 +82,18 @@ def login_view(request):
         except OperationalError:
             call_command('migrate', verbosity=0, interactive=False, run_syncdb=True, no_input=True)
             user = authenticate(request, username=egn, password=password)
-        if user:
-            login(request, user)
-            return redirect('team:home')
-        messages.error(request, "Invalid credentials.")
+
+        if user is None:
+            messages.error(request, "Invalid credentials.")
+            return render(request, 'login.html')
+
+        user = cast(UserProfile, user)
+        if not user.is_approved and not user.is_superuser:
+            messages.error(request, "Your account is pending approval.")
+            return render(request, 'login.html')
+
+        login(request, user)
+        return redirect('team:home')
     return render(request, 'login.html')
 
 def logout_view(request):
