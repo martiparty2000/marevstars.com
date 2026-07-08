@@ -43,12 +43,14 @@ def _export_users_to_backup():
 def backup_users_on_migrate(sender, **kwargs):
     _export_users_to_backup()
 
+# --- 2. Нов сигнал за автоматично добавяне в Google Sheets ---
 @receiver(post_save, sender=UserProfile)
 def sync_user_to_gsheet(sender, instance, created, **kwargs):
+    """Синхронизира нов потребител с Google Sheets веднага след регистрация."""
     if created:
-        print(f"DEBUG: Сигналът се задейства за {instance.username}")
         try:
+            # Изпращаме името и имейла към таблицата
             add_user_to_sheet(instance.full_name or instance.username, instance.email)
-            print("DEBUG: Успешно записано в Google Sheets!")
+            logger.info(f"User {instance.username} synced to Google Sheets.")
         except Exception as e:
-            print(f"DEBUG: ГРЕШКА при запис: {e}")
+            logger.error(f"Failed to sync user {instance.username} to Google Sheets: {e}")

@@ -5,4 +5,5 @@ class TeamConfig(AppConfig):
     name = 'team'
 
     def ready(self):
+        # Тук импортираш сигналите, за да работят
         import team.signals
