@@ -31,7 +31,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'team.middleware.EnsureDatabaseReadyMiddleware',
 ]
-
 # 3. Application Definitions
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -43,16 +42,7 @@ INSTALLED_APPS = [
     'team.apps.TeamConfig',
 ]
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+# (Single MIDDLEWARE definition above; duplicate removed)
 
 ROOT_URLCONF = 'marev_stars_site.urls'
 
