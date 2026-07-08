@@ -75,13 +75,13 @@
         <div class="logo-text">MAREV STARS</div>
     </div>
     <div>
-        <a href="{% url 'team:home' %}">Home</a>
-        <a href="{% url 'team:schedule' %}">Trainings</a>
-        <a href="{% url 'team:coaches' %}">Coaches</a>
-        <a href="{% url 'team:contact' %}">Contact Us</a>
+        <a href="{% url 'team:home' %}">Начало</a>
+        <a href="{% url 'team:schedule' %}">Тренировки</a>
+        <a href="{% url 'team:coaches' %}">Треньори</a>
+        <a href="{% url 'team:contact' %}">Контакти</a>
         
-        {% if user.is_authenticated %}
-            <a href="{% url 'team:payment' %}" style="color: var(--gold);">Pay Training</a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'team:payment' %}" style="color: var(--gold);">Плати тренировка</a>
             
             {% if user.is_staff or user.is_superuser %}
                 <a href="{% url 'team:staff_dashboard' %}" style="color: #D4AF37; font-weight: bold; border-left: 1px solid #333; padding-left: 15px;">
@@ -98,7 +98,11 @@
                 </div>
                 <div style="text-align:right;">
                     <div style="font-size:13px;color:#bbb;">
-                        {% if user.role == 'head_coach' %}
+                        {% if user.role == 'owner' %}
+                            Здравей, Собственик
+                        {% elif user.child_full_name %}
+                            Здравей, Родител
+                        {% elif user.role == 'head_coach' %}
                             Здравей, Главен Треньор
                         {% elif user.role == 'coach' %}
                             Здравей, Треньор
@@ -110,12 +114,12 @@
                 </div>
             </div>
             <div style="display:flex;gap:12px;align-items:center;margin-left:12px;">
-                <a href="#" onclick="openDeleteModal();return false;" style="color:#ffb86b;text-decoration:none;font-weight:600;">Delete Account</a>
-                <a href="{% url 'team:logout' %}" style="color: #ff4d4d;font-weight:600;">Sign Out</a>
+                <a href="#" onclick="openDeleteModal();return false;" style="color:#ffb86b;text-decoration:none;font-weight:600;">Изтрий акаунта</a>
+                <a href="{% url 'team:logout' %}" style="color: #ff4d4d;font-weight:600;">Изход</a>
             </div>
         {% else %}
-            <a href="{% url 'team:login' %}">Log In</a>
-            <a href="{% url 'team:register' %}" class="btn-gold">Join Club</a>
+            <a href="{% url 'team:login' %}">Вход</a>
+            <a href="{% url 'team:register' %}" class="btn-gold">Регистрирай се</a>
         {% endif %}
     </div>
 </nav>

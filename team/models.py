@@ -20,7 +20,7 @@ class UserProfileManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_approved', True)
-        extra_fields.setdefault('role', 'head_coach')
+        extra_fields.setdefault('role', 'owner')
 
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
@@ -35,13 +35,14 @@ class UserProfile(AbstractUser):
         ('player', 'Player'),
         ('coach', 'Coach'),
         ('head_coach', 'Head Coach'),
+        ('owner', 'Owner'),
     )
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='player')
+    # one canonical role field with default and choices
+    role = models.CharField(max_length=15, choices=ROLE_CHOICES, default='player')
     # ... rest of your fields
     
     # Custom fields with explicit type definitions for Pylance
     username = models.CharField(max_length=150, unique=True, blank=True, null=True)
-    role = models.CharField(max_length=15, choices=ROLE_CHOICES)
     full_name = models.CharField(max_length=255, help_text="Your 3 names")
     egn = models.CharField(max_length=10, unique=True, verbose_name="ЕГН")
     date_of_birth = models.DateField(null=True, blank=True)
@@ -84,6 +85,11 @@ class ApprovalLog(models.Model):
     class Meta:
         ordering = ['-timestamp']
 
+    def get_action_display(self) -> str:
+        return dict(self.ACTION_CHOICES).get(self.action, self.action)
+
     def __str__(self) -> str:
         actor = self.actor.full_name if self.actor else 'System'
-        return f"{self.get_action_display()} - {self.target.full_name} by {actor} at {self.timestamp.isoformat()}"
+        action = self.get_action_display()
+        target_name = self.target.full_name if self.target else "Unknown"
+        return f"{action} - {target_name} by {actor} at {self.timestamp.isoformat()}"

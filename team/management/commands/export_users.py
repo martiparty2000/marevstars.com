@@ -25,8 +25,12 @@ class Command(BaseCommand):
                 'is_active': u.is_active,
                 'is_staff': u.is_staff,
                 'is_superuser': u.is_superuser,
+                'is_approved': getattr(u, 'is_approved', False),
+                'child_full_name': getattr(u, 'child_full_name', ''),
+                'child_egn': getattr(u, 'child_egn', ''),
                 'password_hash': u.password,
                 'date_joined': u.date_joined.isoformat() if u.date_joined else None,
+                'last_login': u.last_login.isoformat() if getattr(u, 'last_login', None) else None,
             })
 
         with open(outpath, 'w', encoding='utf-8') as fh:

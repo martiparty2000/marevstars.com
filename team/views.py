@@ -13,8 +13,8 @@ from .models import UserProfile
 
 # --- Helper Functions ---
 def is_admin_or_head_coach(user):
-    # This allows 'head_coach' (what you have in DB) or 'Owner'
-    return user.is_authenticated and (user.role == 'Owner' or user.role == 'head_coach')
+    # Allow owner and head coach accounts to access management pages
+    return user.is_authenticated and (user.role == 'owner' or user.role == 'head_coach')
 
 # --- Public Views ---
 def home_view(request):
@@ -43,17 +43,35 @@ def coaches_view(request):
 def register_view(request):
     if request.method == "POST":
         role = request.POST.get('role')
-        egn = request.POST.get('egn')
+        egn = request.POST.get('egn') or ''
         full_name = request.POST.get('full_name')
         email = request.POST.get('email')
         password = request.POST.get('password')
         date_of_birth = request.POST.get('date_of_birth') or None
 
+        # child verification fields (may be required when registering as parent)
+        child_full_name = request.POST.get('child_full_name') or ''
+        child_egn = request.POST.get('child_egn') or ''
+        child_password = request.POST.get('child_password') or ''
+
+        # If registering as parent, require child info and generate a synthetic EGN username if none provided
+        if role == 'parent':
+            if not all([child_full_name, child_egn, child_password]):
+                messages.error(request, "Моля попълнете името на детето, ЕГН и парола за проверка.")
+                return render(request, 'register.html')
+            if not egn:
+                import time, random
+                candidate = f'parent{int(time.time())}{random.randint(1000,9999)}'
+                while UserProfile.objects.filter(egn=candidate).exists():
+                    candidate = f'parent{int(time.time())}{random.randint(1000,9999)}'
+                egn = candidate
+
         if UserProfile.objects.filter(egn=egn).exists():
             messages.error(request, "Error: That EGN is already registered.")
             return render(request, 'register.html')
 
-        if not all([full_name, egn, email, password]):
+        # basic required fields check (egn may have been auto-generated for parents)
+        if not all([full_name, email, password]):
             messages.error(request, "Please fill in all required fields.")
             return render(request, 'register.html')
 
@@ -67,8 +85,8 @@ def register_view(request):
             password=password,
             role=role_value,
             date_of_birth=date_of_birth,
-            child_full_name=request.POST.get('child_full_name') or '',
-            child_egn=request.POST.get('child_egn') or '',
+            child_full_name=child_full_name,
+            child_egn=child_egn,
             is_approved=False,
         )
         messages.info(request, "Registration successful! Your account is pending approval.")
@@ -207,6 +225,12 @@ def manage_roles_view(request):
         new_role = request.POST.get('role')
         target_user = get_object_or_404(UserProfile, id=user_id)
         old_role = target_user.role
+
+        # Prevent assigning owner through this UI
+        if new_role == 'owner' and target_user.role != 'owner':
+            messages.error(request, 'Owner role may not be assigned through this interface.')
+            return redirect('team:manage_roles')
+
         target_user.role = new_role
         target_user.save()
         messages.success(request, f"Updated {target_user.full_name} to {new_role}.")
