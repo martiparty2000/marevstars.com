@@ -1,14 +1,16 @@
+import os
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-
-import os
 
 def get_sheet():
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
     
-    # Проверяваме дали сме в Render (/etc/secrets/) или на твоя компютър
-    creds_path = '/etc/secrets/credentials.json' if os.path.exists('/etc/secrets/credentials.json') else 'credentials.json'
-    
+    # ПРОВЕРКА: Ако сме в Render, взимаме файла от тайната папка, иначе локално
+    if os.path.exists('/etc/secrets/credentials.json'):
+        creds_path = '/etc/secrets/credentials.json'
+    else:
+        creds_path = 'credentials.json'
+        
     creds = ServiceAccountCredentials.from_json_keyfile_name(creds_path, scope) # type: ignore
     client = gspread.authorize(creds) # type: ignore
     
