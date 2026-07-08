@@ -1,4 +1,4 @@
-from django.db.models.signals import post_migrate
+from django.db.models.signals import post_migrate, post_save
 from django.dispatch import receiver
 from django.conf import settings
 from django.utils import timezone
@@ -6,10 +6,11 @@ import json
 import logging
 
 from .models import UserProfile
+from .gsheets import add_user_to_sheet  # Увери се, че това е името на файла ти
 
 logger = logging.getLogger(__name__)
 
-
+# --- 1. Твоят съществуващ backup код ---
 def _export_users_to_backup():
     try:
         outdir = settings.BASE_DIR / 'backups'
@@ -38,8 +39,16 @@ def _export_users_to_backup():
     except Exception as exc:
         logger.exception('Failed to export users backup: %s', exc)
 
-
 @receiver(post_migrate)
 def backup_users_on_migrate(sender, **kwargs):
-    # Run a best-effort backup after migrations; never raise errors to interrupt deploy
     _export_users_to_backup()
+
+@receiver(post_save, sender=UserProfile)
+def sync_user_to_gsheet(sender, instance, created, **kwargs):
+    if created:
+        print(f"DEBUG: Сигналът се задейства за {instance.username}")
+        try:
+            add_user_to_sheet(instance.full_name or instance.username, instance.email)
+            print("DEBUG: Успешно записано в Google Sheets!")
+        except Exception as e:
+            print(f"DEBUG: ГРЕШКА при запис: {e}")
