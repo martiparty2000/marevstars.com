@@ -153,12 +153,16 @@ def delete_account_view(request):
     if request.method != 'POST':
         return HttpResponseForbidden('Forbidden')
 
+    user = request.user
+    if user.role != 'owner':
+        messages.error(request, 'Only the website owner may delete accounts.')
+        return redirect(request.META.get('HTTP_REFERER', 'team:home'))
+
     password = request.POST.get('password')
     if not password:
         messages.error(request, 'Password required to delete account.')
         return redirect(request.META.get('HTTP_REFERER', 'team:home'))
 
-    user = request.user
     if not user.check_password(password):
         messages.error(request, 'Incorrect password. Account not deleted.')
         return redirect(request.META.get('HTTP_REFERER', 'team:home'))

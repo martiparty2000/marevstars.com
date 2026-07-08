@@ -114,7 +114,9 @@
                 </div>
             </div>
             <div style="display:flex;gap:12px;align-items:center;margin-left:12px;">
-                <a href="#" onclick="openDeleteModal();return false;" style="color:#ffb86b;text-decoration:none;font-weight:600;">Изтрий акаунта</a>
+                {% if user.role == 'owner' %}
+                    <a href="#" onclick="openDeleteModal();return false;" style="color:#ffb86b;text-decoration:none;font-weight:600;">Изтрий акаунта</a>
+                {% endif %}
                 <a href="{% url 'team:logout' %}" style="color: #ff4d4d;font-weight:600;">Изход</a>
             </div>
         {% else %}
