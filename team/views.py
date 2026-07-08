@@ -92,14 +92,6 @@ def register_view(request):
         )
 
         # 2. ИЗВИКВАМЕ ФУНКЦИЯТА ТУК (БЕЗ form.is_valid()):
-        try:
-            # Тъй като в gsheets.py функцията очаква (child_name, parent_email)
-            # Ако се регистрира родител, взимаме child_full_name, иначе full_name
-            name_to_save = child_full_name if child_full_name else full_name
-            add_user_to_sheet(name_to_save, email)
-        except Exception as e:
-            print(f"Failed to sync user {egn} to Google Sheets: {e}")
-
         messages.info(request, "Registration successful! Your account is pending approval.")
         return redirect('team:login')
     return render(request, 'register.html')
