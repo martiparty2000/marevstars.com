@@ -5,7 +5,7 @@
     <p style="color: #ccc;">Review and verify new member requests below.</p>
 
     {% for user in pending_users %}
-    <div style="background: #0f1115; padding: 20px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--blue);">
+        <div style="background: #0f1115; padding: 20px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--blue);">
         <div>
             <strong style="color: white; font-size: 18px;">{{ user.full_name }}</strong>
             <div style="color: #888; font-size: 14px;">Username: {{ user.username }} | EGN: {{ user.egn }}</div>
@@ -13,8 +13,9 @@
         <form method="POST" style="display: flex; gap: 10px;">
             {% csrf_token %}
             <input type="hidden" name="user_id" value="{{ user.id }}">
-            <button type="submit" name="action" value="Одобри" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">Approve</button>
-            <button type="submit" name="action" value="Откажи" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Deny</button>
+            <input type="hidden" name="action" value="">
+            <button type="button" onclick="openConfirm(this.form, 'approve')" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">Одобри</button>
+            <button type="button" onclick="openConfirm(this.form, 'deny')" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Откажи</button>
         </form>
     </div>
     {% empty %}
@@ -23,5 +24,69 @@
         <p>Няма нови заявки за одобрение.</p>
     </div>
     {% endfor %}
+    <!-- Confirmation modal -->
+    <div id="confirmModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;z-index:9999;">
+        <div id="confirmModalCard" style="background:var(--card-bg);padding:20px;border-radius:10px;max-width:520px;width:92%;border-top:4px solid var(--gold);box-shadow:0 10px 30px rgba(0,0,0,0.5);transform:translateY(-10px);opacity:0;transition:all 180ms ease-in-out;">
+            <h3 id="confirmModalTitle" style="margin-top:0;color:var(--gold);">Потвърдете действието</h3>
+            <p id="confirmModalMessage" style="color:#ddd;margin-bottom:12px;">Сигурен ли сте, че искате да продължите?</p>
+            <div style="margin-bottom:12px;">
+                <label for="confirmNote" style="color:#bbb;font-size:13px;">Коментар (по избор)</label>
+                <textarea id="confirmNote" rows="3" style="width:100%;margin-top:6px;background:#0b0c0f;color:#fff;border:1px solid #222;padding:8px;border-radius:6px;" placeholder="Причина или бележка (по избор)"></textarea>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+                <button type="button" onclick="closeConfirm()" style="background:#444;color:#fff;border:none;padding:8px 12px;border-radius:6px;">Отказ</button>
+                <button id="confirmModalConfirm" type="button" onclick="confirmAction()" style="background:var(--gold);color:#0b0c0f;border:none;padding:8px 12px;border-radius:6px;font-weight:600;">Потвърди</button>
+            </div>
+        </div>
+    </div>
 </div>
+<script>
+let _pendingForm = null;
+let _pendingAction = '';
+
+function openConfirm(form, action){
+    _pendingForm = form;
+    _pendingAction = action;
+    const title = action === 'approve' ? 'Одобряване на потребител' : 'Отказване на заявката';
+    const msg = action === 'approve' ? 'Сигурни ли сте, че искате да одобрите този потребител?' : 'Сигурни ли сте, че искате да откажете и изтриете този потребител? Това действие е необратимо.';
+    document.getElementById('confirmModalTitle').textContent = title;
+    document.getElementById('confirmModalMessage').textContent = msg;
+    document.getElementById('confirmModal').style.display = 'flex';
+    // animate
+    setTimeout(()=>{
+        const card = document.getElementById('confirmModalCard');
+        if(card){ card.style.transform = 'translateY(0)'; card.style.opacity = '1'; }
+    }, 10);
+}
+
+function closeConfirm(){
+    const card = document.getElementById('confirmModalCard');
+    if(card){ card.style.transform = 'translateY(-10px)'; card.style.opacity = '0'; }
+    setTimeout(()=>{
+        _pendingForm = null;
+        _pendingAction = '';
+        document.getElementById('confirmModal').style.display = 'none';
+        const ta = document.getElementById('confirmNote'); if(ta) ta.value = '';
+    }, 180);
+}
+
+function confirmAction(){
+    if(!_pendingForm) return closeConfirm();
+    const inp = _pendingForm.querySelector('input[name="action"]');
+    if(inp) inp.value = _pendingAction;
+    // copy optional note into a hidden input on the form
+    let note = '';
+    const ta = document.getElementById('confirmNote');
+    if(ta) note = ta.value || '';
+    let noteInput = _pendingForm.querySelector('input[name="note"]');
+    if(!noteInput){
+        noteInput = document.createElement('input');
+        noteInput.type = 'hidden';
+        noteInput.name = 'note';
+        _pendingForm.appendChild(noteInput);
+    }
+    noteInput.value = note;
+    _pendingForm.submit();
+}
+</script>
 {% endblock %}

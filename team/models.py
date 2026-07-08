@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from typing import ClassVar
+from django.utils import timezone
 
 class UserProfileManager(BaseUserManager):
     def create_user(self, egn, full_name, email, password=None, **extra_fields):
@@ -65,3 +66,24 @@ class UserProfile(AbstractUser):
     def __str__(self) -> str:
         role_display = getattr(self, 'get_role_display', lambda: self.role)()
         return f"{self.full_name} ({role_display})"
+
+
+class ApprovalLog(models.Model):
+    ACTION_CHOICES = (
+        ('approve', 'Approve'),
+        ('deny', 'Deny'),
+        ('delete', 'Delete'),
+        ('role_change', 'Role Change'),
+    )
+    actor = models.ForeignKey('team.UserProfile', related_name='actions', on_delete=models.SET_NULL, null=True, blank=True)
+    target = models.ForeignKey('team.UserProfile', related_name='target_logs', on_delete=models.SET_NULL, null=True, blank=True)
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES)
+    note = models.TextField(blank=True)
+    timestamp = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ['-timestamp']
+
+    def __str__(self) -> str:
+        actor = self.actor.full_name if self.actor else 'System'
+        return f"{self.get_action_display()} - {self.target.full_name} by {actor} at {self.timestamp.isoformat()}"

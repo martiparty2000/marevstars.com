@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import UserProfile
+from .models import ApprovalLog
 
 @admin.register(UserProfile)
 class UserProfileAdmin(UserAdmin):
@@ -16,3 +17,9 @@ class UserProfileAdmin(UserAdmin):
             )
         }),
     ]
+
+@admin.register(ApprovalLog)
+class ApprovalLogAdmin(admin.ModelAdmin):
+    list_display = ('action', 'target', 'actor', 'timestamp')
+    list_filter = ('action', 'timestamp')
+    search_fields = ('target__full_name', 'actor__full_name', 'note')

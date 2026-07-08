@@ -23,4 +23,5 @@ urlpatterns = [
     path('dashboard/', views.staff_dashboard, name='staff_dashboard'),
     path('approvals/', views.approval_dashboard, name='approval_dashboard'),
     path('manage-roles/', views.manage_roles_view, name='manage_roles'),
+    path('delete-account/', views.delete_account_view, name='delete_account'),
 ]

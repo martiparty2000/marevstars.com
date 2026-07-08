@@ -2,6 +2,7 @@ from typing import cast
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import IntegrityError, OperationalError
 from django.contrib.auth.decorators import user_passes_test
@@ -128,6 +129,40 @@ def create_admin_view(request, secret):
     )
     return HttpResponse(f'Superuser created: {egn}. Now log in with that EGN and password.')
 
+
+@login_required
+def delete_account_view(request):
+    if request.method != 'POST':
+        return HttpResponseForbidden('Forbidden')
+
+    password = request.POST.get('password')
+    if not password:
+        messages.error(request, 'Password required to delete account.')
+        return redirect(request.META.get('HTTP_REFERER', 'team:home'))
+
+    user = request.user
+    if not user.check_password(password):
+        messages.error(request, 'Incorrect password. Account not deleted.')
+        return redirect(request.META.get('HTTP_REFERER', 'team:home'))
+
+    # record deletion in audit log (include identifying info in note so it survives FK nulling)
+    try:
+        from .models import ApprovalLog
+        note = f'Self-deleted account {user.full_name} ({user.egn})'
+        ApprovalLog.objects.create(actor=user, target=user, action='delete', note=note)
+    except Exception:
+        pass
+
+    logout(request)
+    # delete the user object
+    try:
+        user.delete()
+    except Exception:
+        pass
+
+    messages.success(request, 'Your account has been deleted.')
+    return redirect('team:home')
+
 # --- Staff & Admin Portal ---
 @staff_member_required
 def staff_dashboard(request):
@@ -141,11 +176,24 @@ def approval_dashboard(request):
         user_id = request.POST.get('user_id')
         action = request.POST.get('action')
         user = get_object_or_404(UserProfile, id=user_id)
+        note = request.POST.get('note', '')
         if action == 'approve':
             user.is_approved = True
             user.save()
+            messages.success(request, f"Approved {user.full_name}.")
+            try:
+                from .models import ApprovalLog
+                ApprovalLog.objects.create(actor=request.user, target=user, action='approve', note=note or 'Approved via dashboard')
+            except Exception:
+                pass
         elif action == 'deny':
+            try:
+                from .models import ApprovalLog
+                ApprovalLog.objects.create(actor=request.user, target=user, action='deny', note=note or 'Denied via dashboard')
+            except Exception:
+                pass
             user.delete()
+            messages.success(request, f"Denied {user.full_name}.")
         return redirect('team:approval_dashboard')
     
     pending_users = UserProfile.objects.filter(is_approved=False)
@@ -158,8 +206,14 @@ def manage_roles_view(request):
         user_id = request.POST.get('user_id')
         new_role = request.POST.get('role')
         target_user = get_object_or_404(UserProfile, id=user_id)
+        old_role = target_user.role
         target_user.role = new_role
         target_user.save()
         messages.success(request, f"Updated {target_user.full_name} to {new_role}.")
+        try:
+            from .models import ApprovalLog
+            ApprovalLog.objects.create(actor=request.user, target=target_user, action='role_change', note=f"{old_role} -> {new_role}")
+        except Exception:
+            pass
         return redirect('team:manage_roles')
     return render(request, 'manage_roles.html', {'users': users})

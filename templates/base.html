@@ -92,8 +92,27 @@
     </div>
     <div class="user-section">
         {% if user.is_authenticated %}
-            <span>Welcome, <strong>{{ user.full_name|default:user.username }}</strong></span>
-            <a href="{% url 'team:logout' %}" style="color: #ff4d4d;">Sign Out</a>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:40px;height:40px;border-radius:50%;background:#222;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;">
+                    {{ user.full_name|default:user.username|slice:":1"|upper }}
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:13px;color:#bbb;">
+                        {% if user.role == 'head_coach' %}
+                            Здравей, Главен Треньор
+                        {% elif user.role == 'coach' %}
+                            Здравей, Треньор
+                        {% else %}
+                            Добре дошъл
+                        {% endif %}
+                    </div>
+                    <div style="font-weight:700;color:#fff;">{{ user.full_name|default:user.username }}</div>
+                </div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;margin-left:12px;">
+                <a href="#" onclick="openDeleteModal();return false;" style="color:#ffb86b;text-decoration:none;font-weight:600;">Delete Account</a>
+                <a href="{% url 'team:logout' %}" style="color: #ff4d4d;font-weight:600;">Sign Out</a>
+            </div>
         {% else %}
             <a href="{% url 'team:login' %}">Log In</a>
             <a href="{% url 'team:register' %}" class="btn-gold">Join Club</a>
@@ -112,6 +131,38 @@
 <main style="padding: 40px; max-width: 1200px; margin: 0 auto;">
     {% block content %} {% endblock %}
 </main>
+
+<!-- Delete account modal -->
+{% if user.is_authenticated %}
+<div id="deleteAccountModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;z-index:9999;">
+    <div style="background:var(--card-bg);padding:20px;border-radius:10px;max-width:420px;width:92%;border-top:4px solid var(--gold);box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+        <h3 style="margin-top:0;color:var(--gold);">Delete Account</h3>
+        <p style="color:#ddd;">To permanently delete your account, please confirm your password below.</p>
+        <form method="POST" action="{% url 'team:delete_account' %}">
+            {% csrf_token %}
+            <div style="margin-bottom:12px;">
+                <label style="color:#bbb;font-size:13px;">Password</label>
+                <input type="password" name="password" required style="width:100%;padding:10px;margin-top:6px;background:#0b0c0f;color:#fff;border:1px solid #222;border-radius:6px;">
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+                <button type="button" onclick="closeDeleteModal()" style="background:#444;color:#fff;border:none;padding:8px 12px;border-radius:6px;">Cancel</button>
+                <button type="submit" style="background:#dc3545;color:#fff;border:none;padding:8px 12px;border-radius:6px;">Delete Account</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+function openDeleteModal(){
+    const m = document.getElementById('deleteAccountModal');
+    if(m){ m.style.display='flex'; }
+}
+function closeDeleteModal(){
+    const m = document.getElementById('deleteAccountModal');
+    if(m){ m.style.display='none'; }
+}
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeDeleteModal(); });
+</script>
+{% endif %}
 
 </body>
 </html>
