@@ -11,6 +11,7 @@ from django.core.management import call_command
 from django.http import HttpResponse, HttpResponseForbidden
 from .models import UserProfile
 
+
 # --- Helper Functions ---
 def is_admin_or_head_coach(user):
     # Allow owner and head coach accounts to access management pages
