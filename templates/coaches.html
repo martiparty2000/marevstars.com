@@ -1,26 +1,25 @@
 {% extends 'base.html' %}
-{% load static %}  
+{% load static %}
 {% block content %}
-<h2 style="color: var(--gold); text-align: center; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 2px;">
+<h2 style="color: var(--gold-soft); text-align: center; margin: 10px 0 38px; text-transform: uppercase; letter-spacing: 0.12em; font-size: 2rem;">
     Нашият треньорски състав
 </h2>
 
-<!-- Промяна: flex-wrap: nowrap и justify-content: center -->
-<div style="display: flex; flex-wrap: nowrap; gap: 20px; justify-content: center; overflow-x: auto; padding-bottom: 20px;">
+<div style="display: flex; flex-wrap: wrap; gap: 22px; justify-content: center; padding-bottom: 20px;">
     {% for coach in coaches %}
-    <div class="coach-card" style="background: var(--card-bg); padding: 25px; border-radius: 12px; min-width: 300px; max-width: 350px; border-top: 4px solid var(--gold); box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
-        
+    <div class="coach-card" style="background: rgba(20,29,39,0.9); border: 1px solid var(--line); border-radius: 16px; min-width: 280px; max-width: 340px; box-shadow: var(--shadow); overflow: hidden;">
         <img src="{% static 'images/'|add:coach.image %}" 
              alt="{{ coach.name }}" 
-             style="width: 100%; height: 250px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
-        
-        <h3 style="color: var(--gold); margin: 0 0 10px 0;">{{ coach.name }}</h3>
-        <p style="font-weight: bold; color: #fff; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;">
-            {{ coach.role }}
-        </p>
-        <p style="line-height: 1.6; color: #ccc; font-size: 14px; text-align: justify;">
-            {{ coach.bio }}
-        </p>
+             style="width: 100%; height: 270px; object-fit: cover; display: block; background: #101821;">
+        <div style="padding: 22px 20px 24px;">
+            <h3 style="color: var(--gold-soft); margin: 0 0 10px; font-size: 1.5rem;">{{ coach.name }}</h3>
+            <p style="font-weight: 700; color: #eaf1f6; margin: 0 0 14px; border-bottom: 1px solid var(--line); padding-bottom: 10px;">
+                {{ coach.role }}
+            </p>
+            <p style="line-height: 1.65; color: var(--muted); font-size: 14px; margin: 0; text-align: left;">
+                {{ coach.bio }}
+            </p>
+        </div>
     </div>
     {% empty %}
     <p style="color: #666;">Все още няма добавени треньори в базата данни.</p>

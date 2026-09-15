@@ -1,41 +1,45 @@
 {% extends 'base.html' %}
 {% block content %}
-<div style="text-align: center; padding: 60px 20px; max-width: 1100px; margin: 0 auto;">
-    
-    <h1 style="font-size: 48px; font-weight: 900; margin-bottom: 10px; background: linear-gradient(90deg, #a2c8ff 0%, #ffffff 45%, #91c7ff 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 16px rgba(255,255,255,0.85), 0 0 32px rgba(77,163,255,0.35); -webkit-box-reflect: below 8px linear-gradient(transparent, rgba(255,255,255,0.2) 25%, rgba(255,255,255,0.08) 55%, transparent 90%);">ФУТБОЛЕН КЛУБ МАРЕВ СТАРС</h1>
-    <p style="color: #ccc; font-size: 20px; margin-bottom: 50px;">Грешките ни учат, победите ни вдъхновяват.</p>
+<div style="max-width: 1100px; margin: 0 auto; padding: 10px 0 30px;">
+    <section style="padding: 48px 0 34px; text-align: center;">
+        <p style="margin: 0 0 16px; color: var(--gold-soft); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 700;">
+            Футболен клуб
+        </p>
+        <h1 style="margin: 0; font-size: clamp(2.2rem, 5vw, 4.4rem); line-height: 1.05; font-weight: 900; letter-spacing: 0.04em; color: #f5f7fa; text-transform: uppercase;">
+            Marev Stars
+        </h1>
+        <p style="max-width: 760px; margin: 18px auto 0; color: var(--muted); font-size: 1.15rem; line-height: 1.7;">
+            Грешките ни учат, победите ни вдъхновяват.
+        </p>
+    </section>
 
-    <!-- GRID контейнер -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-        
-        <!-- Карта 1: Къде тренираме -->
-        <div style="background: #111; padding: 30px; border-radius: 12px; border: 1px solid #333; display: flex; flex-direction: column;">
-            <h3 style="color: var(--gold, #FFD700); font-size: 24px; margin-top: 0;">📍 Къде тренираме</h3>
-            <p style="color: #ccc; margin: 20px 0; flex-grow: 1;">Нашите тренировки се провеждат на Спортна площадка „Студентска“ (Футболно игрище „Жечка Карамфилова“).</p>
-            <div style="margin-top: auto;">
-                <a href="https://www.google.com/maps/place/Стадион+Студентска" target="_blank" style="color: #4da3ff; text-decoration: none; font-weight: bold;">Виж на картата →</a>
-            </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px; margin-top: 20px;">
+        <div style="background: rgba(20,29,39,0.9); border: 1px solid var(--line); border-radius: 14px; padding: 26px 24px; box-shadow: var(--shadow);">
+            <h3 style="margin: 0 0 14px; color: var(--gold-soft); font-size: 1.45rem;">📍 Къде тренираме</h3>
+            <p style="margin: 0 0 16px; color: var(--muted); line-height: 1.7;">
+                Нашите тренировки се провеждат на Спортна площадка „Студентска“ (Футболно игрище „Жечка Карамфилова“).
+            </p>
+            <a href="https://www.google.com/maps/place/Стадион+Студентска" target="_blank" style="color: #dfe9ff; text-decoration: none; font-weight: 700;">Виж на картата →</a>
         </div>
 
-        <!-- Карта 2: Вижте ни -->
-        <div style="background: #111; padding: 30px; border-radius: 12px; border: 1px solid #333; display: flex; flex-direction: column;">
-            <h3 style="color: var(--gold, #FFD700); font-size: 24px; margin-top: 0;">🎥 Вижте ни в действие</h3>
-            <p style="color: #ccc; margin: 20px 0; flex-grow: 1;">Разгледайте нашите тренировки, мачове и вдъхновяващи моменти.</p>
-            <div style="margin-top: auto;">
-                <a href="https://www.youtube.com/@marevstars/videos" target="_blank" style="color: #4da3ff; text-decoration: none; font-weight: bold;">Към YouTube канала →</a>
-            </div>
+        <div style="background: rgba(20,29,39,0.9); border: 1px solid var(--line); border-radius: 14px; padding: 26px 24px; box-shadow: var(--shadow);">
+            <h3 style="margin: 0 0 14px; color: var(--gold-soft); font-size: 1.45rem;">🎥 Вижте ни</h3>
+            <p style="margin: 0 0 16px; color: var(--muted); line-height: 1.7;">
+                Разгледайте нашите тренировки, мачове и вдъхновяващи моменти от клуба.
+            </p>
+            <a href="https://www.youtube.com/@marevstars/videos" target="_blank" style="color: #dfe9ff; text-decoration: none; font-weight: 700;">Към YouTube канала →</a>
         </div>
 
-        <!-- Карта 3: Последвайте ни -->
-        <div style="background: #111; padding: 30px; border-radius: 12px; border: 1px solid #333; display: flex; flex-direction: column;">
-            <h3 style="color: var(--gold, #FFD700); font-size: 24px; margin-top: 0;">📱 Последвайте ни</h3>
-            <p style="color: #ccc; margin: 20px 0; flex-grow: 1;">Бъдете част от нашето футболно семейство .</p>
-            <div style="margin-top: auto; display: flex; gap: 10px; justify-content: center;">
-                <a href="https://www.facebook.com/marevstars/" target="_blank" style="padding: 10px 15px; background: #4267B2; color: #fff; border-radius: 4px; text-decoration: none; font-size: 14px; font-weight: bold;">Facebook</a>
-                <a href="https://www.youtube.com/@marevstars/" target="_blank" style="padding: 10px 15px; background: #FF0000; color: #fff; border-radius: 4px; text-decoration: none; font-size: 14px; font-weight: bold;">YouTube</a>
+        <div style="background: rgba(20,29,39,0.9); border: 1px solid var(--line); border-radius: 14px; padding: 26px 24px; box-shadow: var(--shadow);">
+            <h3 style="margin: 0 0 14px; color: var(--gold-soft); font-size: 1.45rem;">📱 Последвайте ни</h3>
+            <p style="margin: 0 0 18px; color: var(--muted); line-height: 1.7;">
+                Бъдете част от нашето футболно семейство.
+            </p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="https://www.facebook.com/marevstars/" target="_blank" style="padding: 10px 16px; background: #4267B2; color: #fff; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 700;">Facebook</a>
+                <a href="https://www.youtube.com/@marevstars/" target="_blank" style="padding: 10px 16px; background: #FF0000; color: #fff; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 700;">YouTube</a>
             </div>
         </div>
-
     </div>
 </div>
 {% endblock %}
