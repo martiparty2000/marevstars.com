@@ -9,145 +9,62 @@
     <link rel="icon" href="{% static 'images/favicon.ico.png' %}" sizes="any">
     <style>
         :root {
-            --navy: #040d15;
-            --navy-2: #0d1823;
-            --panel: rgba(17, 24, 31, 0.94);
-            --line: rgba(255,255,255,0.08);
-            --gold: #d4af37;
-            --gold-soft: #f2d57a;
-            --text: #edf3f8;
-            --muted: #a9b6c4;
-            --shadow: 0 18px 40px rgba(0,0,0,0.28);
+            --blue: #003b7e;
+            --gold: #D4AF37;
+            --dark: #0f1115;    
+            --card-bg: #1a1d24;
+            --text-light: #f1f3f5;
+            --main-gradient: linear-gradient(180deg, #0a192f 0%, #000000 100%);
         }
+        body { 
+                font-family: 'Segoe UI', Arial, sans-serif; 
+                margin: 0; 
+                background: var(--main-gradient); 
+                background-attachment: fixed; /* За да не се повтаря при скрол */
+                color: var(--text-light); 
+                min-height: 100vh;
+            }
+        nav { 
+            background-color: #05070a; 
+            color: white; 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 15px 40px; 
+            align-items: center; 
+            border-bottom: 2px solid var(--gold);
 
-        * { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            margin: 0;
-            min-height: 100vh;
-            background: linear-gradient(180deg, #040b11 0%, #0a131b 100%);
-            color: var(--text);
-            font-family: 'Segoe UI', Arial, sans-serif;
         }
-        a { color: inherit; }
+        nav a { color: #ddd; text-decoration: none; margin: 0 15px; font-weight: 500; transition: color 0.3s; }
+        nav a:hover { color: var(--gold); }
+        .logo-text { font-size: 22px; font-weight: 800; color: var(--gold); letter-spacing: 1px; }
+        .logo-wrap { display: flex; align-items: center; gap: 10px; }
+        .logo-img { height: 60px; width: auto; }
+        .user-section { display: flex; align-items: center; gap: 15px; color: white; }
+        .btn-gold { background-color: var(--gold); color: #05070a !important; padding: 8px 16px; border-radius: 4px; font-weight: bold; text-decoration: none; }
+        .msg { padding: 15px; margin: 20px auto; max-width: 800px; border-radius: 4px; background: #1c3d27; color: #72e08a; border: 1px solid #2b5c3b; }
+        
+        .auth-container { background: var(--card-bg); border: 1px solid #2a2e39; border-top: 4px solid var(--blue); padding: 30px; border-radius: 8px; max-width: 450px; margin: 40px auto; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--gold); font-size: 14px; font-weight: 600; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; background: #111317; border: 1px solid #3a3f50; border-radius: 4px; color: white; box-sizing: border-box; }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--gold); outline: none; }
+        .btn-submit { background: var(--blue); color: white; border: none; padding: 12px; width: 100%; font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer; border-bottom: 3px solid #002754; }
+        .btn-submit:hover { background: #004cb0; }
 
-        nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 42px;
-            background: rgba(5, 11, 16, 0.95);
-            border-bottom: 2px solid rgba(212,175,55,0.85);
-            position: sticky;
-            top: 0;
-            z-index: 20;
+        .approval-alert {
+            background: var(--gold);
+            color: #05070a;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 2px solid #a6892b;
         }
-
-        .logo-wrap {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .approval-alert a { 
+            color: #05070a; 
+            text-decoration: underline; 
+            font-weight: 800; 
         }
-        .logo-img {
-            height: 46px;
-            width: auto;
-            display: block;
-        }
-        .logo-text {
-            font-size: clamp(1.1rem, 2vw, 1.9rem);
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--gold-soft);
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-        nav a {
-            color: #edf2f7;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-            padding: 8px 12px;
-            transition: color 0.2s ease;
-        }
-        nav a:hover {
-            color: var(--gold-soft);
-        }
-
-        main {
-            max-width: 1180px;
-            margin: 0 auto;
-            padding: 30px 24px 70px;
-        }
-
-        .msg {
-            max-width: 900px;
-            margin: 18px auto 0;
-            padding: 14px 18px;
-            border-radius: 8px;
-            background: rgba(16, 44, 28, 0.7);
-            color: #d8f3db;
-            border: 1px solid rgba(114, 196, 130, 0.28);
-        }
-
-        .auth-container {
-            background: rgba(20, 28, 35, 0.96);
-            border: 1px solid var(--line);
-            border-top: 4px solid #0d4f8f;
-            border-radius: 12px;
-            max-width: 540px;
-            margin: 46px auto;
-            padding: 28px 26px 24px;
-            box-shadow: var(--shadow);
-        }
-        .form-group { margin-bottom: 22px; }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--gold-soft);
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            box-sizing: border-box;
-            background: rgba(9, 13, 17, 0.9);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
-            color: var(--text);
-            padding: 12px 14px;
-            font: inherit;
-        }
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(212,175,55,0.12);
-        }
-        .btn-submit {
-            width: 100%;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(180deg, #0c64c4 0%, #0a4d92 100%);
-            color: white;
-            font-weight: 800;
-            font-size: 15px;
-            letter-spacing: 0.04em;
-            padding: 14px 18px;
-            cursor: pointer;
-        }
+    
     </style>
 </head>
 <body>
@@ -157,14 +74,14 @@
         <img src="{% static 'images/logo.png' %}" alt="MAREV STARS logo" class="logo-img">
         <div class="logo-text">MAREV STARS</div>
     </div>
-    <div class="nav-links">
+    <div>
         <a href="{% url 'team:home' %}">Начало</a>
         <a href="{% url 'team:schedule' %}">Тренировки</a>
         <a href="{% url 'team:coaches' %}">Треньори</a>
         <a href="{% url 'team:contact' %}">Контакти</a>
 
         {% if user.is_authenticated and user.is_staff or user.is_superuser %}
-            <a href="{% url 'team:staff_dashboard' %}" style="color: var(--gold-soft); font-weight: 800; border-left: 1px solid var(--line); padding-left: 15px;">
+            <a href="{% url 'team:staff_dashboard' %}" style="color: #D4AF37; font-weight: bold; border-left: 1px solid #333; padding-left: 15px;">
                  Staff Portal
             </a>
         {% endif %}
