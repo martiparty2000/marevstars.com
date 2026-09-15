@@ -92,7 +92,4 @@ STATICFILES_DIRS = [
 # Path where static files are collected for production
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# 7. Login/Logout redirects (Optional but recommended)
-LOGIN_REDIRECT_URL = 'team:home'
-LOGOUT_REDIRECT_URL = 'team:home'
-LOGIN_URL = 'team:login'
+# Auth redirect settings removed; public login/logout routes are no longer in use.

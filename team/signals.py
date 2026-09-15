@@ -1,4 +1,4 @@
-from django.db.models.signals import post_migrate, post_save
+from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from django.conf import settings
 from django.utils import timezone
@@ -6,7 +6,6 @@ import json
 import logging
 
 from .models import UserProfile
-from .gsheets import add_user_to_sheet
 
 logger = logging.getLogger(__name__)
 
@@ -43,16 +42,3 @@ def _export_users_to_backup():
 def backup_users_on_migrate(sender, **kwargs):
     _export_users_to_backup()
 
-# --- 2. Нов сигнал за автоматично добавяне в Google Sheets ---
-@receiver(post_save, sender=UserProfile)
-def sync_user_to_gsheet(sender, instance, created, **kwargs):
-    """Синхронизира нов потребител с Google Sheets веднага след регистрация."""
-    if created:
-        try:
-            # Ако има попълнено име на дете (за родители), пращаме него, иначе трите имена
-            name_to_save = instance.child_full_name if instance.child_full_name else instance.full_name
-            
-            add_user_to_sheet(name_to_save, instance.email)
-            logger.info(f"User {instance.username} synced to Google Sheets.")
-        except Exception as e:
-            logger.error(f"Failed to sync user {instance.username} to Google Sheets: {e}")
