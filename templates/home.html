@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
 <div style="padding-top: 12px;">
-    <section style="padding: 42px 0 24px;">
-        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 24px; align-items: center;">
+    <section style="padding: 38px 0 26px;">
+        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 28px; align-items: center;">
             <div>
-                <p style="margin: 0 0 14px; color: var(--gold); font-size: 12px; letter-spacing: 0.24em; font-weight: 700; text-transform: uppercase;">
+                <p style="margin: 0 0 16px; color: var(--gold-soft); font-size: 12px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase;">
                     Футболен клуб
                 </p>
-                <h1 style="margin: 0; font-size: clamp(2.6rem, 5vw, 5rem); line-height: 0.98; font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase; color: #f7f7f2;">
+                <h1 style="margin: 0; font-size: clamp(3rem, 6vw, 6rem); line-height: 0.9; font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase; color: #f5f7fa;">
                     Marev<br>Stars
                 </h1>
                 <p style="margin: 18px 0 0; max-width: 620px; color: var(--muted); font-size: 1.08rem; line-height: 1.75;">
@@ -15,49 +15,26 @@
                 </p>
             </div>
 
-            <div style="background: linear-gradient(180deg, rgba(19,26,33,0.95), rgba(11,15,20,0.98)); border: 1px solid var(--line); border-radius: 18px; padding: 22px; box-shadow: var(--shadow);">
+            <div style="background: linear-gradient(180deg, rgba(18,27,35,0.96), rgba(11,17,23,0.98)); border: 1px solid var(--line); border-radius: 20px; padding: 20px; box-shadow: 0 18px 40px rgba(0,0,0,0.35);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <span style="color: var(--gold); font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;">Season</span>
-                    <span style="color: #dfe7ee; font-weight: 700; background: rgba(255,255,255,0.04); padding: 6px 10px; border-radius: 999px; font-size: 12px;">2026/27</span>
+                    <span style="color: var(--gold-soft); font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;">Season</span>
+                    <span style="color: #edf2f6; background: rgba(255,255,255,0.04); border-radius: 999px; padding: 7px 12px; font-weight: 700; font-size: 12px;">2026/27</span>
                 </div>
-                <div style="padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,0.02);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span style="color: var(--muted); font-size: 13px;">Training</span>
-                        <span style="color: var(--text); font-weight: 700;">Studentska</span>
+
+                <div style="display: grid; gap: 10px; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,0.02);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--muted);">
+                        <span>Training</span>
+                        <strong style="color: var(--text);">Studentska</strong>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span style="color: var(--muted); font-size: 13px;">Focus</span>
-                        <span style="color: var(--text); font-weight: 700;">Technique + fitness</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--muted);">
+                        <span>Focus</span>
+                        <strong style="color: var(--text);">Technique + fitness</strong>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="color: var(--muted); font-size: 13px;">Club spirit</span>
-                        <span style="color: var(--gold); font-weight: 800;">Built daily</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--muted);">
+                        <span>Club spirit</span>
+                        <strong style="color: var(--gold-soft);">Built daily</strong>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-top: 26px;">
-        <div style="padding: 24px; border-radius: 16px; background: rgba(17,24,32,0.9); border: 1px solid var(--line);">
-            <h3 style="margin: 0 0 12px; color: var(--gold); font-size: 1.2rem;">📍 Къде тренираме</h3>
-            <p style="margin: 0; color: var(--muted); line-height: 1.7;">
-                Спортна площадка „Студентска“ / Футболно игрище „Жечка Карамфилова“.
-            </p>
-        </div>
-
-        <div style="padding: 24px; border-radius: 16px; background: rgba(17,24,32,0.9); border: 1px solid var(--line);">
-            <h3 style="margin: 0 0 12px; color: var(--gold); font-size: 1.2rem;">🎥 Вижте ни</h3>
-            <p style="margin: 0; color: var(--muted); line-height: 1.7;">
-                Тренировки, мачове и моменти, които отразяват характера на клуба.
-            </p>
-        </div>
-
-        <div style="padding: 24px; border-radius: 16px; background: rgba(17,24,32,0.9); border: 1px solid var(--line);">
-            <h3 style="margin: 0 0 12px; color: var(--gold); font-size: 1.2rem;">📱 Последвайте ни</h3>
-            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px;">
-                <a href="https://www.facebook.com/marevstars/" target="_blank" style="padding: 10px 14px; border-radius: 10px; text-decoration: none; background: #2d5aa8; color: white; font-weight: 700;">Facebook</a>
-                <a href="https://www.youtube.com/@marevstars/" target="_blank" style="padding: 10px 14px; border-radius: 10px; text-decoration: none; background: #d82121; color: white; font-weight: 700;">YouTube</a>
             </div>
         </div>
     </section>
