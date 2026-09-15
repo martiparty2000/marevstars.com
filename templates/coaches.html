@@ -1,28 +1,28 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<h2 style="color: var(--gold-soft); text-align: center; margin: 10px 0 38px; text-transform: uppercase; letter-spacing: 0.12em; font-size: 2rem;">
-    Нашият треньорски състав
-</h2>
+<div style="padding-top: 14px;">
+    <h2 style="margin: 0 0 28px; text-align: center; font-size: clamp(1.8rem, 3vw, 2.6rem); text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold);">
+        Нашият треньорски състав
+    </h2>
 
-<div style="display: flex; flex-wrap: wrap; gap: 22px; justify-content: center; padding-bottom: 20px;">
-    {% for coach in coaches %}
-    <div class="coach-card" style="background: rgba(20,29,39,0.9); border: 1px solid var(--line); border-radius: 16px; min-width: 280px; max-width: 340px; box-shadow: var(--shadow); overflow: hidden;">
-        <img src="{% static 'images/'|add:coach.image %}" 
-             alt="{{ coach.name }}" 
-             style="width: 100%; height: 270px; object-fit: cover; display: block; background: #101821;">
-        <div style="padding: 22px 20px 24px;">
-            <h3 style="color: var(--gold-soft); margin: 0 0 10px; font-size: 1.5rem;">{{ coach.name }}</h3>
-            <p style="font-weight: 700; color: #eaf1f6; margin: 0 0 14px; border-bottom: 1px solid var(--line); padding-bottom: 10px;">
-                {{ coach.role }}
-            </p>
-            <p style="line-height: 1.65; color: var(--muted); font-size: 14px; margin: 0; text-align: left;">
-                {{ coach.bio }}
-            </p>
-        </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px;">
+        {% for coach in coaches %}
+        <article style="background: rgba(18,24,31,0.96); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow);">
+            <img src="{% static 'images/'|add:coach.image %}" alt="{{ coach.name }}" style="display: block; width: 100%; height: 280px; object-fit: cover; background: #0c1015;">
+            <div style="padding: 22px 20px 24px;">
+                <h3 style="margin: 0 0 10px; color: #f3f5f7; font-size: 1.6rem;">{{ coach.name }}</h3>
+                <p style="margin: 0 0 12px; color: var(--gold); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; font-size: 12px;">
+                    {{ coach.role }}
+                </p>
+                <p style="margin: 0; color: var(--muted); line-height: 1.7; font-size: 14px;">
+                    {{ coach.bio }}
+                </p>
+            </div>
+        </article>
+        {% empty %}
+        <p style="color: #666;">Все още няма добавени треньори в базата данни.</p>
+        {% endfor %}
     </div>
-    {% empty %}
-    <p style="color: #666;">Все още няма добавени треньори в базата данни.</p>
-    {% endfor %}
 </div>
 {% endblock %}

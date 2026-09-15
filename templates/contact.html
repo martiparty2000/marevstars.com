@@ -1,16 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="auth-container" style="max-width: 500px;">
-    <h2 style="color: var(--gold); margin-top: 0; text-align: center;">Контакти</h2>
-    <p style="text-align: center; color: #aaa; margin-bottom: 20px;">Имате въпроси? Свържете се директно с Главния Треньор.</p>
-    <div style="background: #111317; padding: 15px; border-radius: 4px; margin-bottom: 25px; border: 1px solid #2a2e39; font-size: 14px;">
-        <p style="margin: 5px 0;">📞 <strong>Телефон:</strong> +359899173417</p>
-        <p style="margin: 5px 0;">✉️ <strong>Email:</strong> office@marevstars.com</p>
+<div class="auth-container" style="max-width: 560px;">
+    <h2 style="margin: 0 0 10px; text-align: center; color: var(--gold); font-size: clamp(1.8rem, 3vw, 2.5rem); text-transform: uppercase; letter-spacing: 0.08em;">
+        Контакти
+    </h2>
+    <p style="margin: 0 0 24px; text-align: center; color: var(--muted); line-height: 1.7;">
+        Имате въпроси? Свържете се директно с главния треньор.
+    </p>
+
+    <div style="padding: 18px 20px; background: rgba(255,255,255,0.02); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 24px;">
+        <p style="margin: 0 0 10px; color: var(--text); font-size: 15px;">
+            <strong style="color: var(--gold);">Телефон:</strong> +359899173417
+        </p>
+        <p style="margin: 0; color: var(--text); font-size: 15px;">
+            <strong style="color: var(--gold);">Email:</strong> office@marevstars.com
+        </p>
     </div>
+
     <form>
         <div class="form-group">
-            <label>Съобщение/Въпрос</label>
-            <textarea rows="4" placeholder="Как можем да ви помогнем?"></textarea>
+            <label>Съобщение</label>
+            <textarea rows="5" placeholder="Напишете вашето съобщение..."></textarea>
         </div>
         <button type="button" class="btn-submit" onclick="alert('Message Sent!')">Send Message</button>
     </form>

@@ -1,45 +1,65 @@
 {% extends 'base.html' %}
 {% block content %}
-<div style="max-width: 1100px; margin: 0 auto; padding: 10px 0 30px;">
-    <section style="padding: 48px 0 34px; text-align: center;">
-        <p style="margin: 0 0 16px; color: var(--gold-soft); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 700;">
-            Футболен клуб
-        </p>
-        <h1 style="margin: 0; font-size: clamp(2.2rem, 5vw, 4.4rem); line-height: 1.05; font-weight: 900; letter-spacing: 0.04em; color: #f5f7fa; text-transform: uppercase;">
-            Marev Stars
-        </h1>
-        <p style="max-width: 760px; margin: 18px auto 0; color: var(--muted); font-size: 1.15rem; line-height: 1.7;">
-            Грешките ни учат, победите ни вдъхновяват.
-        </p>
-    </section>
+<div style="padding-top: 12px;">
+    <section style="padding: 42px 0 24px;">
+        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 24px; align-items: center;">
+            <div>
+                <p style="margin: 0 0 14px; color: var(--gold); font-size: 12px; letter-spacing: 0.24em; font-weight: 700; text-transform: uppercase;">
+                    Футболен клуб
+                </p>
+                <h1 style="margin: 0; font-size: clamp(2.6rem, 5vw, 5rem); line-height: 0.98; font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase; color: #f7f7f2;">
+                    Marev<br>Stars
+                </h1>
+                <p style="margin: 18px 0 0; max-width: 620px; color: var(--muted); font-size: 1.08rem; line-height: 1.75;">
+                    Грешките ни учат, победите ни вдъхновяват. Създаваме дисциплина, характер и футболно качество в един клуб, в който всеки играч има място и смисъл.
+                </p>
+            </div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px; margin-top: 20px;">
-        <div style="background: rgba(20,29,39,0.9); border: 1px solid var(--line); border-radius: 14px; padding: 26px 24px; box-shadow: var(--shadow);">
-            <h3 style="margin: 0 0 14px; color: var(--gold-soft); font-size: 1.45rem;">📍 Къде тренираме</h3>
-            <p style="margin: 0 0 16px; color: var(--muted); line-height: 1.7;">
-                Нашите тренировки се провеждат на Спортна площадка „Студентска“ (Футболно игрище „Жечка Карамфилова“).
-            </p>
-            <a href="https://www.google.com/maps/place/Стадион+Студентска" target="_blank" style="color: #dfe9ff; text-decoration: none; font-weight: 700;">Виж на картата →</a>
-        </div>
-
-        <div style="background: rgba(20,29,39,0.9); border: 1px solid var(--line); border-radius: 14px; padding: 26px 24px; box-shadow: var(--shadow);">
-            <h3 style="margin: 0 0 14px; color: var(--gold-soft); font-size: 1.45rem;">🎥 Вижте ни</h3>
-            <p style="margin: 0 0 16px; color: var(--muted); line-height: 1.7;">
-                Разгледайте нашите тренировки, мачове и вдъхновяващи моменти от клуба.
-            </p>
-            <a href="https://www.youtube.com/@marevstars/videos" target="_blank" style="color: #dfe9ff; text-decoration: none; font-weight: 700;">Към YouTube канала →</a>
-        </div>
-
-        <div style="background: rgba(20,29,39,0.9); border: 1px solid var(--line); border-radius: 14px; padding: 26px 24px; box-shadow: var(--shadow);">
-            <h3 style="margin: 0 0 14px; color: var(--gold-soft); font-size: 1.45rem;">📱 Последвайте ни</h3>
-            <p style="margin: 0 0 18px; color: var(--muted); line-height: 1.7;">
-                Бъдете част от нашето футболно семейство.
-            </p>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <a href="https://www.facebook.com/marevstars/" target="_blank" style="padding: 10px 16px; background: #4267B2; color: #fff; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 700;">Facebook</a>
-                <a href="https://www.youtube.com/@marevstars/" target="_blank" style="padding: 10px 16px; background: #FF0000; color: #fff; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 700;">YouTube</a>
+            <div style="background: linear-gradient(180deg, rgba(19,26,33,0.95), rgba(11,15,20,0.98)); border: 1px solid var(--line); border-radius: 18px; padding: 22px; box-shadow: var(--shadow);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <span style="color: var(--gold); font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;">Season</span>
+                    <span style="color: #dfe7ee; font-weight: 700; background: rgba(255,255,255,0.04); padding: 6px 10px; border-radius: 999px; font-size: 12px;">2026/27</span>
+                </div>
+                <div style="padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,0.02);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="color: var(--muted); font-size: 13px;">Training</span>
+                        <span style="color: var(--text); font-weight: 700;">Studentska</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="color: var(--muted); font-size: 13px;">Focus</span>
+                        <span style="color: var(--text); font-weight: 700;">Technique + fitness</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--muted); font-size: 13px;">Club spirit</span>
+                        <span style="color: var(--gold); font-weight: 800;">Built daily</span>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-top: 26px;">
+        <div style="padding: 24px; border-radius: 16px; background: rgba(17,24,32,0.9); border: 1px solid var(--line);">
+            <h3 style="margin: 0 0 12px; color: var(--gold); font-size: 1.2rem;">📍 Къде тренираме</h3>
+            <p style="margin: 0; color: var(--muted); line-height: 1.7;">
+                Спортна площадка „Студентска“ / Футболно игрище „Жечка Карамфилова“.
+            </p>
+        </div>
+
+        <div style="padding: 24px; border-radius: 16px; background: rgba(17,24,32,0.9); border: 1px solid var(--line);">
+            <h3 style="margin: 0 0 12px; color: var(--gold); font-size: 1.2rem;">🎥 Вижте ни</h3>
+            <p style="margin: 0; color: var(--muted); line-height: 1.7;">
+                Тренировки, мачове и моменти, които отразяват характера на клуба.
+            </p>
+        </div>
+
+        <div style="padding: 24px; border-radius: 16px; background: rgba(17,24,32,0.9); border: 1px solid var(--line);">
+            <h3 style="margin: 0 0 12px; color: var(--gold); font-size: 1.2rem;">📱 Последвайте ни</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px;">
+                <a href="https://www.facebook.com/marevstars/" target="_blank" style="padding: 10px 14px; border-radius: 10px; text-decoration: none; background: #2d5aa8; color: white; font-weight: 700;">Facebook</a>
+                <a href="https://www.youtube.com/@marevstars/" target="_blank" style="padding: 10px 14px; border-radius: 10px; text-decoration: none; background: #d82121; color: white; font-weight: 700;">YouTube</a>
+            </div>
+        </div>
+    </section>
 </div>
 {% endblock %}
