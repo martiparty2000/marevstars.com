@@ -9,15 +9,14 @@
     <link rel="icon" href="{% static 'images/favicon.ico.png' %}" sizes="any">
     <style>
         :root {
-            --navy: #061722;
-            --navy-2: #0c1d2b;
-            --panel: rgba(16, 25, 33, 0.92);
-            --panel-2: rgba(9, 17, 23, 0.96);
+            --navy: #040d15;
+            --navy-2: #0d1823;
+            --panel: rgba(17, 24, 31, 0.94);
             --line: rgba(255,255,255,0.08);
             --gold: #d4af37;
-            --gold-soft: #e6c96a;
-            --text: #edf2f7;
-            --muted: #aab9c7;
+            --gold-soft: #f2d57a;
+            --text: #edf3f8;
+            --muted: #a9b6c4;
             --shadow: 0 18px 40px rgba(0,0,0,0.28);
         }
 
@@ -26,8 +25,7 @@
         body {
             margin: 0;
             min-height: 100vh;
-            background:
-                linear-gradient(180deg, rgba(5, 12, 18, 1) 0%, rgba(8, 17, 23, 1) 100%);
+            background: linear-gradient(180deg, #040b11 0%, #0a131b 100%);
             color: var(--text);
             font-family: 'Segoe UI', Arial, sans-serif;
         }
@@ -37,9 +35,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 18px 44px;
-            background: rgba(6, 14, 20, 0.94);
-            border-bottom: 1px solid var(--line);
+            padding: 16px 42px;
+            background: rgba(5, 11, 16, 0.95);
+            border-bottom: 2px solid rgba(212,175,55,0.85);
             position: sticky;
             top: 0;
             z-index: 20;
@@ -51,14 +49,14 @@
             gap: 12px;
         }
         .logo-img {
-            height: 50px;
+            height: 46px;
             width: auto;
             display: block;
         }
         .logo-text {
-            font-size: clamp(1.05rem, 2vw, 1.8rem);
+            font-size: clamp(1.1rem, 2vw, 1.9rem);
             font-weight: 800;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
             color: var(--gold-soft);
         }
@@ -68,20 +66,18 @@
             align-items: center;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 5px;
         }
         nav a {
-            color: #edf2f6;
+            color: #edf2f7;
             text-decoration: none;
             font-size: 14px;
             font-weight: 600;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.02em;
             padding: 8px 12px;
-            border-radius: 999px;
-            transition: color 0.2s ease, background 0.2s ease;
+            transition: color 0.2s ease;
         }
         nav a:hover {
-            background: rgba(255,255,255,0.02);
             color: var(--gold-soft);
         }
 
@@ -95,16 +91,17 @@
             max-width: 900px;
             margin: 18px auto 0;
             padding: 14px 18px;
-            border-radius: 10px;
-            background: rgba(22, 39, 31, 0.8);
-            color: #d8f5dd;
+            border-radius: 8px;
+            background: rgba(16, 44, 28, 0.7);
+            color: #d8f3db;
             border: 1px solid rgba(114, 196, 130, 0.28);
         }
 
         .auth-container {
-            background: rgba(17, 24, 31, 0.95);
+            background: rgba(20, 28, 35, 0.96);
             border: 1px solid var(--line);
-            border-radius: 18px;
+            border-top: 4px solid #0d4f8f;
+            border-radius: 12px;
             max-width: 540px;
             margin: 46px auto;
             padding: 28px 26px 24px;
@@ -125,9 +122,9 @@
         .form-group select {
             width: 100%;
             box-sizing: border-box;
-            background: rgba(7, 12, 17, 0.9);
-            border: 1px solid rgba(255,255,255,0.09);
-            border-radius: 10px;
+            background: rgba(9, 13, 17, 0.9);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
             color: var(--text);
             padding: 12px 14px;
             font: inherit;
@@ -142,9 +139,9 @@
         .btn-submit {
             width: 100%;
             border: none;
-            border-radius: 10px;
-            background: linear-gradient(180deg, var(--gold) 0%, #bf942d 100%);
-            color: #111;
+            border-radius: 8px;
+            background: linear-gradient(180deg, #0c64c4 0%, #0a4d92 100%);
+            color: white;
             font-weight: 800;
             font-size: 15px;
             letter-spacing: 0.04em;
