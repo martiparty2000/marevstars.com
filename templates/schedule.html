@@ -1,54 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}Тренировки | ФК Марев Старс{% endblock %}
 {% block content %}
-<h2 style="text-align: center; color: var(--gold); margin-bottom: 40px; font-size: 32px;">ФК Марев Старс - Тренировки</h2>
-
-<div style="display: flex; gap: 30px; flex-wrap: wrap;">
-    <div style="flex: 1; min-width: 300px; background: var(--card-bg); padding: 25px; border-radius: 8px; border: 1px solid #2a2e39; border-top: 4px solid var(--blue);">
-        <h3 style="color: white; margin-top: 0; border-bottom: 1px solid #2a2e39; padding-bottom: 10px;">Тренировки за деца от 8-12 години</h3>
-        <p style="margin: 15px 0; color: #e1e4e6;"><strong style="color: var(--gold);">📅Дни:</strong> Понеделник, Сряда, Четвъртък</p>
-        <p style="margin: 15px 0; color: #e1e4e6;"><strong style="color: var(--gold);">🕒Времена:</strong> 18:00-19:00</p>
-        <p style="margin: 15px 0; color: #e1e4e6;"><strong style="color: var(--gold);">📍Място:</strong> Спортна площадка „Студентска“ (Футболно игрище „Жечка Карамфилова“)</p>
-        <p style="margin: 15px 0; color: #e1e4e6;"><strong style="color: var(--gold);">🗒️Допълнителна информация:</strong> Разполагаме и с вратарски тренировки</p>
-
-    </div>
-
-    <div style="flex: 1; min-width: 300px; background: var(--card-bg); padding: 25px; border-radius: 8px; border: 1px solid #2a2e39; border-top: 4px solid var(--gold);">
-        <h3 style="color: white; margin-top: 0; border-bottom: 1px solid #2a2e39; padding-bottom: 10px;">Тренировки за деца от 13-16 години</h3>
-        <p style="margin: 15px 0; color: #e1e4e6;"><strong style="color: var(--gold);">📅Дни:</strong> Понеделник, Сряда, Петък</p>
-        <p style="margin: 15px 0; color: #e1e4e6;"><strong style="color: var(--gold);">🕒Времена:</strong> 20:00 - 21:00</p>
-        <p style="margin: 15px 0; color: #e1e4e6;"><strong style="color: var(--gold);">📍Място:</strong> Спортна площадка „Студентска“ (Футболно игрище „Жечка Карамфилова“).</p>
-        <p style="margin: 15px 0; color: #e1e4e6;"><strong style="color: var(--gold);">🗒️Допълнителна информация:</strong> Разполагаме и с вратарски тренировки</p>
-
-    </div>
-    <div style="flex: 1; min-width: 300px; background: #1a1d24; padding: 20px; border-radius: 16px; border: 1px solid #333; border-top: 4px solid var(--gold); transition: transform 0.3s ease; box-shadow: 0 10px 20px rgba(0,0,0,0.2);">
-        <img src="{% static 'images/privateteren.png' %}" alt="Частни тренировки" style="width: 100%; height: auto; border-radius: 12px; margin-bottom: 20px; object-fit: cover; border: 1px solid #2a2e39;">
-        <h3 style="color: white; margin-top: 0; margin-bottom: 20px; border-bottom: 2px solid var(--gold); padding-bottom: 10px; display: inline-block;">
-            Частни Тренировки
-        </h3>
-
-        <ul style="list-style: none; padding: 0; margin: 0;">
-            <li style="margin: 12px 0; color: #e1e4e6; display: flex; align-items: center;">
-                <span style="color: var(--gold); margin-right: 10px;">📅</span>
-                <strong>Дни:</strong> &nbsp; По договаряне
-            </li>
-            <li style="margin: 12px 0; color: #e1e4e6; display: flex; align-items: center;">
-                <span style="color: var(--gold); margin-right: 10px;">🕒</span>
-                <strong>Време:</strong> &nbsp; По договаряне
-            </li>
-            <li style="margin: 12px 0; color: #e1e4e6; display: flex; align-items: center;">
-                <span style="color: var(--gold); margin-right: 10px;">📍</span>
-                <strong>Място:</strong> &nbsp; ул. „Фернандо Магелан“
-            </li>
-        </ul>
-
-        <p style="margin-top: 20px; color: #a0a0a0; font-size: 0.9em; font-style: italic;">
-            * За записване и уточняване на график, моля свържете се с нас.
-        </p>
-
-        <a href="{% url 'team:contact' %}" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background: var(--gold); color: black; text-decoration: none; border-radius: 6px; font-weight: bold; transition: background 0.3s;">
-            Запази час
-        </a>
-    </div>
-</div>
+<header class="page-heading"><p class="eyebrow">На терена всяка седмица</p><h1>Тренировки</h1><p class="lead">Намерете своята група и се свържете с нас за записване.</p></header>
+<section class="schedule-grid" aria-label="Групови тренировки">
+    <article class="schedule-card"><p class="eyebrow">Детска група</p><h2>8–12 <span>години</span></h2><p class="schedule-time">18:00–19:00</p><p>Понеделник · Сряда · Четвъртък</p><div class="schedule-location"><strong>Спортна площадка „Студентска“</strong><p>Футболно игрище „Жечка Карамфилова“</p></div><p class="small">Предлагаме и вратарски тренировки.</p><a class="button button-outline" href="{% url 'team:contact' %}">Запитване за групата</a></article>
+    <article class="schedule-card"><p class="eyebrow">Юношеска група</p><h2>13–16 <span>години</span></h2><p class="schedule-time">20:00–21:00</p><p>Понеделник · Сряда · Петък</p><div class="schedule-location"><strong>Спортна площадка „Студентска“</strong><p>Футболно игрище „Жечка Карамфилова“</p></div><p class="small">Предлагаме и вратарски тренировки.</p><a class="button button-outline" href="{% url 'team:contact' %}">Запитване за групата</a></article>
+</section>
+<section class="private-training" aria-labelledby="private-title">
+    <img src="{% static 'images/privateteren.png' %}" alt="Игрище за индивидуални тренировки на ул. „Фернандо Магелан“" loading="lazy">
+    <div><p class="eyebrow">По вашия график</p><h2 id="private-title">Индивидуални тренировки</h2><p>Занимания на ул. „Фернандо Магелан“, с ден и час по договаряне. Свържете се с главния треньор, за да уточните графика.</p><a class="button" href="{% url 'team:contact' %}">Запитване за час <span aria-hidden="true">↗</span></a></div>
+</section>
 {% endblock %}
