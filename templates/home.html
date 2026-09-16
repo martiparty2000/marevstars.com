@@ -4,18 +4,28 @@
 <section class="hero" aria-labelledby="hero-title">
     <div class="hero-copy">
         <p class="eyebrow">Футболен клуб · Варна</p>
-        <h1 id="hero-title">Футболът започва<br>с <span>Марев Старс.</span></h1>
-        <p class="lead">Тренировки за деца от 8 до 16 години, вратарска подготовка и индивидуални занимания.</p>
+        <h1 id="hero-title">Място за работа,<br><span>характер и футбол.</span></h1>
+        <p class="lead">Групови тренировки за деца от 8 до 16 години, вратарска подготовка и индивидуални занимания.</p>
         <div class="actions">
             <a class="button" href="{% url 'team:contact' %}">Запитване за тренировка <span aria-hidden="true">↗</span></a>
             <a class="text-link" href="{% url 'team:schedule' %}">Вижте графика <span aria-hidden="true">→</span></a>
         </div>
-        <p class="hero-motto">Грешките ни учат, победите ни вдъхновяват.</p>
+        <div class="hero-notes" aria-label="Най-важното">
+            <span>8–16 години</span><span>Групови и индивидуални тренировки</span><span>Варна</span>
+        </div>
     </div>
     <figure class="hero-photo">
         <img src="{% static 'images/privateteren.png' %}" alt="Футболно игрище на улица „Фернандо Магелан“" fetchpriority="high">
         <figcaption><span>На терена</span>Мястото за нашите индивидуални тренировки</figcaption>
     </figure>
+</section>
+<section class="first-training" aria-labelledby="first-training-title">
+    <div><p class="eyebrow">Първа тренировка</p><h2 id="first-training-title">Започнете спокойно.</h2></div>
+    <ol>
+        <li><strong>Изберете група</strong><span>Вижте възрастта, дните и часовете.</span></li>
+        <li><strong>Свържете се с нас</strong><span>Пишете или се обадете за въпросите си.</span></li>
+        <li><strong>Уточнете удобен час</strong><span>Ще ви насочим към подходящата тренировка.</span></li>
+    </ol>
 </section>
 <section class="training-overview" aria-labelledby="training-title">
     <div class="section-heading"><div><p class="eyebrow">Изберете група</p><h2 id="training-title">Време за футбол.</h2></div><a class="text-link" href="{% url 'team:schedule' %}">Всички тренировки <span aria-hidden="true">→</span></a></div>

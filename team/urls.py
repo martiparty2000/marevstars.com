@@ -9,9 +9,9 @@ urlpatterns = [
     path('schedule/', views.schedule_view, name='schedule'),
     path('coaches/', views.coaches_view, name='coaches'),
     path('contact/', views.contact_view, name='contact'),
-
-    # Temporary admin creation endpoint
-    path('init-admin/<str:secret>/', views.create_admin_view, name='create_admin'),
+    path('terms/', views.terms_view, name='terms'),
+    path('privacy/', views.privacy_view, name='privacy'),
+    path('cookies/', views.cookies_view, name='cookies'),
 
     # Staff/Admin Portal
     path('dashboard/', views.staff_dashboard, name='staff_dashboard'),

@@ -3,7 +3,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.management import call_command
-from django.http import HttpResponse, HttpResponseForbidden
 from .models import UserProfile
 
 # --- Helper Functions ---
@@ -29,33 +28,14 @@ def coaches_view(request):
     ]
     return render(request, 'coaches.html', {'coaches': coaches})
 
-def create_admin_view(request, secret):
-    secret_key = 'marev-stars-admin-2026'
-    if secret != secret_key:
-        return HttpResponseForbidden('Forbidden')
+def terms_view(request):
+    return render(request, 'terms.html')
 
-    egn = request.GET.get('egn')
-    email = request.GET.get('email')
-    full_name = request.GET.get('full_name')
-    password = request.GET.get('password')
+def privacy_view(request):
+    return render(request, 'privacy.html')
 
-    if not all([egn, email, full_name, password]):
-        return HttpResponse('Missing required query parameters. Use ?egn=...&email=...&full_name=...&password=...')
-
-    try:
-        call_command('migrate', verbosity=0, interactive=False, run_syncdb=True, no_input=True)
-    except Exception:
-        pass
-
-    UserProfile.objects.filter(egn=egn).delete()
-    UserProfile.objects.create_superuser(
-        egn=egn,
-        full_name=full_name,
-        email=email,
-        password=password,
-    )
-    return HttpResponse(f'Superuser created: {egn}. Now log in with that EGN and password.')
-
+def cookies_view(request):
+    return render(request, 'cookies.html')
 
 # --- Staff & Admin Portal ---
 @staff_member_required
