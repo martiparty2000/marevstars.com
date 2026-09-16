@@ -1,188 +1,49 @@
-<!DOCTYPE html>
 {% load static %}
-<html lang="en">
+<!DOCTYPE html>
+<html lang="bg">
 <head>
     <meta charset="UTF-8">
-    <title>ФК Марев Старс</title>
-    <link rel="icon" type="image/png" sizes="64x64" href="{% static 'images/favicon.ico.png' %}">
-    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.ico.png' %}">
-    <link rel="icon" href="{% static 'images/favicon.ico.png' %}" sizes="any">
-    <style>
-        :root {
-            --navy: #040d15;
-            --navy-2: #0d1823;
-            --panel: rgba(17, 24, 31, 0.94);
-            --line: rgba(255,255,255,0.08);
-            --gold: #d4af37;
-            --gold-soft: #f2d57a;
-            --text: #edf3f8;
-            --muted: #a9b6c4;
-            --shadow: 0 18px 40px rgba(0,0,0,0.28);
-        }
-
-        * { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            margin: 0;
-            min-height: 100vh;
-            background: linear-gradient(180deg, #040b11 0%, #0a131b 100%);
-            color: var(--text);
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-        a { color: inherit; }
-
-        nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 42px;
-            background: rgba(5, 11, 16, 0.95);
-            border-bottom: 2px solid rgba(212,175,55,0.85);
-            position: sticky;
-            top: 0;
-            z-index: 20;
-        }
-
-        .logo-wrap {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .logo-img {
-            height: 46px;
-            width: auto;
-            display: block;
-        }
-        .logo-text {
-            font-size: clamp(1.1rem, 2vw, 1.9rem);
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--gold-soft);
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-        nav a {
-            color: #edf2f7;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-            padding: 8px 12px;
-            transition: color 0.2s ease;
-        }
-        nav a:hover {
-            color: var(--gold-soft);
-        }
-
-        main {
-            max-width: 1180px;
-            margin: 0 auto;
-            padding: 30px 24px 70px;
-        }
-
-        .msg {
-            max-width: 900px;
-            margin: 18px auto 0;
-            padding: 14px 18px;
-            border-radius: 8px;
-            background: rgba(16, 44, 28, 0.7);
-            color: #d8f3db;
-            border: 1px solid rgba(114, 196, 130, 0.28);
-        }
-
-        .auth-container {
-            background: rgba(20, 28, 35, 0.96);
-            border: 1px solid var(--line);
-            border-top: 4px solid #0d4f8f;
-            border-radius: 12px;
-            max-width: 540px;
-            margin: 46px auto;
-            padding: 28px 26px 24px;
-            box-shadow: var(--shadow);
-        }
-        .form-group { margin-bottom: 22px; }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--gold-soft);
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            box-sizing: border-box;
-            background: rgba(9, 13, 17, 0.9);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
-            color: var(--text);
-            padding: 12px 14px;
-            font: inherit;
-        }
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(212,175,55,0.12);
-        }
-        .btn-submit {
-            width: 100%;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(180deg, #0c64c4 0%, #0a4d92 100%);
-            color: white;
-            font-weight: 800;
-            font-size: 15px;
-            letter-spacing: 0.04em;
-            padding: 14px 18px;
-            cursor: pointer;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="ФК Марев Старс — футболни тренировки за деца от 8 до 16 години във Варна. График, треньорски екип и контакти за записване.">
+    <meta name="theme-color" content="#0b2033">
+    <title>{% block title %}ФК Марев Старс | Футбол във Варна{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.ico.png' %}">
+    <link rel="stylesheet" href="{% static 'css/club.css' %}">
+    <script src="{% static 'js/club.js' %}" defer></script>
 </head>
 <body>
-
-<nav>
-    <div class="logo-wrap">
-        <img src="{% static 'images/logo.png' %}" alt="MAREV STARS logo" class="logo-img">
-        <div class="logo-text">MAREV STARS</div>
-    </div>
-    <div class="nav-links">
-        <a href="{% url 'team:home' %}">Начало</a>
-        <a href="{% url 'team:schedule' %}">Тренировки</a>
-        <a href="{% url 'team:coaches' %}">Треньори</a>
-        <a href="{% url 'team:contact' %}">Контакти</a>
-
-        {% if user.is_authenticated and user.is_staff or user.is_superuser %}
-            <a href="{% url 'team:staff_dashboard' %}" style="color: var(--gold-soft); font-weight: 800; border-left: 1px solid var(--line); padding-left: 15px;">
-                 Staff Portal
-            </a>
-        {% endif %}
-    </div>
-</nav>
-
-
-
-{% if messages %}
-    {% for message in messages %}
-        <div class="msg">{{ message }}</div>
-    {% endfor %}
-{% endif %}
-
-<main style="padding: 40px; max-width: 1200px; margin: 0 auto;">
-    {% block content %} {% endblock %}
+<a class="skip-link" href="#main">Към съдържанието</a>
+<header class="site-header">
+    <nav class="site-nav" aria-label="Основна навигация">
+        <a class="logo-wrap" href="{% url 'team:home' %}" aria-label="Марев Старс — начало">
+            <img src="{% static 'images/logo.png' %}" alt="" class="logo-img" width="48" height="60">
+            <span class="logo-text">MAREV STARS<small>ФУТБОЛЕН КЛУБ · ВАРНА</small></span>
+        </a>
+        <div class="nav-links">
+            {% with current=request.resolver_match.url_name %}
+            <a href="{% url 'team:home' %}" {% if current == 'home' %}aria-current="page"{% endif %}>Начало</a>
+            <a href="{% url 'team:schedule' %}" {% if current == 'schedule' %}aria-current="page"{% endif %}>Тренировки</a>
+            <a href="{% url 'team:coaches' %}" {% if current == 'coaches' %}aria-current="page"{% endif %}>Треньори</a>
+            <a href="{% url 'team:contact' %}" {% if current == 'contact' %}aria-current="page"{% endif %}>Контакти</a>
+            {% endwith %}
+            {% if user.is_authenticated and user.is_staff or user.is_superuser %}
+            <a href="{% url 'team:staff_dashboard' %}">Служебен портал</a>
+            {% endif %}
+        </div>
+    </nav>
+</header>
+<main id="main" class="site-main" tabindex="-1">
+    {% if messages %}
+        {% for message in messages %}<div class="msg" role="status">{{ message }}</div>{% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
 </main>
-
-
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div><strong>МАРЕВ СТАРС</strong><p>Грешките ни учат, победите ни вдъхновяват.</p></div>
+        <div class="footer-contact"><a href="tel:+359899173417">+359 899 173 417</a><a href="mailto:office@marevstars.com">office@marevstars.com</a></div>
+        <p class="copyright">© {% now 'Y' %} ФК Марев Старс · Варна</p>
+    </div>
+</footer>
 </body>
 </html>
