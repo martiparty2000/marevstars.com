@@ -1,9 +1,19 @@
 {% extends 'base.html' %}
 {% block title %}Support #{{ ticket.pk }} | Марев Старс{% endblock %}
 {% block content %}
-<section class="page-heading"><p class="eyebrow">SUPPORT TICKET #{{ ticket.pk }}</p><h1>Разговор</h1><p class="lead">Статус: {{ ticket.get_status_display }}</p></section>
+<section class="support-portal-heading support-ticket-heading"><div><p class="eyebrow">SUPPORT TICKET #{{ ticket.pk }}</p><h1>{{ ticket.title }}</h1><p>Статус: <strong>{{ ticket.get_status_display }}</strong> · обновява се автоматично</p></div><a class="text-link" href="{% url 'team:support_dashboard' %}">← Към всички разговори</a></section>
 <section class="staff-conversation">
-    <div class="staff-messages">{% for message in ticket.messages.all %}<article class="staff-message staff-message-{{ message.author_type }}"><strong>{{ message.get_author_type_display }}</strong><p>{{ message.text|linebreaksbr }}</p><small>{{ message.created_at|date:'d.m · H:i' }}</small></article>{% endfor %}</div>
-    <form method="post" class="support-reply-form">{% csrf_token %}<label for="reply">Вашият отговор <span class="small">(незадължително)</span></label><textarea id="reply" name="text" maxlength="2000"></textarea><label for="status">Статус</label><select id="status" name="status">{% for value,label in ticket.STATUS_CHOICES %}<option value="{{ value }}" {% if ticket.status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select><button class="button" type="submit">Запази статус / изпрати отговор</button></form>
+  <div class="staff-thread-card">
+    <div class="staff-thread-top"><strong>Разговор</strong><span class="live-indicator">● Live</span></div>
+    <div class="staff-messages" aria-live="polite">{% for message in ticket.messages.all %}<article class="staff-message staff-message-{{ message.author_type }}"><strong>{{ message.get_author_type_display }}</strong><p>{{ message.text|linebreaksbr }}</p><small>{{ message.created_at|date:'d.m · H:i' }}</small></article>{% endfor %}</div>
+  </div>
+  <form method="post" class="support-reply-form">{% csrf_token %}<div class="reply-form-heading"><strong>Вашият отговор</strong><span>Изпраща се веднага</span></div><label class="sr-only" for="reply">Вашият отговор</label><textarea id="reply" name="text" maxlength="2000" placeholder="Напишете отговор до посетителя…"></textarea><label for="status">Статус на билета</label><select id="status" name="status">{% for value,label in ticket.STATUS_CHOICES %}<option value="{{ value }}" {% if ticket.status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select><button class="button" type="submit">Запази и изпрати →</button></form>
 </section>
+<script>
+setInterval(() => fetch(window.location.href, {cache: 'no-store'}).then(r => r.text()).then(html => {
+  const page = new DOMParser().parseFromString(html, 'text/html');
+  const incoming = page.querySelector('.staff-messages'), current = document.querySelector('.staff-messages');
+  if (incoming && current && incoming.innerHTML !== current.innerHTML) { current.replaceWith(incoming); incoming.scrollTop=incoming.scrollHeight; }
+}), 3000);
+</script>
 {% endblock %}
