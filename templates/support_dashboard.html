@@ -7,8 +7,8 @@
 </section>
 <section class="portal-summary">
   <article><span>Ново</span><strong>{{ new_count }}</strong><small>Нови запитвания, чакащи отговор</small></article>
-  <article><span>Live</span><strong>3 s</strong><small>Автоматично обновяване</small></article>
-  <article><span>Вие сте</span><strong>Online</strong><small>Консултант</small></article>
+  <article><span>В процес</span><strong>{{ handled_count }}</strong><small>Разговори с консултант</small></article>
+  <article><span>Архивирано</span><strong>{{ archived_count }}</strong><small>Затворени разговори</small></article>
 </section>
 <section class="ticket-columns" aria-live="polite">
   <div class="ticket-column ticket-column-new"><div class="ticket-column-title"><h2>Ново</h2><span>{% for ticket in tickets %}{% if ticket.status == 'active' %}•{% endif %}{% endfor %}</span></div>{% for ticket in tickets %}{% if ticket.status == 'active' %}<a class="ticket-row" href="{% url 'team:support_ticket_detail' ticket.public_id %}"><div><strong>{{ ticket.title }}</strong><span>#{{ ticket.pk }} · {{ ticket.updated_at|date:'d.m · H:i' }}</span></div><small>{% if ticket.escalated %}Консултант{% else %}Автоматичен отговор{% endif %}</small></a>{% endif %}{% endfor %}<p class="ticket-empty">Няма нови запитвания.</p></div>

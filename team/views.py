@@ -162,6 +162,8 @@ def support_dashboard(request):
     return render(request, 'support_dashboard.html', {
         'tickets': tickets,
         'new_count': tickets.filter(status='active').count(),
+        'handled_count': tickets.filter(status='handled').count(),
+        'archived_count': tickets.filter(status='archived').count(),
         'ticket_statuses': SupportTicket.STATUS_CHOICES,
     })
 
