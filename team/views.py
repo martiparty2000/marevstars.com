@@ -124,6 +124,8 @@ def support_thread(request, public_id):
 @require_POST
 def support_message(request, public_id):
     ticket = get_object_or_404(SupportTicket.objects.prefetch_related('messages'), public_id=public_id)
+    if ticket.status == 'archived':
+        return JsonResponse({'error': 'Този разговор е затворен. Отворете нов чат, ако имате друг въпрос.'}, status=403)
     data = _read_json(request)
     text = str(data.get('text', '')).strip()
     if not text or len(text) > 2000:
@@ -139,9 +141,9 @@ def support_message(request, public_id):
 @require_POST
 def support_escalate(request, public_id):
     ticket = get_object_or_404(SupportTicket, public_id=public_id)
-    ticket.escalated = True
     if ticket.status == 'archived':
-        ticket.status = 'active'
+        return JsonResponse({'error': 'Този разговор е затворен. Отворете нов чат, ако имате нужда от помощ.'}, status=403)
+    ticket.escalated = True
     ticket.save()
     SupportMessage.objects.create(ticket=ticket, author_type='bot', text='Запитването е изпратено към консултант. Отговорът ще се появи в този разговор.')
     return JsonResponse({'messages': _messages_data(ticket), 'escalated': True})
