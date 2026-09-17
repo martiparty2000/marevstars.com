@@ -309,3 +309,18 @@ details p { padding-top: 12px; }
 .social-links { display:flex; flex-wrap:wrap; gap:8px 14px; margin-top:5px; }
 .social-links a { color:var(--muted); font-size:.8rem; text-decoration:none; }
 .social-links a:hover { color:var(--gold); text-decoration:underline; }
+
+/* Homepage club banner */
+.club-banner { margin: 2px 0 44px; overflow:hidden; border:1px solid var(--line); border-radius:8px; background:var(--panel); }
+.club-banner img { width:100%; height:auto; object-fit:cover; }
+
+/* Footer: compact three-column layout */
+.footer-inner { grid-template-columns: minmax(0,1.35fr) minmax(160px,.8fr) minmax(180px,.8fr); align-items:start; gap:32px; padding-top:30px; padding-bottom:22px; }
+.footer-brand p { max-width:300px; }
+.footer-legal, .footer-contact { display:flex; flex-direction:column; align-items:flex-start; gap:5px; }
+.footer-legal strong, .footer-contact strong { margin-bottom:5px; color:var(--text); font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; }
+.footer-legal a, .footer-contact a, .footer-support { min-height:auto; font-size:.82rem; }
+.footer-contact { gap:5px; }
+.social-links { gap:10px; margin-top:6px; }
+.copyright { margin-top:2px; }
+@media (max-width:720px) { .footer-inner { grid-template-columns:1fr; gap:22px; } .club-banner { margin-bottom:30px; } }
