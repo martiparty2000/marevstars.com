@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Контакти | ФК Марев Старс{% endblock %}
 {% block content %}
 <section class="page-heading contact-heading">
@@ -6,6 +7,7 @@
     <h1>Очакваме ви.</h1>
     <p class="lead">За записване, въпроси за групите или индивидуална тренировка — изберете най-удобния начин да се свържете с нас.</p>
 </section>
+<figure class="contact-poster"><img src="{% static 'images/banner.png' %}" alt="Детски футболен клуб Марев Старс. Телефон: 089 917 3417."></figure>
 <section class="contact-grid contact-grid-two" aria-label="Начини за връзка">
     <article class="contact-card contact-card-primary contact-card-call">
         <div>
@@ -26,5 +28,4 @@
         <small>Историята на разговора остава достъпна в този браузър.</small>
     </article>
 </section>
-<aside class="contact-poster" role="img" aria-label="Марев Старс — детски футболен клуб. Телефон: 089 917 3417."></aside>
 {% endblock %}

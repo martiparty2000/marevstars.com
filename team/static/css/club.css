@@ -302,3 +302,10 @@ details p { padding-top: 12px; }
 
 .contact-poster { max-width:920px; height:270px; margin-top:28px; border:1px solid var(--line); border-radius:10px; background:#102b42 url('../images/marev-stars-contact-poster.png') right center / 185% auto no-repeat; box-shadow:var(--shadow); }
 @media (max-width:720px) { .contact-poster { height:190px; background-size:210% auto; } }
+
+/* Contact poster and social links */
+.contact-poster { max-width:920px; margin:0 0 28px; overflow:hidden; border:1px solid var(--line); border-radius:10px; background:#0d2539; box-shadow:var(--shadow); }
+.contact-poster img { width:100%; height:auto; min-height:180px; object-fit:cover; object-position:center; }
+.social-links { display:flex; flex-wrap:wrap; gap:8px 14px; margin-top:5px; }
+.social-links a { color:var(--muted); font-size:.8rem; text-decoration:none; }
+.social-links a:hover { color:var(--gold); text-decoration:underline; }
