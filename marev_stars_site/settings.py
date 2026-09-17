@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'team.apps.TeamConfig',
 ]
 
 # (Single MIDDLEWARE definition above; duplicate removed)
