@@ -18,6 +18,7 @@ urlpatterns = [
     path('support/api/thread/<uuid:public_id>/', views.support_thread, name='support_thread'),
     path('support/api/thread/<uuid:public_id>/message/', views.support_message, name='support_message'),
     path('support/api/thread/<uuid:public_id>/escalate/', views.support_escalate, name='support_escalate'),
+    path('support/api/thread/<uuid:public_id>/close/', views.support_close, name='support_close'),
 
     # Staff-only support portal
     path('support/login/', views.support_login, name='support_login'),

@@ -337,3 +337,7 @@ details p { padding-top: 12px; }
 @media (max-width:720px) { .portal-summary,.ticket-columns-four { grid-template-columns:1fr; } }
 
 .club-banner { display:none; }
+
+.support-close-ticket { width:100%; margin-top:8px; padding:9px; border:1px solid #6d9c7e; border-radius:4px; background:#193b2b; color:#d0efdb; font-weight:700; cursor:pointer; }
+.support-ticket-meta { padding:8px 14px; border-top:1px solid var(--line); color:var(--muted); font-size:.72rem; letter-spacing:.04em; }
+.staff-ticket-meta { padding:11px 18px; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; }

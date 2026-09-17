@@ -92,6 +92,10 @@ def _support_reply(text):
         return 'За записване, такси или индивидуална тренировка първо вижте секция „Тренировки“. Ако имате въпрос, изберете „Свържи ме с консултант“ и екипът ще ви отговори тук.'
     return 'Не съм напълно сигурен, че разбрах. Можеш ли да ми кажеш малко повече? Ако предпочиташ, натисни „Свържи ме с консултант“ и човек от екипа ще ти отговори тук.'
 
+def _close_prompt(text):
+    return 'Did that answer your question? You can close this ticket below, or keep chatting if you need anything else.' if _is_english(text) else 'Отговорът помогна ли? Можете да затворите билета от бутона отдолу или да продължите разговора.'
+
+
 def _messages_data(ticket):
     return [
         {
@@ -119,7 +123,8 @@ def support_start(request):
     ticket = SupportTicket.objects.create(title=_support_title(text))
     SupportMessage.objects.create(ticket=ticket, author_type='visitor', text=text)
     SupportMessage.objects.create(ticket=ticket, author_type='bot', text=_support_reply(text))
-    return JsonResponse({'ticket': str(ticket.public_id), 'title': ticket.title, 'messages': _messages_data(ticket)})
+    SupportMessage.objects.create(ticket=ticket, author_type='bot', text=_close_prompt(text))
+    return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'title': ticket.title, 'status': ticket.status, 'escalated': ticket.escalated, 'messages': _messages_data(ticket)})
 
 
 @require_GET
@@ -130,7 +135,7 @@ def support_thread(request, public_id):
         if first:
             ticket.title = _support_title(first.text)
             ticket.save(update_fields=['title', 'updated_at'])
-    return JsonResponse({'ticket': str(ticket.public_id), 'title': ticket.title, 'status': ticket.status, 'escalated': ticket.escalated, 'messages': _messages_data(ticket)})
+    return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'title': ticket.title, 'status': ticket.status, 'escalated': ticket.escalated, 'messages': _messages_data(ticket)})
 
 
 @require_POST
@@ -145,9 +150,10 @@ def support_message(request, public_id):
     SupportMessage.objects.create(ticket=ticket, author_type='visitor', text=text)
     if not ticket.escalated:
         SupportMessage.objects.create(ticket=ticket, author_type='bot', text=_support_reply(text))
+        SupportMessage.objects.create(ticket=ticket, author_type='bot', text=_close_prompt(text))
     ticket.save()
     ticket.refresh_from_db()
-    return JsonResponse({'messages': _messages_data(ticket)})
+    return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'status': ticket.status, 'escalated': ticket.escalated, 'messages': _messages_data(ticket)})
 
 
 @require_POST
@@ -160,7 +166,21 @@ def support_escalate(request, public_id):
     last_message = ticket.messages.filter(author_type='visitor').last()
     notice = 'Your request has been sent to a consultant. The reply will appear in this conversation.' if last_message and _is_english(last_message.text) else 'Запитването е изпратено към консултант. Отговорът ще се появи в този разговор.'
     SupportMessage.objects.create(ticket=ticket, author_type='bot', text=notice)
-    return JsonResponse({'messages': _messages_data(ticket), 'escalated': True})
+    return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'status': ticket.status, 'messages': _messages_data(ticket), 'escalated': True})
+
+@require_POST
+def support_close(request, public_id):
+    ticket = get_object_or_404(SupportTicket, public_id=public_id)
+    if ticket.status == 'archived':
+        return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'status': ticket.status, 'escalated': ticket.escalated, 'messages': _messages_data(ticket)})
+    if ticket.escalated:
+        return JsonResponse({'error': 'Заявката вече е при консултант и се затваря от екипа.'}, status=403)
+    last_message = ticket.messages.filter(author_type='visitor').last()
+    notice = 'This ticket is now closed and has been moved to Archived. Thank you!' if last_message and _is_english(last_message.text) else 'Този билет е затворен и е преместен в Архивирано. Благодарим ви!'
+    SupportMessage.objects.create(ticket=ticket, author_type='bot', text=notice)
+    ticket.status = 'archived'
+    ticket.save()
+    return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'status': ticket.status, 'escalated': ticket.escalated, 'messages': _messages_data(ticket)})
 
 # --- Staff & Admin Portal ---
 @staff_member_required
