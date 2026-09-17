@@ -1,12 +1,29 @@
 {% extends 'base.html' %}
-{% block title %}Контакти и записване | ФК Марев Старс{% endblock %}
+{% block title %}Контакти | ФК Марев Старс{% endblock %}
 {% block content %}
-<header class="page-heading"><p class="eyebrow">Да поговорим за футбол</p><h1>Очакваме ви.</h1><p class="lead">За записване, въпроси за групите или индивидуална тренировка — свържете се с главния треньор.</p></header>
-<div class="contact-layout">
-    <section class="contact-details" aria-labelledby="contact-title"><h2 id="contact-title">Директна връзка</h2><dl><dt>Телефон</dt><dd><a href="tel:+359899173417">+359 899 173 417</a></dd><dt>Имейл</dt><dd></dd><dt>Групови тренировки</dt><dd>Спортна площадка „Студентска“<small>Футболно игрище „Жечка Карамфилова“</small></dd></dl><a class="text-link" href="{% url 'team:schedule' %}">Вижте дните и часовете <span aria-hidden="true">→</span></a></section>
-    
-        </form>
-        <noscript><p>За да изпратите запитване, ни се обадете.</p></noscript>
+<section class="page-heading">
+    <p class="eyebrow">ДА ПОГОВОРИМ ЗА ФУТБОЛ</p>
+    <h1>Очакваме ви.</h1>
+    <p class="lead">За записване, въпроси за групите или индивидуална тренировка — свържете се с главния треньор или пишете през Support.</p>
+</section>
+<div class="contact-grid">
+    <section class="contact-card contact-card-primary" aria-labelledby="phone-title">
+        <p class="eyebrow">НАЙ-БЪРЗО</p>
+        <h2 id="phone-title">Обадете се</h2>
+        <p>За конкретен въпрос или записване се свържете директно с нас.</p>
+        <a class="button" href="tel:+359899173417">+359 899 173 417 <span aria-hidden="true">↗</span></a>
+    </section>
+    <section class="contact-card" aria-labelledby="place-title">
+        <p class="eyebrow">МЯСТО НА ТРЕНИРОВКИТЕ</p>
+        <h2 id="place-title">Спортна площадка „Студентска“</h2>
+        <p>Футболно игрище „Жечка Карамфилова“</p>
+        <a class="text-link" href="{% url 'team:schedule' %}">Вижте графика <span aria-hidden="true">→</span></a>
+    </section>
+    <section class="contact-card" aria-labelledby="support-title">
+        <p class="eyebrow">ОНЛАЙН SUPPORT</p>
+        <h2 id="support-title">Имате въпрос?</h2>
+        <p>Натиснете Support долу вдясно. Ще получите отговор за графика, групите и тренировките, а при нужда — от консултант.</p>
+        <button class="text-link support-open" type="button">Отвори Support <span aria-hidden="true">→</span></button>
     </section>
 </div>
 {% endblock %}

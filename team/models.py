@@ -1,3 +1,6 @@
+import uuid
+
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from typing import ClassVar
@@ -93,3 +96,40 @@ class ApprovalLog(models.Model):
         action = self.get_action_display()
         target_name = self.target.full_name if self.target else "Unknown"
         return f"{action} - {target_name} by {actor} at {self.timestamp.isoformat()}"
+
+
+class SupportTicket(models.Model):
+    STATUS_CHOICES = (
+        ('active', 'Ново'),
+        ('handled', 'В процес'),
+        ('resolved', 'Приключено'),
+    )
+
+    public_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='active')
+    escalated = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-updated_at']
+
+    def __str__(self):
+        return f"Support #{self.pk} ({self.get_status_display()})"
+
+
+class SupportMessage(models.Model):
+    AUTHOR_CHOICES = (
+        ('visitor', 'Посетител'),
+        ('bot', 'Автоматичен отговор'),
+        ('staff', 'Екип'),
+    )
+
+    ticket = models.ForeignKey(SupportTicket, related_name='messages', on_delete=models.CASCADE)
+    author_type = models.CharField(max_length=10, choices=AUTHOR_CHOICES)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+    text = models.TextField(max_length=2000)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']

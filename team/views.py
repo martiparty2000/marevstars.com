@@ -1,9 +1,14 @@
+import json
+
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.management import call_command
-from .models import UserProfile
+from django.views.decorators.http import require_GET, require_POST
+
+from .models import SupportMessage, SupportTicket, UserProfile
 
 # --- Helper Functions ---
 def is_admin_or_head_coach(user):
@@ -37,12 +42,114 @@ def privacy_view(request):
 def cookies_view(request):
     return render(request, 'cookies.html')
 
+
+def _support_reply(text):
+    message = text.lower()
+    if any(word in message for word in ('график', 'час', 'кога', 'ден')):
+        return 'Групата за 8–12 г. тренира понеделник, сряда и четвъртък от 18:00 до 19:00. За 13–16 г. тренировките са понеделник, сряда и петък от 20:00 до 21:00.'
+    if any(word in message for word in ('адрес', 'къде', 'терен', 'локация')):
+        return 'Груповите тренировки са на Спортна площадка „Студентска“ — футболно игрище „Жечка Карамфилова“.'
+    if any(word in message for word in ('възраст', 'години', 'група', 'дете')):
+        return 'Работим с групи за деца и младежи от 8 до 16 години. Можете да видите графика в секция „Тренировки“. '
+    if any(word in message for word in ('треньор', 'марев', 'радев')):
+        return 'Екипът ни включва Тодор Марев, Благовест Марев и Йордан Радев. Повече за тях има в секция „Треньори“. '
+    if any(word in message for word in ('запис', 'такса', 'цена', 'индивидуал')):
+        return 'За записване, такси или индивидуална тренировка изберете „Свържи ме с консултант“ и екипът ще ви отговори тук.'
+    return 'Мога да помогна с графика, възрастовите групи, треньорите и мястото на тренировките. Ако въпросът ви е друг, изберете „Свържи ме с консултант“. '
+
+
+def _messages_data(ticket):
+    return [
+        {
+            'author': item.author_type,
+            'text': item.text,
+            'created_at': item.created_at.strftime('%d.%m · %H:%M'),
+        }
+        for item in ticket.messages.all()
+    ]
+
+
+def _read_json(request):
+    try:
+        return json.loads(request.body.decode('utf-8'))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return {}
+
+
+@require_POST
+def support_start(request):
+    data = _read_json(request)
+    text = str(data.get('text', '')).strip()
+    if not text or len(text) > 2000:
+        return JsonResponse({'error': 'Напишете съобщение до 2000 символа.'}, status=400)
+    ticket = SupportTicket.objects.create()
+    SupportMessage.objects.create(ticket=ticket, author_type='visitor', text=text)
+    SupportMessage.objects.create(ticket=ticket, author_type='bot', text=_support_reply(text))
+    return JsonResponse({'ticket': str(ticket.public_id), 'messages': _messages_data(ticket)})
+
+
+@require_GET
+def support_thread(request, public_id):
+    ticket = get_object_or_404(SupportTicket.objects.prefetch_related('messages'), public_id=public_id)
+    return JsonResponse({'ticket': str(ticket.public_id), 'status': ticket.status, 'escalated': ticket.escalated, 'messages': _messages_data(ticket)})
+
+
+@require_POST
+def support_message(request, public_id):
+    ticket = get_object_or_404(SupportTicket.objects.prefetch_related('messages'), public_id=public_id)
+    data = _read_json(request)
+    text = str(data.get('text', '')).strip()
+    if not text or len(text) > 2000:
+        return JsonResponse({'error': 'Напишете съобщение до 2000 символа.'}, status=400)
+    SupportMessage.objects.create(ticket=ticket, author_type='visitor', text=text)
+    if not ticket.escalated:
+        SupportMessage.objects.create(ticket=ticket, author_type='bot', text=_support_reply(text))
+    ticket.save()
+    return JsonResponse({'messages': _messages_data(ticket)})
+
+
+@require_POST
+def support_escalate(request, public_id):
+    ticket = get_object_or_404(SupportTicket, public_id=public_id)
+    ticket.escalated = True
+    if ticket.status == 'resolved':
+        ticket.status = 'active'
+    ticket.save()
+    SupportMessage.objects.create(ticket=ticket, author_type='bot', text='Запитването е изпратено към консултант. Отговорът ще се появи в този разговор.')
+    return JsonResponse({'messages': _messages_data(ticket), 'escalated': True})
+
 # --- Staff & Admin Portal ---
 @staff_member_required
 def staff_dashboard(request):
     pending_users = UserProfile.objects.filter(is_approved=False).count()
     # Make sure this points to your template file
     return render(request, 'dashboard.html', {'pending_count': pending_users})
+
+
+@staff_member_required
+def support_dashboard(request):
+    tickets = SupportTicket.objects.prefetch_related('messages').all()
+    return render(request, 'support_dashboard.html', {
+        'tickets': tickets,
+        'new_count': tickets.filter(escalated=True, status='active').count(),
+    })
+
+
+@staff_member_required
+def support_ticket_detail(request, public_id):
+    ticket = get_object_or_404(SupportTicket.objects.prefetch_related('messages'), public_id=public_id)
+    if request.method == 'POST':
+        text = request.POST.get('text', '').strip()
+        status = request.POST.get('status', ticket.status)
+        if text:
+            SupportMessage.objects.create(ticket=ticket, author_type='staff', author=request.user, text=text[:2000])
+            if status == 'active':
+                status = 'handled'
+        if status in dict(SupportTicket.STATUS_CHOICES):
+            ticket.status = status
+        ticket.save()
+        return redirect('team:support_ticket_detail', public_id=ticket.public_id)
+    return render(request, 'support_ticket_detail.html', {'ticket': ticket})
 
 @user_passes_test(is_admin_or_head_coach)
 def approval_dashboard(request):

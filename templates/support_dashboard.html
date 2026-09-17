@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Support | Марев Старс{% endblock %}
+{% block content %}
+<section class="page-heading"><p class="eyebrow">СЛУЖЕБЕН ПОРТАЛ</p><h1>Support</h1><p class="lead">{{ new_count }} нови запитвания, чакащи консултант.</p></section>
+<section class="support-dashboard">
+    {% for ticket in tickets %}
+    <a class="ticket-row" href="{% url 'team:support_ticket_detail' ticket.public_id %}">
+        <div><strong>Запитване #{{ ticket.pk }}</strong><span>{{ ticket.created_at|date:'d.m.Y · H:i' }}</span></div>
+        <div><span class="ticket-status ticket-status-{{ ticket.status }}">{{ ticket.get_status_display }}</span>{% if ticket.escalated %}<small>Консултант</small>{% endif %}</div>
+    </a>
+    {% empty %}<p class="small">Все още няма support разговори.</p>{% endfor %}
+</section>
+{% endblock %}

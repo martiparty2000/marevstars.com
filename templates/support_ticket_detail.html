@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Support #{{ ticket.pk }} | Марев Старс{% endblock %}
+{% block content %}
+<section class="page-heading"><p class="eyebrow">SUPPORT TICKET #{{ ticket.pk }}</p><h1>Разговор</h1><p class="lead">Статус: {{ ticket.get_status_display }}</p></section>
+<section class="staff-conversation">
+    <div class="staff-messages">{% for message in ticket.messages.all %}<article class="staff-message staff-message-{{ message.author_type }}"><strong>{{ message.get_author_type_display }}</strong><p>{{ message.text|linebreaksbr }}</p><small>{{ message.created_at|date:'d.m · H:i' }}</small></article>{% endfor %}</div>
+    <form method="post" class="support-reply-form">{% csrf_token %}<label for="reply">Вашият отговор</label><textarea id="reply" name="text" required maxlength="2000"></textarea><label for="status">Статус</label><select id="status" name="status">{% for value,label in ticket.STATUS_CHOICES %}<option value="{{ value }}" {% if ticket.status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select><button class="button" type="submit">Изпрати отговор</button></form>
+</section>
+{% endblock %}

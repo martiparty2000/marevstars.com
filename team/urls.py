@@ -13,6 +13,16 @@ urlpatterns = [
     path('privacy/', views.privacy_view, name='privacy'),
     path('cookies/', views.cookies_view, name='cookies'),
 
+    # Public support chat
+    path('support/api/start/', views.support_start, name='support_start'),
+    path('support/api/thread/<uuid:public_id>/', views.support_thread, name='support_thread'),
+    path('support/api/thread/<uuid:public_id>/message/', views.support_message, name='support_message'),
+    path('support/api/thread/<uuid:public_id>/escalate/', views.support_escalate, name='support_escalate'),
+
+    # Staff-only support portal
+    path('support/', views.support_dashboard, name='support_dashboard'),
+    path('support/ticket/<uuid:public_id>/', views.support_ticket_detail, name='support_ticket_detail'),
+
     # Staff/Admin Portal
     path('dashboard/', views.staff_dashboard, name='staff_dashboard'),
     path('approvals/', views.approval_dashboard, name='approval_dashboard'),
