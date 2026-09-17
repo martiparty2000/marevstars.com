@@ -299,3 +299,6 @@ details p { padding-top: 12px; }
 .contact-card-support .button-outline { border-color: #75badd; color: #d9effb; }
 .contact-card-support .button-outline:hover { background: #75badd; color: var(--navy); }
 @media (max-width: 720px) { .contact-grid-two { grid-template-columns: 1fr; } .contact-grid-two .contact-card { min-height: 280px; } }
+
+.contact-poster { max-width:920px; height:270px; margin-top:28px; border:1px solid var(--line); border-radius:10px; background:#102b42 url('../images/marev-stars-contact-poster.png') right center / 185% auto no-repeat; box-shadow:var(--shadow); }
+@media (max-width:720px) { .contact-poster { height:190px; background-size:210% auto; } }

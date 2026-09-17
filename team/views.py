@@ -161,7 +161,7 @@ def support_dashboard(request):
     tickets = SupportTicket.objects.prefetch_related('messages').all()
     return render(request, 'support_dashboard.html', {
         'tickets': tickets,
-        'new_count': tickets.filter(escalated=True, status='active').count(),
+        'new_count': tickets.filter(status='active').count(),
         'ticket_statuses': SupportTicket.STATUS_CHOICES,
     })
 

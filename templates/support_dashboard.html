@@ -6,7 +6,7 @@
   <a class="portal-logout" href="{% url 'team:support_logout' %}">Изход →</a>
 </section>
 <section class="portal-summary">
-  <article><span>Ново</span><strong>{{ tickets|length }}</strong><small>Всички активни разговори</small></article>
+  <article><span>Ново</span><strong>{{ new_count }}</strong><small>Нови запитвания, чакащи отговор</small></article>
   <article><span>Live</span><strong>3 s</strong><small>Автоматично обновяване</small></article>
   <article><span>Вие сте</span><strong>Online</strong><small>Консултант</small></article>
 </section>
