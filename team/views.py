@@ -56,16 +56,29 @@ def cookies_view(request):
     return render(request, 'cookies.html')
 
 
+def _is_english(text):
+    words = text.lower()
+    return any(word in words for word in (
+        'hello', 'hi', 'how', 'what', 'when', 'where', 'can i', 'join',
+        'club', 'training', 'schedule', 'coach', 'price', 'fees', 'please',
+    ))
+
+
 def _support_reply(text):
     message = text.lower()
-    english = any(word in message for word in ('hello', 'hi', 'schedule', 'coach', 'training', 'where', 'price'))
-    if english:
-        if any(word in message for word in ('hello', 'hi')): return 'Hi! 🙂 How can I help? You can ask about the schedule, age groups, coaches, training location, or joining the club.'
-        if any(word in message for word in ('schedule', 'time', 'when')): return 'The 8–12 group trains Monday, Wednesday and Thursday from 18:00 to 19:00. The 13–16 group trains Monday, Wednesday and Friday from 20:00 to 21:00.'
-        if any(word in message for word in ('where', 'location', 'address')): return 'Group training takes place at Sportna ploshtadka “Studentska”, football pitch “Zhechka Karamfilova”.'
-        if any(word in message for word in ('coach', 'marev', 'radev')): return 'Our coaches are Todor Marev, Blagovest Marev and Yordan Radev. You can find more about them in the Coaches section.'
-        return 'I am not fully sure I understood. Could you share a little more, or choose “Connect me with a consultant” to speak with the team?'
-    if any(word in message for word in ('здрасти', 'здравей', 'hello', 'хей')):
+    if _is_english(text):
+        if any(word in message for word in ('join', 'register', 'sign up', 'become a member', 'club')):
+            return 'To join Marev Stars, please look at the Training page first and choose the suitable age group and time. Then call us on 089 917 3417, or choose “Connect me with a consultant” and the team will reply here.'
+        if any(word in message for word in ('schedule', 'time', 'when', 'training')):
+            return 'You can find the full schedule in the Training page. The 8–12 group trains Monday, Wednesday and Thursday, 18:00–19:00; the 13–16 group trains Monday, Wednesday and Friday, 20:00–21:00.'
+        if any(word in message for word in ('where', 'location', 'address')):
+            return 'Group training takes place at Sportna ploshtadka “Studentska”, football pitch “Zhechka Karamfilova”. You can also find the location in the Training section.'
+        if any(word in message for word in ('coach', 'marev', 'radev')):
+            return 'Our coaches are Todor Marev, Blagovest Marev and Yordan Radev. Please see the Coaches section to learn more about them.'
+        if any(word in message for word in ('hello', 'hi')):
+            return 'Hi! 🙂 How can I help? You can ask about training, the schedule, age groups, coaches, location, or joining the club.'
+        return 'I am not fully sure I understood. Please share a little more, or choose “Connect me with a consultant” to speak with the team.'
+    if any(word in message for word in ('здрасти', 'здравей', 'хей')):
         return 'Здрасти! 🙂 Кажи ми какво те интересува и ще помогна — например график, група за детето, място на тренировките или записване.'
     if any(word in message for word in ('график', 'час', 'кога', 'ден')):
         return 'Групата за 8–12 г. тренира понеделник, сряда и четвъртък от 18:00 до 19:00. За 13–16 г. тренировките са понеделник, сряда и петък от 20:00 до 21:00.'
@@ -76,9 +89,8 @@ def _support_reply(text):
     if any(word in message for word in ('треньор', 'марев', 'радев')):
         return 'Екипът ни включва Тодор Марев, Благовест Марев и Йордан Радев. Повече за тях има в секция „Треньори“. '
     if any(word in message for word in ('запис', 'такса', 'цена', 'индивидуал')):
-        return 'За записване, такси или индивидуална тренировка изберете „Свържи ме с консултант“ и екипът ще ви отговори тук.'
+        return 'За записване, такси или индивидуална тренировка първо вижте секция „Тренировки“. Ако имате въпрос, изберете „Свържи ме с консултант“ и екипът ще ви отговори тук.'
     return 'Не съм напълно сигурен, че разбрах. Можеш ли да ми кажеш малко повече? Ако предпочиташ, натисни „Свържи ме с консултант“ и човек от екипа ще ти отговори тук.'
-
 
 def _messages_data(ticket):
     return [
@@ -145,7 +157,9 @@ def support_escalate(request, public_id):
         return JsonResponse({'error': 'Този разговор е затворен. Отворете нов чат, ако имате нужда от помощ.'}, status=403)
     ticket.escalated = True
     ticket.save()
-    SupportMessage.objects.create(ticket=ticket, author_type='bot', text='Запитването е изпратено към консултант. Отговорът ще се появи в този разговор.')
+    last_message = ticket.messages.filter(author_type='visitor').last()
+    notice = 'Your request has been sent to a consultant. The reply will appear in this conversation.' if last_message and _is_english(last_message.text) else 'Запитването е изпратено към консултант. Отговорът ще се появи в този разговор.'
+    SupportMessage.objects.create(ticket=ticket, author_type='bot', text=notice)
     return JsonResponse({'messages': _messages_data(ticket), 'escalated': True})
 
 # --- Staff & Admin Portal ---
@@ -161,7 +175,8 @@ def support_dashboard(request):
     tickets = SupportTicket.objects.prefetch_related('messages').all()
     return render(request, 'support_dashboard.html', {
         'tickets': tickets,
-        'new_count': tickets.filter(status='active').count(),
+        'ai_count': tickets.filter(status='active', escalated=False).count(),
+        'new_count': tickets.filter(status='active', escalated=True).count(),
         'handled_count': tickets.filter(status='handled').count(),
         'archived_count': tickets.filter(status='archived').count(),
         'ticket_statuses': SupportTicket.STATUS_CHOICES,
@@ -172,6 +187,9 @@ def support_dashboard(request):
 def support_ticket_detail(request, public_id):
     ticket = get_object_or_404(SupportTicket.objects.prefetch_related('messages'), public_id=public_id)
     if request.method == 'POST':
+        if not ticket.escalated:
+            messages.info(request, 'Този разговор все още се обработва от автоматичния помощник. Консултант може да отговори само след заявка от посетителя.')
+            return redirect('team:support_ticket_detail', public_id=ticket.public_id)
         text = request.POST.get('text', '').strip()
         status = request.POST.get('status', ticket.status)
         if text:

@@ -1,25 +1,18 @@
 {% extends 'base.html' %}
 {% block title %}Support | Марев Старс{% endblock %}
 {% block content %}
-<section class="support-portal-heading">
-  <div><p class="eyebrow">СЛУЖЕБЕН ПОРТАЛ</p><h1>Support inbox</h1><p>Запитванията се обновяват автоматично.</p></div>
-  <a class="portal-logout" href="{% url 'team:support_logout' %}">Изход →</a>
-</section>
+<section class="support-portal-heading"><div><p class="eyebrow">СЛУЖЕБЕН ПОРТАЛ</p><h1>Support inbox</h1><p>Запитванията се обновяват автоматично.</p></div><a class="portal-logout" href="{% url 'team:support_logout' %}">Изход →</a></section>
 <section class="portal-summary">
-  <article><span>Ново</span><strong>{{ new_count }}</strong><small>Нови запитвания, чакащи отговор</small></article>
+  <article><span>AI</span><strong>{{ ai_count }}</strong><small>Автоматично обработвани</small></article>
+  <article><span>Ново</span><strong>{{ new_count }}</strong><small>Чакат консултант</small></article>
   <article><span>В процес</span><strong>{{ handled_count }}</strong><small>Разговори с консултант</small></article>
   <article><span>Архивирано</span><strong>{{ archived_count }}</strong><small>Затворени разговори</small></article>
 </section>
-<section class="ticket-columns" aria-live="polite">
-  <div class="ticket-column ticket-column-new"><div class="ticket-column-title"><h2>Ново</h2><span>{% for ticket in tickets %}{% if ticket.status == 'active' %}•{% endif %}{% endfor %}</span></div>{% for ticket in tickets %}{% if ticket.status == 'active' %}<a class="ticket-row" href="{% url 'team:support_ticket_detail' ticket.public_id %}"><div><strong>{{ ticket.title }}</strong><span>#{{ ticket.pk }} · {{ ticket.updated_at|date:'d.m · H:i' }}</span></div><small>{% if ticket.escalated %}Консултант{% else %}Автоматичен отговор{% endif %}</small></a>{% endif %}{% endfor %}<p class="ticket-empty">Няма нови запитвания.</p></div>
+<section class="ticket-columns ticket-columns-four" aria-live="polite">
+  <div class="ticket-column ticket-column-ai"><div class="ticket-column-title"><h2>AI</h2><span>✦</span></div>{% for ticket in tickets %}{% if ticket.status == 'active' and not ticket.escalated %}<a class="ticket-row" href="{% url 'team:support_ticket_detail' ticket.public_id %}"><div><strong>{{ ticket.title }}</strong><span>#{{ ticket.pk }} · {{ ticket.updated_at|date:'d.m · H:i' }}</span></div><small>Автоматичен помощник</small></a>{% endif %}{% endfor %}<p class="ticket-empty">Няма AI разговори.</p></div>
+  <div class="ticket-column ticket-column-new"><div class="ticket-column-title"><h2>Ново</h2><span>•</span></div>{% for ticket in tickets %}{% if ticket.status == 'active' and ticket.escalated %}<a class="ticket-row" href="{% url 'team:support_ticket_detail' ticket.public_id %}"><div><strong>{{ ticket.title }}</strong><span>#{{ ticket.pk }} · {{ ticket.updated_at|date:'d.m · H:i' }}</span></div><small>Чака консултант</small></a>{% endif %}{% endfor %}<p class="ticket-empty">Няма нови запитвания.</p></div>
   <div class="ticket-column ticket-column-progress"><div class="ticket-column-title"><h2>В процес</h2><span>●</span></div>{% for ticket in tickets %}{% if ticket.status == 'handled' %}<a class="ticket-row" href="{% url 'team:support_ticket_detail' ticket.public_id %}"><div><strong>{{ ticket.title }}</strong><span>#{{ ticket.pk }} · {{ ticket.updated_at|date:'d.m · H:i' }}</span></div><small>Консултант</small></a>{% endif %}{% endfor %}<p class="ticket-empty">Няма разговори в процес.</p></div>
   <div class="ticket-column ticket-column-archived"><div class="ticket-column-title"><h2>Архивирано</h2><span>✓</span></div>{% for ticket in tickets %}{% if ticket.status == 'archived' %}<a class="ticket-row" href="{% url 'team:support_ticket_detail' ticket.public_id %}"><div><strong>{{ ticket.title }}</strong><span>#{{ ticket.pk }} · {{ ticket.updated_at|date:'d.m · H:i' }}</span></div></a>{% endif %}{% endfor %}<p class="ticket-empty">Все още няма архив.</p></div>
 </section>
-<script>
-setInterval(() => fetch(window.location.href, {cache: 'no-store'}).then(r => r.text()).then(html => {
-  const page = new DOMParser().parseFromString(html, 'text/html');
-  const next = page.querySelector('.ticket-columns'), current = document.querySelector('.ticket-columns');
-  if (next && current && next.innerHTML !== current.innerHTML) current.replaceWith(next);
-}), 3000);
-</script>
+<script>setInterval(() => fetch(window.location.href, {cache: 'no-store'}).then(r => r.text()).then(html => { const page = new DOMParser().parseFromString(html, 'text/html'); const next = page.querySelector('.ticket-columns'), current = document.querySelector('.ticket-columns'); if (next && current && next.innerHTML !== current.innerHTML) current.replaceWith(next); }), 3000);</script>
 {% endblock %}
