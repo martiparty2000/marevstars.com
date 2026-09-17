@@ -14,6 +14,12 @@
   const close = () => { panel.hidden = true; launcher.setAttribute('aria-expanded', 'false'); };
   launcher.onclick = open; root.querySelector('.support-close').onclick = close;
   document.querySelectorAll('.support-open').forEach(el => el.onclick = open);
+  input.addEventListener('keydown', event => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      form.requestSubmit();
+    }
+  });
   form.onsubmit = async event => { event.preventDefault(); const text = input.value.trim(); if (!text) return; input.disabled = true; try { const data = ticket ? await api(thread('message/'), {method: 'POST', body: JSON.stringify({text})}) : await api(root.dataset.startUrl, {method: 'POST', body: JSON.stringify({text})}); if (!ticket) { ticket = data.ticket; localStorage.setItem('marev_support_ticket', ticket); } render(data.messages); input.value = ''; escalate.hidden = false; } catch (error) { alert(error.message || 'Възникна проблем.'); } input.disabled = false; input.focus(); };
   escalate.onclick = async () => { try { const data = await api(thread('escalate/'), {method: 'POST', body: '{}'}); render(data.messages); escalate.hidden = true; } catch (error) { alert(error.message || 'Възникна проблем.'); } };
 })();

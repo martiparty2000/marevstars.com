@@ -6,7 +6,7 @@ from django.db.utils import OperationalError
 
 
 class EnsureDatabaseReadyMiddleware:
-    """Ensure the custom user table exists before request handling touches the DB."""
+    """Ensure required application tables exist before request handling."""
 
     _migrate_lock = Lock()
 
@@ -19,23 +19,17 @@ class EnsureDatabaseReadyMiddleware:
 
     def ensure_database(self):
         try:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "SELECT name FROM sqlite_master WHERE type='table' AND name='team_userprofile'"
-                )
-                if cursor.fetchone():
-                    return
+            tables = set(connection.introspection.table_names())
+            if {'team_userprofile', 'team_supportticket', 'team_supportmessage'} <= tables:
+                return
         except (OperationalError, Exception):
             pass
 
         with self._migrate_lock:
             try:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT name FROM sqlite_master WHERE type='table' AND name='team_userprofile'"
-                    )
-                    if cursor.fetchone():
-                        return
+                tables = set(connection.introspection.table_names())
+                if {'team_userprofile', 'team_supportticket', 'team_supportmessage'} <= tables:
+                    return
             except (OperationalError, Exception):
                 pass
 
