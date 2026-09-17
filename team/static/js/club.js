@@ -1,27 +1,17 @@
 (() => {
-  const root = document.querySelector('.support-widget');
-  if (!root) return;
-  const panel = root.querySelector('.support-panel'), launcher = root.querySelector('.support-launcher');
-  const list = root.querySelector('.support-messages'), form = root.querySelector('.support-form');
-  const input = form.querySelector('textarea'), escalate = root.querySelector('.support-escalate');
-  const placeholder = '00000000-0000-0000-0000-000000000000';
-  let ticket = localStorage.getItem('marev_support_ticket');
-  const csrf = () => document.cookie.split('; ').find(x => x.startsWith('csrftoken='))?.split('=')[1] || '';
-  const thread = (end = '') => root.dataset.threadUrl.replace(placeholder, ticket) + end;
-  const api = (url, options = {}) => fetch(url, { ...options, headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrf()} }).then(async r => { const d = await r.json(); if (!r.ok) throw Error(d.error); return d; });
-  const render = rows => { list.innerHTML = ''; rows.forEach(row => { const el = document.createElement('article'); el.className = `support-message support-message-${row.author}`; el.innerHTML = `<strong>${row.author === 'visitor' ? 'Вие' : row.author === 'staff' ? 'Консултант' : 'Support'}</strong><p></p><small>${row.created_at}</small>`; el.querySelector('p').textContent = row.text; list.append(el); }); list.scrollTop = list.scrollHeight; };
-  const typing = () => { list.insertAdjacentHTML('beforeend', '<article class="support-message support-typing"><span></span><span></span><span></span></article>'); list.scrollTop = list.scrollHeight; };
-  const open = () => { panel.hidden = false; launcher.setAttribute('aria-expanded', 'true'); input.focus(); if (ticket) api(thread()).then(d => { render(d.messages); escalate.hidden = d.escalated; }).catch(() => localStorage.removeItem('marev_support_ticket')); };
-  const close = () => { panel.hidden = true; launcher.setAttribute('aria-expanded', 'false'); };
-  launcher.onclick = open; root.querySelector('.support-close').onclick = close;
-  document.querySelectorAll('.support-open').forEach(el => el.onclick = open);
-  root.querySelector('.support-new').onclick = () => { if (ticket) { const history = JSON.parse(localStorage.getItem('marev_support_history') || '[]'); localStorage.setItem('marev_support_history', JSON.stringify([...new Set([ticket, ...history])].slice(0, 10))); } ticket = ''; localStorage.removeItem('marev_support_ticket'); list.innerHTML = ''; escalate.hidden = true; input.focus(); };
-  input.addEventListener('keydown', event => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      form.requestSubmit();
-    }
-  });
-  form.onsubmit = async event => { event.preventDefault(); const text = input.value.trim(); if (!text) return; input.disabled = true; try { const data = ticket ? await api(thread('message/'), {method: 'POST', body: JSON.stringify({text})}) : await api(root.dataset.startUrl, {method: 'POST', body: JSON.stringify({text})}); if (!ticket) { ticket = data.ticket; localStorage.setItem('marev_support_ticket', ticket); } render(data.messages.filter(x => x.author !== 'bot')); typing(); input.value = ''; escalate.hidden = false; setTimeout(() => render(data.messages), 2300); } catch (error) { alert(error.message || 'Възникна проблем.'); } input.disabled = false; input.focus(); };
-  escalate.onclick = async () => { try { const data = await api(thread('escalate/'), {method: 'POST', body: '{}'}); render(data.messages); escalate.hidden = true; } catch (error) { alert(error.message || 'Възникна проблем.'); } };
+ const root=document.querySelector('.support-widget'); if(!root)return;
+ const panel=root.querySelector('.support-panel'), list=root.querySelector('.support-messages'), form=root.querySelector('.support-form'), input=form.querySelector('textarea'), escalate=root.querySelector('.support-escalate'), historyBox=root.querySelector('.support-history-list');
+ let ticket=localStorage.getItem('marev_support_ticket'), timer;
+ const blank='00000000-0000-0000-0000-000000000000', csrf=()=>document.cookie.split('; ').find(x=>x.startsWith('csrftoken='))?.split('=')[1]||'', url=end=>root.dataset.threadUrl.replace(blank,ticket)+end;
+ const api=(u,o={})=>fetch(u,{...o,headers:{'Content-Type':'application/json','X-CSRFToken':csrf()}}).then(async r=>{const d=await r.json();if(!r.ok)throw Error(d.error);return d});
+ const save=id=>{const old=JSON.parse(localStorage.getItem('marev_support_history')||'[]');localStorage.setItem('marev_support_history',JSON.stringify([...new Set([id,...old])].slice(0,20)));};
+ const draw=rows=>{list.innerHTML='';rows.forEach(x=>{const e=document.createElement('article');e.className=`support-message support-message-${x.author}`;e.innerHTML=`<strong>${x.author==='visitor'?'Вие':x.author==='staff'?'Консултант':'Support'}</strong><p></p><small>${x.created_at}</small>`;e.querySelector('p').textContent=x.text;list.append(e)});list.scrollTop=list.scrollHeight};
+ const load=()=>ticket&&api(url('')).then(d=>{draw(d.messages);escalate.hidden=d.escalated});
+ const open=()=>{panel.hidden=false;root.querySelector('.support-launcher').setAttribute('aria-expanded','true');load();clearInterval(timer);timer=setInterval(load,8000)};
+ root.querySelector('.support-launcher').onclick=open;document.querySelectorAll('.support-open').forEach(x=>x.onclick=open);root.querySelector('.support-close').onclick=()=>{panel.hidden=true;clearInterval(timer)};
+ root.querySelector('.support-new').onclick=()=>{ticket='';localStorage.removeItem('marev_support_ticket');list.innerHTML='';historyBox.hidden=true;escalate.hidden=true;input.focus()};
+ root.querySelector('.support-history').onclick=async()=>{const ids=JSON.parse(localStorage.getItem('marev_support_history')||'[]');historyBox.hidden=!historyBox.hidden;if(historyBox.hidden)return;historyBox.innerHTML='<strong>История на разговорите</strong>';for(const id of ids){ticket=id;try{const d=await api(url(''));const b=document.createElement('button');b.textContent=d.title;b.onclick=()=>{ticket=id;localStorage.setItem('marev_support_ticket',id);historyBox.hidden=true;load()};historyBox.append(b)}catch{}}ticket=localStorage.getItem('marev_support_ticket')||''};
+ input.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit()}};
+ form.onsubmit=async e=>{e.preventDefault();const text=input.value.trim();if(!text)return;input.disabled=true;try{const d=ticket?await api(url('message/'),{method:'POST',body:JSON.stringify({text})}):await api(root.dataset.startUrl,{method:'POST',body:JSON.stringify({text})});if(!ticket){ticket=d.ticket;localStorage.setItem('marev_support_ticket',ticket);save(ticket)}draw(d.messages.filter(x=>x.author!=='bot'));list.insertAdjacentHTML('beforeend','<article class="support-message support-typing"><span></span><span></span><span></span></article>');input.value='';escalate.hidden=false;setTimeout(()=>draw(d.messages),2300)}catch(err){alert(err.message||'Възникна проблем.')}input.disabled=false;input.focus()};
+ escalate.onclick=async()=>{const d=await api(url('escalate/'),{method:'POST',body:'{}'});draw(d.messages);escalate.hidden=true};
 })();

@@ -54,7 +54,8 @@
     {% csrf_token %}
     <button class="support-launcher" type="button" aria-expanded="false" aria-controls="support-panel">Support <span aria-hidden="true">●</span></button>
     <section class="support-panel" id="support-panel" hidden aria-label="Support чат">
-        <header><div><strong>Support</strong><small>Марев Старс</small></div><div><button class="support-new" type="button">Нов чат</button><button class="support-close" type="button" aria-label="Затвори Support">×</button></div></header>
+        <header><div><strong>Support</strong><small>Марев Старс</small></div><div><button class="support-history" type="button">История</button><button class="support-new" type="button">Нов чат</button><button class="support-close" type="button" aria-label="Затвори Support">×</button></div></header>
+        <div class="support-history-list" hidden></div>
         <div class="support-messages" aria-live="polite"></div>
         <div class="support-actions"><button class="support-escalate" type="button" hidden>Свържи ме с консултант</button></div>
         <form class="support-form"><label class="sr-only" for="support-text">Вашето съобщение</label><textarea id="support-text" maxlength="2000" required placeholder="Напишете въпроса си..."></textarea><button type="submit" aria-label="Изпрати">↑</button></form>

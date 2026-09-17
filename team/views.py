@@ -23,6 +23,7 @@ def is_support_staff(user):
 
 def _support_title(text):
     message = text.lower()
+    if any(word in message for word in ('здрасти', 'здравей', 'хей', 'hello')): return 'Нов разговор'
     if any(word in message for word in ('график', 'час', 'ден')): return 'Въпрос за графика'
     if any(word in message for word in ('запис', 'такса', 'цена')): return 'Записване и такси'
     if any(word in message for word in ('адрес', 'къде', 'терен')): return 'Място на тренировки'
@@ -60,7 +61,7 @@ def cookies_view(request):
 def _support_reply(text):
     message = text.lower()
     if any(word in message for word in ('здрасти', 'здравей', 'hello', 'хей')):
-        return 'Здрасти! Как мога да помогна? Можеш да питаш за графика, групите, треньорите или мястото на тренировките.'
+        return 'Здрасти! 🙂 Кажи ми какво те интересува и ще помогна — например график, група за детето, място на тренировките или записване.'
     if any(word in message for word in ('график', 'час', 'кога', 'ден')):
         return 'Групата за 8–12 г. тренира понеделник, сряда и четвъртък от 18:00 до 19:00. За 13–16 г. тренировките са понеделник, сряда и петък от 20:00 до 21:00.'
     if any(word in message for word in ('адрес', 'къде', 'терен', 'локация')):
@@ -71,7 +72,7 @@ def _support_reply(text):
         return 'Екипът ни включва Тодор Марев, Благовест Марев и Йордан Радев. Повече за тях има в секция „Треньори“. '
     if any(word in message for word in ('запис', 'такса', 'цена', 'индивидуал')):
         return 'За записване, такси или индивидуална тренировка изберете „Свържи ме с консултант“ и екипът ще ви отговори тук.'
-    return 'Мога да помогна с графика, възрастовите групи, треньорите и мястото на тренировките. Ако въпросът ви е друг, изберете „Свържи ме с консултант“. '
+    return 'Не съм напълно сигурен, че разбрах. Можеш ли да ми кажеш малко повече? Ако предпочиташ, натисни „Свържи ме с консултант“ и човек от екипа ще ти отговори тук.'
 
 
 def _messages_data(ticket):
@@ -101,13 +102,18 @@ def support_start(request):
     ticket = SupportTicket.objects.create(title=_support_title(text))
     SupportMessage.objects.create(ticket=ticket, author_type='visitor', text=text)
     SupportMessage.objects.create(ticket=ticket, author_type='bot', text=_support_reply(text))
-    return JsonResponse({'ticket': str(ticket.public_id), 'messages': _messages_data(ticket)})
+    return JsonResponse({'ticket': str(ticket.public_id), 'title': ticket.title, 'messages': _messages_data(ticket)})
 
 
 @require_GET
 def support_thread(request, public_id):
     ticket = get_object_or_404(SupportTicket.objects.prefetch_related('messages'), public_id=public_id)
-    return JsonResponse({'ticket': str(ticket.public_id), 'status': ticket.status, 'escalated': ticket.escalated, 'messages': _messages_data(ticket)})
+    if ticket.title == 'Ново запитване':
+        first = ticket.messages.filter(author_type='visitor').first()
+        if first:
+            ticket.title = _support_title(first.text)
+            ticket.save(update_fields=['title', 'updated_at'])
+    return JsonResponse({'ticket': str(ticket.public_id), 'title': ticket.title, 'status': ticket.status, 'escalated': ticket.escalated, 'messages': _messages_data(ticket)})
 
 
 @require_POST
@@ -121,6 +127,7 @@ def support_message(request, public_id):
     if not ticket.escalated:
         SupportMessage.objects.create(ticket=ticket, author_type='bot', text=_support_reply(text))
     ticket.save()
+    ticket.refresh_from_db()
     return JsonResponse({'messages': _messages_data(ticket)})
 
 

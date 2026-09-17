@@ -159,6 +159,10 @@ details p { padding-top: 12px; }
 .support-panel header small { color: var(--muted); font-size: .75rem; }
 .support-close { padding: 0 8px; border: 0; background: transparent; color: var(--text); font-size: 1.7rem; cursor: pointer; }
 .support-new { border: 0; background: transparent; color: var(--gold); font-weight: 700; cursor: pointer; }
+.support-history { border: 0; background: transparent; color: var(--gold); font-weight: 700; cursor: pointer; }
+.support-history-list { max-height: 150px; overflow: auto; padding: 12px; border-bottom: 1px solid var(--line); background: #102b42; }
+.support-history-list strong { display: block; margin-bottom: 8px; font-size: .82rem; }
+.support-history-list button { display: block; width: 100%; margin: 5px 0; padding: 8px; border: 1px solid var(--line); border-radius: 4px; background: transparent; color: var(--text); text-align: left; cursor: pointer; }
 .support-typing { display: flex; gap: 4px; align-items: center; min-height: 34px; }
 .support-typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: support-dot 1s infinite alternate; }
 .support-typing span:nth-child(2) { animation-delay: .2s; }.support-typing span:nth-child(3) { animation-delay: .4s; }
