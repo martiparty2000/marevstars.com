@@ -23,12 +23,10 @@ def is_support_staff(user):
 
 def _support_title(text):
     message = text.lower()
-    if any(word in message for word in ('здрасти', 'здравей', 'хей', 'hello')): return 'Нов разговор'
-    if any(word in message for word in ('график', 'час', 'ден')): return 'Въпрос за графика'
-    if any(word in message for word in ('запис', 'такса', 'цена')): return 'Записване и такси'
-    if any(word in message for word in ('адрес', 'къде', 'терен')): return 'Място на тренировки'
-    if any(word in message for word in ('треньор', 'марев', 'радев')): return 'Въпрос за треньорите'
-    return 'Общо запитване'
+    cleaned = ' '.join(text.split()).strip(' .!?')
+    if any(word in message for word in ('здрасти', 'здравей', 'хей', 'hello', 'hi ')):
+        return 'Нов разговор'
+    return (cleaned[:54] + '…') if len(cleaned) > 55 else cleaned
 
 # --- Public Views ---
 def home_view(request):
@@ -60,6 +58,13 @@ def cookies_view(request):
 
 def _support_reply(text):
     message = text.lower()
+    english = any(word in message for word in ('hello', 'hi', 'schedule', 'coach', 'training', 'where', 'price'))
+    if english:
+        if any(word in message for word in ('hello', 'hi')): return 'Hi! 🙂 How can I help? You can ask about the schedule, age groups, coaches, training location, or joining the club.'
+        if any(word in message for word in ('schedule', 'time', 'when')): return 'The 8–12 group trains Monday, Wednesday and Thursday from 18:00 to 19:00. The 13–16 group trains Monday, Wednesday and Friday from 20:00 to 21:00.'
+        if any(word in message for word in ('where', 'location', 'address')): return 'Group training takes place at Sportna ploshtadka “Studentska”, football pitch “Zhechka Karamfilova”.'
+        if any(word in message for word in ('coach', 'marev', 'radev')): return 'Our coaches are Todor Marev, Blagovest Marev and Yordan Radev. You can find more about them in the Coaches section.'
+        return 'I am not fully sure I understood. Could you share a little more, or choose “Connect me with a consultant” to speak with the team?'
     if any(word in message for word in ('здрасти', 'здравей', 'hello', 'хей')):
         return 'Здрасти! 🙂 Кажи ми какво те интересува и ще помогна — например график, група за детето, място на тренировките или записване.'
     if any(word in message for word in ('график', 'час', 'кога', 'ден')):
@@ -108,7 +113,7 @@ def support_start(request):
 @require_GET
 def support_thread(request, public_id):
     ticket = get_object_or_404(SupportTicket.objects.prefetch_related('messages'), public_id=public_id)
-    if ticket.title == 'Ново запитване':
+    if ticket.title in ('Ново запитване', 'Общо запитване'):
         first = ticket.messages.filter(author_type='visitor').first()
         if first:
             ticket.title = _support_title(first.text)
