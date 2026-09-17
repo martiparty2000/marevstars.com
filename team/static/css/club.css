@@ -335,3 +335,5 @@ details p { padding-top: 12px; }
 .support-ai-locked p:not(.eyebrow) { color:var(--muted); }
 @media (max-width:1000px) { .portal-summary,.ticket-columns-four { grid-template-columns:repeat(2,1fr); } }
 @media (max-width:720px) { .portal-summary,.ticket-columns-four { grid-template-columns:1fr; } }
+
+.club-banner { display:none; }
