@@ -3,6 +3,7 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.management import call_command
@@ -14,6 +15,19 @@ from .models import SupportMessage, SupportTicket, UserProfile
 def is_admin_or_head_coach(user):
     # Allow owner and head coach accounts to access management pages
     return user.is_authenticated and (user.role == 'owner' or user.role == 'head_coach')
+
+
+def is_support_staff(user):
+    return user.is_authenticated and user.is_staff
+
+
+def _support_title(text):
+    message = text.lower()
+    if any(word in message for word in ('график', 'час', 'ден')): return 'Въпрос за графика'
+    if any(word in message for word in ('запис', 'такса', 'цена')): return 'Записване и такси'
+    if any(word in message for word in ('адрес', 'къде', 'терен')): return 'Място на тренировки'
+    if any(word in message for word in ('треньор', 'марев', 'радев')): return 'Въпрос за треньорите'
+    return 'Общо запитване'
 
 # --- Public Views ---
 def home_view(request):
@@ -45,6 +59,8 @@ def cookies_view(request):
 
 def _support_reply(text):
     message = text.lower()
+    if any(word in message for word in ('здрасти', 'здравей', 'hello', 'хей')):
+        return 'Здрасти! Как мога да помогна? Можеш да питаш за графика, групите, треньорите или мястото на тренировките.'
     if any(word in message for word in ('график', 'час', 'кога', 'ден')):
         return 'Групата за 8–12 г. тренира понеделник, сряда и четвъртък от 18:00 до 19:00. За 13–16 г. тренировките са понеделник, сряда и петък от 20:00 до 21:00.'
     if any(word in message for word in ('адрес', 'къде', 'терен', 'локация')):
@@ -82,7 +98,7 @@ def support_start(request):
     text = str(data.get('text', '')).strip()
     if not text or len(text) > 2000:
         return JsonResponse({'error': 'Напишете съобщение до 2000 символа.'}, status=400)
-    ticket = SupportTicket.objects.create()
+    ticket = SupportTicket.objects.create(title=_support_title(text))
     SupportMessage.objects.create(ticket=ticket, author_type='visitor', text=text)
     SupportMessage.objects.create(ticket=ticket, author_type='bot', text=_support_reply(text))
     return JsonResponse({'ticket': str(ticket.public_id), 'messages': _messages_data(ticket)})
@@ -112,7 +128,7 @@ def support_message(request, public_id):
 def support_escalate(request, public_id):
     ticket = get_object_or_404(SupportTicket, public_id=public_id)
     ticket.escalated = True
-    if ticket.status == 'resolved':
+    if ticket.status == 'archived':
         ticket.status = 'active'
     ticket.save()
     SupportMessage.objects.create(ticket=ticket, author_type='bot', text='Запитването е изпратено към консултант. Отговорът ще се появи в този разговор.')
@@ -126,16 +142,17 @@ def staff_dashboard(request):
     return render(request, 'dashboard.html', {'pending_count': pending_users})
 
 
-@staff_member_required
+@user_passes_test(is_support_staff, login_url='team:support_login')
 def support_dashboard(request):
     tickets = SupportTicket.objects.prefetch_related('messages').all()
     return render(request, 'support_dashboard.html', {
         'tickets': tickets,
         'new_count': tickets.filter(escalated=True, status='active').count(),
+        'ticket_statuses': SupportTicket.STATUS_CHOICES,
     })
 
 
-@staff_member_required
+@user_passes_test(is_support_staff, login_url='team:support_login')
 def support_ticket_detail(request, public_id):
     ticket = get_object_or_404(SupportTicket.objects.prefetch_related('messages'), public_id=public_id)
     if request.method == 'POST':
@@ -147,9 +164,29 @@ def support_ticket_detail(request, public_id):
                 status = 'handled'
         if status in dict(SupportTicket.STATUS_CHOICES):
             ticket.status = status
+        if ticket.status == 'archived' and status == 'archived':
+            SupportMessage.objects.create(ticket=ticket, author_type='bot', text='Този разговор е затворен и е преместен в архива. Благодарим ви!')
         ticket.save()
         return redirect('team:support_ticket_detail', public_id=ticket.public_id)
     return render(request, 'support_ticket_detail.html', {'ticket': ticket})
+
+
+def support_login(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        return redirect('team:support_dashboard')
+    error = ''
+    if request.method == 'POST':
+        user = authenticate(request, username=request.POST.get('username', ''), password=request.POST.get('password', ''))
+        if user and user.is_staff:
+            login(request, user)
+            return redirect(request.POST.get('next') or 'team:support_dashboard')
+        error = 'Невалидни данни за вход или нямате достъп до Support.'
+    return render(request, 'support_login.html', {'error': error, 'next': request.GET.get('next', '')})
+
+
+def support_logout(request):
+    logout(request)
+    return redirect('team:support_login')
 
 @user_passes_test(is_admin_or_head_coach)
 def approval_dashboard(request):

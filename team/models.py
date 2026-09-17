@@ -102,10 +102,11 @@ class SupportTicket(models.Model):
     STATUS_CHOICES = (
         ('active', 'Ново'),
         ('handled', 'В процес'),
-        ('resolved', 'Приключено'),
+        ('archived', 'Архивирано'),
     )
 
     public_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    title = models.CharField(max_length=120, default='Ново запитване')
     status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='active')
     escalated = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

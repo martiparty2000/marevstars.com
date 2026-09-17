@@ -158,6 +158,11 @@ details p { padding-top: 12px; }
 .support-panel header strong, .support-panel header small { display: block; }
 .support-panel header small { color: var(--muted); font-size: .75rem; }
 .support-close { padding: 0 8px; border: 0; background: transparent; color: var(--text); font-size: 1.7rem; cursor: pointer; }
+.support-new { border: 0; background: transparent; color: var(--gold); font-weight: 700; cursor: pointer; }
+.support-typing { display: flex; gap: 4px; align-items: center; min-height: 34px; }
+.support-typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: support-dot 1s infinite alternate; }
+.support-typing span:nth-child(2) { animation-delay: .2s; }.support-typing span:nth-child(3) { animation-delay: .4s; }
+@keyframes support-dot { to { transform: translateY(-4px); opacity: .35; } }
 .support-messages { height: 330px; overflow: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
 .support-message { max-width: 88%; padding: 10px 12px; border-radius: 8px; background: #18384f; }
 .support-message-visitor { align-self: flex-end; background: #d7ad43; color: var(--navy); }

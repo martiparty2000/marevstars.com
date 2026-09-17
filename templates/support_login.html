@@ -1,0 +1,3 @@
+{% extends 'base.html' %}
+{% block title %}Вход в Support | Марев Старс{% endblock %}
+{% block content %}<section class="auth-container"><p class="eyebrow">СЛУЖЕБЕН ДОСТЪП</p><h1>Support</h1><p class="small">Влезте, за да отговаряте на запитвания.</p>{% if error %}<p class="msg">{{ error }}</p>{% endif %}<form method="post" class="support-reply-form">{% csrf_token %}<input type="hidden" name="next" value="{{ next }}"><label for="username">Потребител</label><input id="username" name="username" required autofocus><label for="password">Парола</label><input id="password" name="password" type="password" required><button class="button" type="submit">Вход</button></form></section>{% endblock %}
