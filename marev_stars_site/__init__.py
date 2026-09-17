@@ -1,0 +1,1 @@
+"""Marev Stars Django project."""

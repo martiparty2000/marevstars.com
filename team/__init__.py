@@ -1,0 +1,1 @@
+"""Marev Stars team application."""
