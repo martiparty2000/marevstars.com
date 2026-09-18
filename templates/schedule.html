@@ -9,7 +9,7 @@
 </section>
 <section class="private-training" aria-labelledby="private-title">
     <img src="{% static 'images/privateteren.png' %}" alt="Игрище за индивидуални тренировки на ул. „Фернандо Магелан“" loading="lazy">
-    <div><p class="eyebrow">По вашия график</p><h2 id="private-title">Индивидуални тренировки</h2><p>Занимания на ул. „Фернандо Магелан“, с ден и час по договаряне. Свържете се с главния треньор, за да уточните графика.</p><a class="button" href="{% url 'team:contact' %}">Запитване за час <span aria-hidden="true">↗</span></a></div>
+    <div><p class="eyebrow">По вашия график</p><h2 id="private-title">Индивидуални тренировки</h2><p>Занимания на ул. „Фернандо Магелан“, с ден и час по договаряне. За записване използвайте общия бутон по-долу.</p></div>
 </section>
-<aside class="contact-banner training-contact-banner"><div><p class="eyebrow">Нужна е помощ?</p><h2>Имате въпрос за тренировките?</h2><p>Използвайте Support долу вдясно — консултант ще ви отговори скоро.</p></div></aside>
+<aside class="contact-banner training-contact-banner"><div><p class="eyebrow">Нужна е помощ?</p><h2>Имате въпрос за тренировките?</h2><p>За групови, вратарски или индивидуални тренировки пишете ни през Support или се свържете с нас.</p></div><a class="button" href="{% url 'team:contact' %}">Запитване за тренировка <span aria-hidden="true">↗</span></a></aside>
 {% endblock %}
