@@ -134,3 +134,29 @@ class SupportMessage(models.Model):
 
     class Meta:
         ordering = ['created_at']
+
+
+class Fixture(models.Model):
+    round_number = models.PositiveSmallIntegerField(unique=True)
+    match_date = models.DateField()
+    match_time = models.TimeField()
+    home_team = models.CharField(max_length=120)
+    away_team = models.CharField(max_length=120)
+    venue = models.CharField(max_length=120, blank=True)
+    home_score = models.PositiveSmallIntegerField(null=True, blank=True)
+    away_score = models.PositiveSmallIntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['match_date', 'match_time']
+
+    @property
+    def is_home_match(self):
+        return self.home_team == 'ФК Марев Старс (U15)'
+
+    @property
+    def has_result(self):
+        return self.home_score is not None and self.away_score is not None
+
+    def __str__(self):
+        return f'Кръг {self.round_number}: {self.home_team} – {self.away_team}'
