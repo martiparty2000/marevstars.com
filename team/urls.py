@@ -7,6 +7,7 @@ urlpatterns = [
     # Basic Pages
     path('', views.home_view, name='home'),
     path('schedule/', views.schedule_view, name='schedule'),
+    path('programa/', views.fixtures_view, name='fixtures'),
     path('coaches/', views.coaches_view, name='coaches'),
     path('contact/', views.contact_view, name='contact'),
     path('terms/', views.terms_view, name='terms'),
