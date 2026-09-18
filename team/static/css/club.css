@@ -352,3 +352,8 @@ details p { padding-top: 12px; }
 .support-close-cancel,.support-close-confirm { padding:8px 12px; border-radius:5px; font-weight:700; cursor:pointer; }
 .support-close-cancel { border:1px solid #587087; background:transparent; color:var(--text); }
 .support-close-confirm { border:1px solid var(--gold); background:var(--gold); color:var(--navy); }
+
+
+/* Keep dashboard actions visually separate */
+.support-portal-heading > div:last-child { display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+@media (max-width:720px) { .support-portal-heading > div:last-child { gap:12px; } }
