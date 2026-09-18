@@ -24,6 +24,7 @@ urlpatterns = [
     path('support/login/', views.support_login, name='support_login'),
     path('support/logout/', views.support_logout, name='support_logout'),
     path('support/', views.support_dashboard, name='support_dashboard'),
+    path('support/access/', views.support_access_manage, name='support_access_manage'),
     path('support/ticket/<uuid:public_id>/', views.support_ticket_detail, name='support_ticket_detail'),
 
     # Staff/Admin Portal

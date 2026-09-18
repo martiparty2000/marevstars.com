@@ -21,6 +21,10 @@ def is_support_staff(user):
     return user.is_authenticated and user.is_staff
 
 
+def is_support_owner(user):
+    return user.is_authenticated and (user.is_superuser or user.role == 'owner')
+
+
 def _support_title(text):
     message = text.lower()
     cleaned = ' '.join(text.split()).strip(' .!?')
@@ -194,6 +198,52 @@ def support_dashboard(request):
         'archived_count': tickets.filter(status='archived').count(),
         'ticket_statuses': SupportTicket.STATUS_CHOICES,
     })
+
+
+@user_passes_test(is_support_owner, login_url='team:support_login')
+def support_access_manage(request):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'add':
+            egn = request.POST.get('egn', '').strip()
+            full_name = request.POST.get('full_name', '').strip()
+            email = request.POST.get('email', '').strip()
+            password = request.POST.get('password', '')
+            if not all((egn, full_name, email, password)):
+                messages.error(request, 'Попълнете име, потребител, имейл и парола.')
+            elif UserProfile.objects.filter(egn=egn).exists():
+                messages.error(request, 'Този потребител вече съществува.')
+            elif len(password) < 8:
+                messages.error(request, 'Паролата трябва да е поне 8 символа.')
+            else:
+                person = UserProfile.objects.create_user(
+                    egn=egn, full_name=full_name, email=email, password=password,
+                )
+                person.is_staff = True
+                person.is_approved = True
+                person.role = 'coach'
+                person.save(update_fields=['is_staff', 'is_approved', 'role'])
+                messages.success(request, f'Добавен е Support достъп за {full_name}.')
+        elif action in ('toggle', 'password'):
+            person = get_object_or_404(UserProfile, id=request.POST.get('user_id'))
+            if person.pk == request.user.pk and action == 'toggle':
+                messages.error(request, 'Не можете да махнете собствения си достъп.')
+            elif action == 'toggle':
+                person.is_staff = not person.is_staff
+                person.save(update_fields=['is_staff'])
+                messages.success(request, 'Достъпът е обновен.')
+            else:
+                password = request.POST.get('password', '')
+                if len(password) < 8:
+                    messages.error(request, 'Новата парола трябва да е поне 8 символа.')
+                else:
+                    person.set_password(password)
+                    person.save(update_fields=['password'])
+                    messages.success(request, 'Паролата е сменена.')
+        return redirect('team:support_access_manage')
+
+    staff_accounts = UserProfile.objects.filter(is_staff=True).order_by('full_name')
+    return render(request, 'support_access_manage.html', {'staff_accounts': staff_accounts})
 
 
 @user_passes_test(is_support_staff, login_url='team:support_login')

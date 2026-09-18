@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Support | Марев Старс{% endblock %}
 {% block content %}
-<section class="support-portal-heading"><div><p class="eyebrow">СЛУЖЕБЕН ПОРТАЛ</p><h1>Support inbox</h1><p>Запитванията се обновяват автоматично.</p></div><a class="portal-logout" href="{% url 'team:support_logout' %}">Изход →</a></section>
+<section class="support-portal-heading"><div><p class="eyebrow">СЛУЖЕБЕН ПОРТАЛ</p><h1>Support inbox</h1><p>Запитванията се обновяват автоматично.</p></div><div>{% if request.user.is_superuser or request.user.role == 'owner' %}<a class="portal-logout" href="{% url 'team:support_access_manage' %}">Управление на достъп</a>{% endif %}<a class="portal-logout" href="{% url 'team:support_logout' %}">Изход →</a></div></section>
 <section class="portal-summary">
   <article><span>AI</span><strong>{{ ai_count }}</strong><small>Автоматично обработвани</small></article>
   <article><span>Ново</span><strong>{{ new_count }}</strong><small>Чакат консултант</small></article>
