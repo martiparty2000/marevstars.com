@@ -161,7 +161,7 @@ def support_escalate(request, public_id):
     ticket.escalated = True
     ticket.save()
     last_message = ticket.messages.filter(author_type='visitor').last()
-    notice = 'Your request has been sent to a consultant. The reply will appear in this conversation.' if last_message and _is_english(last_message.text) else 'Запитването е изпратено към консултант. Отговорът ще се появи в този разговор.'
+    notice = 'Your request is with a consultant now. They will reply here soon. You can still send more details in this chat if needed.' if last_message and _is_english(last_message.text) else 'Запитването вече е при консултант. Той ще ви отговори тук скоро. Ако е нужно, можете да изпратите още информация в този разговор.'
     SupportMessage.objects.create(ticket=ticket, author_type='bot', text=notice)
     return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'status': ticket.status, 'messages': _messages_data(ticket), 'escalated': True})
 
