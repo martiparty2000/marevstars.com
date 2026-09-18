@@ -3,6 +3,9 @@
 {% block content %}
 <header class="page-heading"><p class="eyebrow">Само за Owner</p><h1>Резултати</h1><p class="lead">Въведете крайния резултат след мач. Той веднага се показва в „Изминали мачове“.</p></header>
 <section class="fixtures-manage">
+{% if database_unavailable %}
+<div class="notice-card"><strong>Подготовката на програмата още не е завършила.</strong><p>Нужна е миграция на базата данни в Render. След следващия успешен deploy тази страница ще е готова за въвеждане на резултати.</p></div>
+{% else %}
 {% for match in matches %}
 <form method="post" class="fixture-edit-row">{% csrf_token %}
 <input type="hidden" name="fixture_id" value="{{ match.pk }}">
@@ -12,5 +15,6 @@
 <button class="button" type="submit">Запази</button>
 </form>
 {% endfor %}
+{% endif %}
 </section>
 {% endblock %}
