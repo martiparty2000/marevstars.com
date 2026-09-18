@@ -250,6 +250,9 @@ def support_access_manage(request):
 def support_ticket_detail(request, public_id):
     ticket = get_object_or_404(SupportTicket.objects.prefetch_related('messages'), public_id=public_id)
     if request.method == 'POST':
+        if ticket.status == 'archived':
+            messages.info(request, 'Този билет е архивиран и не може да се редактира или да получава нови отговори.')
+            return redirect('team:support_ticket_detail', public_id=ticket.public_id)
         if not ticket.escalated:
             messages.info(request, 'Този разговор все още се обработва от автоматичния помощник. Консултант може да отговори само след заявка от посетителя.')
             return redirect('team:support_ticket_detail', public_id=ticket.public_id)
