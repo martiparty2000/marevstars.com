@@ -357,3 +357,27 @@ details p { padding-top: 12px; }
 /* Keep dashboard actions visually separate */
 .support-portal-heading > div:last-child { display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
 @media (max-width:720px) { .support-portal-heading > div:last-child { gap:12px; } }
+
+
+/* Training visuals: cleaner desktop composition */
+.hero-photo-feature { border:1px solid #3e5c72; border-radius:10px; box-shadow:0 18px 34px #0003; }
+.hero-photo-feature img { height:340px; }
+.hero-photo-feature figcaption { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:16px 20px; background:linear-gradient(90deg,#14354c,#102b42); }
+.hero-photo-feature figcaption span { margin-bottom:2px; }
+.hero-photo-feature figcaption strong { font-size:.92rem; color:var(--text); }
+.hero-photo-feature .text-link { flex-shrink:0; min-height:auto; }
+
+.private-training { grid-template-columns:260px minmax(0,1fr) auto; gap:26px; padding:18px; border:1px solid var(--line); border-radius:10px; background:linear-gradient(135deg,#142e43,#102b42); }
+.private-training img { height:160px; aspect-ratio:auto; border-radius:6px; }
+.private-training > div { display:flex; flex-direction:column; justify-content:center; }
+.private-training p:not(.eyebrow) { margin:10px 0 0; }
+.private-training .button { flex-shrink:0; align-self:center; }
+.training-contact-banner { margin-top:52px; padding:28px 0 0; }
+.training-contact-banner .eyebrow { margin-bottom:9px; }
+@media (max-width:720px) {
+  .hero-photo-feature img { height:250px; }
+  .hero-photo-feature figcaption { align-items:flex-start; flex-direction:column; }
+  .private-training { grid-template-columns:1fr; padding:16px; }
+  .private-training img { width:100%; height:auto; aspect-ratio:1.8; }
+  .private-training .button { align-self:flex-start; margin-top:18px; }
+}
