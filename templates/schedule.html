@@ -4,12 +4,12 @@
 {% block content %}
 <header class="page-heading"><p class="eyebrow">На терена всяка седмица</p><h1>Тренировки</h1><p class="lead">Намерете своята група и се свържете с нас за записване.</p></header>
 <section class="schedule-grid" aria-label="Групови тренировки">
-    <article class="schedule-card"><p class="eyebrow">Детска група</p><h2>8–12 <span>години</span></h2><p class="schedule-time">18:00–19:00</p><p>Понеделник · Сряда · Четвъртък</p><div class="schedule-location"><strong>Спортна площадка „Студентска“</strong><p>Футболно игрище „Жечка Карамфилова“</p></div><p class="small">Предлагаме и вратарски тренировки.</p><a class="button button-outline" href="{% url 'team:contact' %}">Запитване за групата</a></article>
-    <article class="schedule-card"><p class="eyebrow">Юношеска група</p><h2>13–16 <span>години</span></h2><p class="schedule-time">20:00–21:00</p><p>Понеделник · Сряда · Петък</p><div class="schedule-location"><strong>Спортна площадка „Студентска“</strong><p>Футболно игрище „Жечка Карамфилова“</p></div><p class="small">Предлагаме и вратарски тренировки.</p><a class="button button-outline" href="{% url 'team:contact' %}">Запитване за групата</a></article>
+    <article class="schedule-card"><p class="eyebrow">Детска група</p><h2>8–12 <span>години</span></h2><p class="schedule-time">18:00–19:00</p><p>Понеделник · Сряда · Четвъртък</p><div class="schedule-location"><strong>Спортна площадка „Студентска“</strong><p>Футболно игрище „Жечка Карамфилова“</p></div><p class="small">Предлагаме и вратарски тренировки.</p></article>
+    <article class="schedule-card"><p class="eyebrow">Юношеска група</p><h2>13–16 <span>години</span></h2><p class="schedule-time">20:00–21:00</p><p>Понеделник · Сряда · Петък</p><div class="schedule-location"><strong>Спортна площадка „Студентска“</strong><p>Футболно игрище „Жечка Карамфилова“</p></div><p class="small">Предлагаме и вратарски тренировки.</p></article>
 </section>
 <section class="private-training" aria-labelledby="private-title">
     <img src="{% static 'images/privateteren.png' %}" alt="Игрище за индивидуални тренировки на ул. „Фернандо Магелан“" loading="lazy">
     <div><p class="eyebrow">По вашия график</p><h2 id="private-title">Индивидуални тренировки</h2><p>Занимания на ул. „Фернандо Магелан“, с ден и час по договаряне. Свържете се с главния треньор, за да уточните графика.</p><a class="button" href="{% url 'team:contact' %}">Запитване за час <span aria-hidden="true">↗</span></a></div>
 </section>
-<aside class="contact-banner training-contact-banner"><div><p class="eyebrow">Нужна е помощ?</p><h2>Имате въпрос за тренировките?</h2><p>Пишете ни през Support или се свържете с главния треньор за групите и записването.</p></div><a class="button" href="{% url 'team:contact' %}">Свържете се с нас <span aria-hidden="true">↗</span></a></aside>
+<aside class="contact-banner training-contact-banner"><div><p class="eyebrow">Нужна е помощ?</p><h2>Имате въпрос за тренировките?</h2><p>Използвайте Support долу вдясно — консултант ще ви отговори скоро.</p></div></aside>
 {% endblock %}
