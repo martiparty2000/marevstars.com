@@ -23,6 +23,7 @@
             {% with current=request.resolver_match.url_name %}
             <a href="{% url 'team:home' %}" {% if current == 'home' %}aria-current="page"{% endif %}>Начало</a>
             <a href="{% url 'team:schedule' %}" {% if current == 'schedule' %}aria-current="page"{% endif %}>Тренировки</a>
+            <a href="{% url 'team:fixtures' %}" {% if current == 'fixtures' %}aria-current="page"{% endif %}>Първенство</a>
             <a href="{% url 'team:coaches' %}" {% if current == 'coaches' %}aria-current="page"{% endif %}>Треньори</a>
             <a href="{% url 'team:contact' %}" {% if current == 'contact' %}aria-current="page"{% endif %}>Контакти</a>
             {% endwith %}
