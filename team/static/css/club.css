@@ -384,3 +384,10 @@ details p { padding-top: 12px; }
 
 /* Keep the full Marev Stars banner visible on the home page */
 .hero-photo-feature img { height:auto; max-height:340px; object-fit:contain; background:#0b2033; }
+
+
+/* Homepage banner: image only, without letterboxing or caption */
+.hero-photo-feature { background:transparent; border-color:#3e5c72; }
+.hero-photo-feature img { width:100%; height:176px; max-height:none; object-fit:cover; object-position:center top; }
+.hero-photo-feature figcaption { display:none; }
+@media (max-width:720px) { .hero-photo-feature img { height:140px; } }
