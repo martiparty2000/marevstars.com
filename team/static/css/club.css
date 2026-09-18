@@ -441,3 +441,14 @@ details p { padding-top: 12px; }
 .fixture { position:relative; padding-top:31px; }
 .fixture-round { position:absolute; top:8px; left:18px; margin:0; color:var(--gold); font-size:.67rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
 @media (max-width:720px) { .fixture { padding-top:31px; } }
+
+
+/* Home hero: keep the club's navy palette throughout */
+.home-hero-shade { background:linear-gradient(90deg,rgba(7,25,41,.98) 0%,rgba(9,31,50,.94) 41%,rgba(10,32,51,.66) 61%,rgba(11,32,51,.14) 100%); }
+.home-hero-copy { color:var(--text); }
+.home-hero-copy .eyebrow { color:var(--gold); }
+.home-hero-copy h1 { color:var(--text); }
+.home-hero-copy h1 span { color:var(--gold); }
+.home-hero-copy .lead,.home-hero-copy .hero-notes { color:#d2dde5; }
+.home-hero-copy .text-link { color:var(--gold-soft); }
+@media (max-width:720px) { .home-hero-shade { background:linear-gradient(0deg,rgba(7,25,41,.99) 0%,rgba(9,31,50,.94) 51%,rgba(10,32,51,.24) 100%); } }
