@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<section class="hero hero-intro" aria-labelledby="hero-title">
+<section class="hero" aria-labelledby="hero-title">
     <div class="hero-copy">
         <p class="eyebrow">Футболен клуб · Варна</p>
         <h1 id="hero-title">Място за работа,<br><span>характер и футбол.</span></h1>
@@ -14,10 +14,10 @@
             <span>8–16 години</span><span>Групови и индивидуални тренировки</span><span>Варна</span>
         </div>
     </div>
+    <figure class="hero-photo">
+        <img src="{% static 'images/privateteren.png' %}" alt="Футболно игрище за индивидуални тренировки" fetchpriority="high">
+    </figure>
 </section>
-<figure class="hero-banner" aria-label="ФК Марев Старс">
-    <img src="{% static 'images/banner.png' %}" alt="ФК Марев Старс" fetchpriority="high">
-</figure>
 <section class="first-training" aria-labelledby="first-training-title">
     <div><p class="eyebrow">Първа тренировка</p><h2 id="first-training-title">Започнете спокойно.</h2></div>
     <ol>
