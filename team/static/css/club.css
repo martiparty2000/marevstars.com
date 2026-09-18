@@ -414,3 +414,26 @@ details p { padding-top: 12px; }
 .home-hero-copy .button { box-shadow:0 7px 16px #8c6f281f; }
 .home-hero-copy .text-link { color:#7b5d16; }
 @media (max-width:720px) { .home-hero { min-height:610px; margin:28px 0 38px; align-items:flex-end; } .home-hero-image { object-position:63% center; } .home-hero-shade { background:linear-gradient(0deg,rgba(247,245,239,.99) 0%,rgba(247,245,239,.95) 48%,rgba(247,245,239,.25) 100%); } .home-hero-copy { width:100%; padding:34px 24px; } }
+
+
+/* U15 fixtures */
+.fixtures-heading h1 span { color:var(--gold); }
+.fixtures { max-width:1030px; }
+.fixtures-intro { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:15px 18px; border:1px solid var(--line); border-radius:9px 9px 0 0; background:#102b42; }
+.fixtures-intro strong { font-size:.95rem; }
+.fixtures-list { margin:0; padding:0; list-style:none; border:1px solid var(--line); border-top:0; border-radius:0 0 9px 9px; overflow:hidden; }
+.fixture { display:grid; grid-template-columns:148px minmax(0,1fr) 118px; gap:24px; align-items:center; padding:21px 18px; background:#122f46; border-top:1px solid var(--line); }
+.fixture:first-child { border-top:0; }
+.fixture:hover { background:#173950; }
+.fixture time { color:var(--muted); font-size:.76rem; font-weight:600; line-height:1.25; text-transform:uppercase; }
+.fixture time span { display:inline-block; color:var(--gold); font-size:1.55rem; font-weight:800; letter-spacing:-.04em; margin-right:5px; }
+.fixture time small { display:block; margin-top:5px; color:var(--text); font-size:.72rem; font-weight:600; text-transform:none; }
+.fixture-teams { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:center; gap:12px; text-align:center; }
+.fixture-teams strong { font-size:.92rem; line-height:1.3; }
+.fixture-teams span { color:var(--gold); font-size:1.3rem; }
+.fixture-place { text-align:right; }
+.fixture-place b,.fixture-place span { display:block; }
+.fixture-place b { color:#a7deb4; font-size:.78rem; }
+.fixture-place span { margin-top:3px; color:var(--muted); font-size:.75rem; }
+.fixture-away .fixture-place b { color:#9bc9e4; }
+@media (max-width:720px) { .fixtures-intro { align-items:flex-start; flex-direction:column; } .fixture { grid-template-columns:1fr; gap:11px; padding:18px; } .fixture-teams { grid-template-columns:1fr; gap:4px; text-align:left; } .fixture-teams span { display:none; } .fixture-place { text-align:left; display:flex; gap:8px; align-items:center; } .fixture-place span { margin:0; } }
