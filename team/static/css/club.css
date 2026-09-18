@@ -452,3 +452,18 @@ details p { padding-top: 12px; }
 .home-hero-copy .lead,.home-hero-copy .hero-notes { color:#d2dde5; }
 .home-hero-copy .text-link { color:var(--gold-soft); }
 @media (max-width:720px) { .home-hero-shade { background:linear-gradient(0deg,rgba(7,25,41,.99) 0%,rgba(9,31,50,.94) 51%,rgba(10,32,51,.24) 100%); } }
+
+
+.fixture-empty { padding:22px; color:var(--muted); }
+.past-fixtures { margin-top:42px; }
+.fixture-past { opacity:.82; background:#0f2a3e; }
+.fixture-past .fixture-place b { color:#aebfca; }
+.fixtures-manage-link { margin-top:18px; }
+.fixtures-manage { display:grid; gap:12px; max-width:1050px; }
+.fixture-edit-row { display:grid; grid-template-columns:minmax(280px,1fr) 150px 150px auto; gap:14px; align-items:end; padding:18px; border:1px solid var(--line); border-radius:8px; background:var(--panel); }
+.fixture-edit-row strong,.fixture-edit-row small { display:block; }
+.fixture-edit-row small { color:var(--muted); font-size:.78rem; }
+.fixture-edit-row label { color:var(--muted); font-size:.72rem; }
+.fixture-edit-row input { display:block; width:100%; margin-top:4px; padding:8px; border:1px solid #60758a; border-radius:4px; background:var(--navy); color:var(--text); }
+.fixture-edit-row .button { min-height:39px; padding:9px 16px; }
+@media (max-width:720px) { .fixture-edit-row { grid-template-columns:1fr 1fr; } .fixture-edit-row > div { grid-column:1/-1; } .fixture-edit-row .button { grid-column:1/-1; } }
