@@ -381,3 +381,6 @@ details p { padding-top: 12px; }
   .private-training img { width:100%; height:auto; aspect-ratio:1.8; }
   .private-training .button { align-self:flex-start; margin-top:18px; }
 }
+
+/* Keep the full Marev Stars banner visible on the home page */
+.hero-photo-feature img { height:auto; max-height:340px; object-fit:contain; background:#0b2033; }
