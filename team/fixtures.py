@@ -53,7 +53,16 @@ def _is_owner(user):
 
 @user_passes_test(_is_owner, login_url='team:support_login')
 def fixtures_manage(request):
-    matches = Fixture.objects.all()
+    try:
+        matches = Fixture.objects.all()
+        # Force the SQL query now, so a missing migration is handled below.
+        list(matches[:1])
+    except (OperationalError, ProgrammingError):
+        return render(request, 'fixtures_manage.html', {
+            'database_unavailable': True,
+            'matches': [],
+        })
+
     if request.method == 'POST':
         fixture = get_object_or_404(Fixture, pk=request.POST.get('fixture_id'))
         home_score = request.POST.get('home_score', '').strip()
@@ -71,4 +80,7 @@ def fixtures_manage(request):
         else:
             messages.error(request, 'Въведете два резултата с цели числа.')
         return redirect('team:fixtures_manage')
-    return render(request, 'fixtures_manage.html', {'matches': matches})
+    return render(request, 'fixtures_manage.html', {
+        'matches': matches,
+        'database_unavailable': False,
+    })
