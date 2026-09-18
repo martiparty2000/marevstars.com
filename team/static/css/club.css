@@ -437,3 +437,7 @@ details p { padding-top: 12px; }
 .fixture-place span { margin-top:3px; color:var(--muted); font-size:.75rem; }
 .fixture-away .fixture-place b { color:#9bc9e4; }
 @media (max-width:720px) { .fixtures-intro { align-items:flex-start; flex-direction:column; } .fixture { grid-template-columns:1fr; gap:11px; padding:18px; } .fixture-teams { grid-template-columns:1fr; gap:4px; text-align:left; } .fixture-teams span { display:none; } .fixture-place { text-align:left; display:flex; gap:8px; align-items:center; } .fixture-place span { margin:0; } }
+
+.fixture { position:relative; padding-top:31px; }
+.fixture-round { position:absolute; top:8px; left:18px; margin:0; color:var(--gold); font-size:.67rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+@media (max-width:720px) { .fixture { padding-top:31px; } }
