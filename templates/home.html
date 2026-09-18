@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<section class="hero" aria-labelledby="hero-title">
-    <div class="hero-copy">
+<section class="home-hero" aria-labelledby="hero-title">
+    <img class="home-hero-image" src="{% static 'images/privateteren.png' %}" alt="" fetchpriority="high">
+    <div class="home-hero-shade" aria-hidden="true"></div>
+    <div class="home-hero-copy">
         <p class="eyebrow">Футболен клуб · Варна</p>
         <h1 id="hero-title">Място за работа,<br><span>характер и футбол.</span></h1>
         <p class="lead">Групови тренировки за деца от 8 до 16 години, вратарска подготовка и индивидуални занимания.</p>
@@ -14,9 +16,6 @@
             <span>8–16 години</span><span>Групови и индивидуални тренировки</span><span>Варна</span>
         </div>
     </div>
-    <figure class="hero-photo">
-        <img src="{% static 'images/privateteren.png' %}" alt="Футболно игрище за индивидуални тренировки" fetchpriority="high">
-    </figure>
 </section>
 <section class="first-training" aria-labelledby="first-training-title">
     <div><p class="eyebrow">Първа тренировка</p><h2 id="first-training-title">Започнете спокойно.</h2></div>
