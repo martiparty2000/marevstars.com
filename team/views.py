@@ -77,7 +77,7 @@ def _support_reply(text):
             return 'Our coaches are Todor Marev, Blagovest Marev and Yordan Radev. Please see the Coaches section to learn more about them.'
         if any(word in message for word in ('hello', 'hi')):
             return 'Hi! 🙂 How can I help? You can ask about training, the schedule, age groups, coaches, location, or joining the club.'
-        return 'I am not fully sure I understood. Please share a little more, or choose “Connect me with a consultant” to speak with the team.'
+        return 'I can help with training, the schedule, groups, coaches, location, or joining the club. What would you like to know?'
     if any(word in message for word in ('здрасти', 'здравей', 'хей')):
         return 'Здрасти! 🙂 Кажи ми какво те интересува и ще помогна — например график, група за детето, място на тренировките или записване.'
     if any(word in message for word in ('график', 'час', 'кога', 'ден')):
@@ -90,12 +90,7 @@ def _support_reply(text):
         return 'Екипът ни включва Тодор Марев, Благовест Марев и Йордан Радев. Повече за тях има в секция „Треньори“. '
     if any(word in message for word in ('запис', 'такса', 'цена', 'индивидуал')):
         return 'За записване, такси или индивидуална тренировка първо вижте секция „Тренировки“. Ако имате въпрос, изберете „Свържи ме с консултант“ и екипът ще ви отговори тук.'
-    return 'Не съм напълно сигурен, че разбрах. Можеш ли да ми кажеш малко повече? Ако предпочиташ, натисни „Свържи ме с консултант“ и човек от екипа ще ти отговори тук.'
-
-def _close_prompt(text):
-    return 'Did that answer your question? You can close this ticket below, or keep chatting if you need anything else.' if _is_english(text) else 'Отговорът помогна ли? Можете да затворите билета от бутона отдолу или да продължите разговора.'
-
-
+    return 'Мога да помогна с тренировки, график, възрастови групи, треньори, мястото и записването. За кое от тези неща питаш?'
 def _messages_data(ticket):
     return [
         {
@@ -123,7 +118,6 @@ def support_start(request):
     ticket = SupportTicket.objects.create(title=_support_title(text))
     SupportMessage.objects.create(ticket=ticket, author_type='visitor', text=text)
     SupportMessage.objects.create(ticket=ticket, author_type='bot', text=_support_reply(text))
-    SupportMessage.objects.create(ticket=ticket, author_type='bot', text=_close_prompt(text))
     return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'title': ticket.title, 'status': ticket.status, 'escalated': ticket.escalated, 'messages': _messages_data(ticket)})
 
 
@@ -150,8 +144,7 @@ def support_message(request, public_id):
     SupportMessage.objects.create(ticket=ticket, author_type='visitor', text=text)
     if not ticket.escalated:
         SupportMessage.objects.create(ticket=ticket, author_type='bot', text=_support_reply(text))
-        SupportMessage.objects.create(ticket=ticket, author_type='bot', text=_close_prompt(text))
-    ticket.save()
+        ticket.save()
     ticket.refresh_from_db()
     return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'status': ticket.status, 'escalated': ticket.escalated, 'messages': _messages_data(ticket)})
 

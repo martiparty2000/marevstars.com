@@ -341,3 +341,14 @@ details p { padding-top: 12px; }
 .support-close-ticket { width:100%; margin-top:8px; padding:9px; border:1px solid #6d9c7e; border-radius:4px; background:#193b2b; color:#d0efdb; font-weight:700; cursor:pointer; }
 .support-ticket-meta { padding:8px 14px; border-top:1px solid var(--line); color:var(--muted); font-size:.72rem; letter-spacing:.04em; }
 .staff-ticket-meta { padding:11px 18px; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; }
+
+
+/* In-chat ticket closing confirmation */
+.support-close-dialog { position:absolute; inset:0; z-index:5; display:grid; place-items:center; padding:18px; background:#061522bf; }
+.support-close-dialog-card { width:100%; padding:20px; border:1px solid #537086; border-radius:10px; background:#123149; box-shadow:0 16px 35px #0008; }
+.support-close-dialog-card strong { display:block; color:var(--gold); font-size:1rem; }
+.support-close-dialog-card p { margin:8px 0 16px; color:var(--text); font-size:.88rem; line-height:1.45; }
+.support-close-dialog-card div { display:flex; justify-content:flex-end; gap:8px; }
+.support-close-cancel,.support-close-confirm { padding:8px 12px; border-radius:5px; font-weight:700; cursor:pointer; }
+.support-close-cancel { border:1px solid #587087; background:transparent; color:var(--text); }
+.support-close-confirm { border:1px solid var(--gold); background:var(--gold); color:var(--navy); }
