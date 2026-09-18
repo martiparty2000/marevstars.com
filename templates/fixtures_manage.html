@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Управление на резултати | ФК Марев Старс{% endblock %}
+{% block content %}
+<header class="page-heading"><p class="eyebrow">Само за Owner</p><h1>Резултати</h1><p class="lead">Въведете крайния резултат след мач. Той веднага се показва в „Изминали мачове“.</p></header>
+<section class="fixtures-manage">
+{% for match in matches %}
+<form method="post" class="fixture-edit-row">{% csrf_token %}
+<input type="hidden" name="fixture_id" value="{{ match.pk }}">
+<div><span class="number-label">КРЪГ {{ match.round_number }}</span><strong>{{ match.home_team }} — {{ match.away_team }}</strong><small>{{ match.match_date|date:'d.m.Y' }} · {{ match.match_time|time:'H:i' }}</small></div>
+<label>{{ match.home_team }}<input type="number" min="0" name="home_score" value="{{ match.home_score|default_if_none:'' }}"></label>
+<label>{{ match.away_team }}<input type="number" min="0" name="away_score" value="{{ match.away_score|default_if_none:'' }}"></label>
+<button class="button" type="submit">Запази</button>
+</form>
+{% endfor %}
+</section>
+{% endblock %}
