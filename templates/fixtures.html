@@ -4,20 +4,24 @@
 <header class="page-heading fixtures-heading">
     <p class="eyebrow">Сезон 2026/27 · U15</p>
     <h1>Програма на<br><span>първенството.</span></h1>
-    </header>
+</header>
 <section class="fixtures" aria-label="Програма на мачовете">
     <div class="fixtures-intro"><strong>Предстоящи мачове</strong><a class="text-link" href="https://bfu-tournaments.com/tournaments/2/387/?tid=98&amp;season=1440&amp;view=upcoming-matches" target="_blank" rel="noopener noreferrer">Официална програма <span aria-hidden="true">↗</span></a></div>
     <ol class="fixtures-list">
-        <li class="fixture fixture-home"><p class="fixture-round">Кръг 2</p><time datetime="2026-09-20"><span>20</span> септември<small>Неделя · 13:00</small></time><div class="fixture-teams"><strong>ФК Марев Старс (U15)</strong><span>—</span><strong>ФК „Волов – Шумен 2007“ (U15)</strong></div><div class="fixture-place"><b>Домакин</b><span>Спортпалас</span></div></li>
-        <li class="fixture fixture-away"><p class="fixture-round">Кръг 3</p><time datetime="2026-09-27"><span>27</span> септември<small>Неделя · 10:00</small></time><div class="fixture-teams"><strong>ФК Фратрия (U15)</strong><span>—</span><strong>ФК Марев Старс (U15)</strong></div><div class="fixture-place"><b>Гост</b><span>Гостуване</span></div></li>
-        <li class="fixture fixture-home"><p class="fixture-round">Кръг 4</p><time datetime="2026-10-04"><span>04</span> октомври<small>Неделя · 10:00</small></time><div class="fixture-teams"><strong>ФК Марев Старс (U15)</strong><span>—</span><strong>ПФК Черно море (U15)</strong></div><div class="fixture-place"><b>Домакин</b><span>Спортпалас</span></div></li>
-        <li class="fixture fixture-away"><p class="fixture-round">Кръг 5</p><time datetime="2026-10-11"><span>11</span> октомври<small>Неделя · 10:00</small></time><div class="fixture-teams"><strong>ФК Добруджа 1919 (U15)</strong><span>—</span><strong>ФК Марев Старс (U15)</strong></div><div class="fixture-place"><b>Гост</b><span>Гостуване</span></div></li>
-        <li class="fixture fixture-home"><p class="fixture-round">Кръг 6</p><time datetime="2026-10-18"><span>18</span> октомври<small>Неделя · 11:00</small></time><div class="fixture-teams"><strong>ФК Марев Старс (U15)</strong><span>—</span><strong>ФК Дунав от Русе (U15)</strong></div><div class="fixture-place"><b>Домакин</b><span>Спортпалас</span></div></li>
-        <li class="fixture fixture-away"><p class="fixture-round">Кръг 7</p><time datetime="2026-10-26"><span>26</span> октомври<small>Понеделник · 13:00</small></time><div class="fixture-teams"><strong>ПФК Лудогорец 1945 (U15)</strong><span>—</span><strong>ФК Марев Старс (U15)</strong></div><div class="fixture-place"><b>Гост</b><span>Гостуване</span></div></li>
-        <li class="fixture fixture-home"><p class="fixture-round">Кръг 8</p><time datetime="2026-11-02"><span>02</span> ноември<small>Понеделник · 13:00</small></time><div class="fixture-teams"><strong>ФК Марев Старс (U15)</strong><span>—</span><strong>ФК Аксаково (U15)</strong></div><div class="fixture-place"><b>Домакин</b><span>Спортпалас</span></div></li>
-        <li class="fixture fixture-away"><p class="fixture-round">Кръг 9</p><time datetime="2026-11-08"><span>08</span> ноември<small>Неделя · 13:00</small></time><div class="fixture-teams"><strong>ФК „Светкавица – 2014“ (U15)</strong><span>—</span><strong>ФК Марев Старс (U15)</strong></div><div class="fixture-place"><b>Гост</b><span>Гостуване</span></div></li>
-        <li class="fixture fixture-home"><p class="fixture-round">Кръг 10</p><time datetime="2026-11-15"><span>15</span> ноември<small>Неделя · 13:00</small></time><div class="fixture-teams"><strong>ФК Марев Старс (U15)</strong><span>—</span><strong>ФК Спартак 1918 (U15)</strong></div><div class="fixture-place"><b>Домакин</b><span>Спортпалас</span></div></li>
-        <li class="fixture fixture-away"><p class="fixture-round">Кръг 11</p><time datetime="2026-11-22"><span>22</span> ноември<small>Неделя · 10:00</small></time><div class="fixture-teams"><strong>ФК Олимпик (U15)</strong><span>—</span><strong>ФК Марев Старс (U15)</strong></div><div class="fixture-place"><b>Гост</b><span>Гостуване</span></div></li>
+        {% for match in upcoming_matches %}
+        <li class="fixture {% if match.is_home_match %}fixture-home{% else %}fixture-away{% endif %}"><p class="fixture-round">Кръг {{ match.round_number }}</p><time datetime="{{ match.match_date|date:'Y-m-d' }}"><span>{{ match.match_date|date:'d' }}</span> {{ match.match_date|date:'F' }}<small>{{ match.match_date|date:'l' }} · {{ match.match_time|time:'H:i' }}</small></time><div class="fixture-teams"><strong>{{ match.home_team }}</strong><span>—</span><strong>{{ match.away_team }}</strong></div><div class="fixture-place"><b>{% if match.is_home_match %}Домакин{% else %}Гост{% endif %}</b><span>{% if match.is_home_match %}{{ match.venue|default:'Спортпалас' }}{% else %}Гостуване{% endif %}</span></div></li>
+        {% empty %}<li class="fixture-empty">Няма предстоящи мачове.</li>{% endfor %}
     </ol>
 </section>
+{% if past_matches %}
+<section class="fixtures past-fixtures" aria-label="Изминали мачове">
+    <div class="fixtures-intro"><strong>Изминали мачове</strong></div>
+    <ol class="fixtures-list">
+        {% for match in past_matches %}
+        <li class="fixture fixture-past {% if match.is_home_match %}fixture-home{% else %}fixture-away{% endif %}"><p class="fixture-round">Кръг {{ match.round_number }}</p><time datetime="{{ match.match_date|date:'Y-m-d' }}"><span>{{ match.match_date|date:'d' }}</span> {{ match.match_date|date:'F' }}<small>{{ match.match_time|time:'H:i' }}</small></time><div class="fixture-teams"><strong>{{ match.home_team }}</strong><span>{% if match.has_result %}{{ match.home_score }} : {{ match.away_score }}{% else %}—{% endif %}</span><strong>{{ match.away_team }}</strong></div><div class="fixture-place"><b>Изигран</b><span>{% if match.has_result %}Краен резултат{% else %}Очаква резултат{% endif %}</span></div></li>
+        {% endfor %}
+    </ol>
+</section>
+{% endif %}
+{% if user.is_authenticated and user.is_superuser or user.role == 'owner' %}<p class="fixtures-manage-link"><a class="text-link" href="{% url 'team:fixtures_manage' %}">Управление на резултати <span aria-hidden="true">→</span></a></p>{% endif %}
 {% endblock %}
