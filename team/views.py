@@ -1,5 +1,7 @@
 import json
 
+from django.conf import settings
+from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -295,6 +297,24 @@ def _last_bot_offered_consultant(ticket):
         or 'Would you like me to connect you with a consultant?' in last_bot.text
     ))
 
+
+def _notify_support_staff(ticket):
+    """Email the notification inbox once a visitor requests a consultant."""
+    recipient = settings.SUPPORT_NOTIFICATION_EMAIL
+    if not recipient or not settings.EMAIL_HOST_USER or not settings.EMAIL_HOST_PASSWORD:
+        return
+
+    send_mail(
+        subject=f'Нов Support билет #{ticket.pk} чака консултант',
+        message=(
+            f'Посетител поиска консултант за билет #{ticket.pk}.\n\n'
+            f'Отворете билета: https://marevstars-com.onrender.com/support/ticket/{ticket.public_id}/'
+        ),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[recipient],
+        fail_silently=True,
+    )
+
 def _messages_data(ticket):
     return [
         {
@@ -361,6 +381,7 @@ def support_message(request, public_id):
                 author_type='bot',
                 text=_consultant_escalation_notice(text),
             )
+            _notify_support_staff(ticket)
         else:
             needs_consultant = _support_requires_consultant(text)
             SupportMessage.objects.create(
@@ -377,6 +398,8 @@ def support_escalate(request, public_id):
     ticket = get_object_or_404(SupportTicket, public_id=public_id)
     if ticket.status == 'archived':
         return JsonResponse({'error': 'Този разговор е затворен. Отворете нов чат, ако имате нужда от помощ.'}, status=403)
+    if ticket.escalated:
+        return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'status': ticket.status, 'messages': _messages_data(ticket), 'escalated': True})
     ticket.escalated = True
     ticket.save()
     last_message = ticket.messages.filter(author_type='visitor').last()
@@ -385,6 +408,7 @@ def support_escalate(request, public_id):
         author_type='bot',
         text=_consultant_escalation_notice(last_message.text if last_message else ''),
     )
+    _notify_support_staff(ticket)
     return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'status': ticket.status, 'messages': _messages_data(ticket), 'escalated': True})
 
 @require_POST
