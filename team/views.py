@@ -303,54 +303,61 @@ def _last_bot_offered_consultant(ticket):
 
 
 def _notify_support_staff(ticket):
-    """Send a consultant-escalation notification through FormSubmit."""
-    recipient = settings.FORMSUBMIT_RECIPIENT
-    if not recipient:
-        detail = 'Липсва FORMSUBMIT_RECIPIENT в Render.'
+    """Send one consultant-escalation notification through the Brevo HTTPS API."""
+    recipient = settings.SUPPORT_NOTIFICATION_EMAIL
+    api_key = settings.BREVO_API_KEY
+    sender_email = settings.BREVO_SENDER_EMAIL
+    sender_name = settings.BREVO_SENDER_NAME
+
+    if not all((recipient, api_key, sender_email)):
+        detail = 'Липсва BREVO_API_KEY, BREVO_SENDER_EMAIL или SUPPORT_NOTIFICATION_EMAIL в Render.'
         print(f'[support-email] SKIPPED for ticket #{ticket.pk}: {detail}', flush=True)
         return {'sent': False, 'detail': detail}
 
     ticket_url = f'https://marevstars-com.onrender.com/support/ticket/{ticket.public_id}/'
     payload = json.dumps({
-        '_subject': f'Нов Support билет #{ticket.pk} чака консултант',
-        'ticket_number': ticket.pk,
-        'message': (
+        'sender': {'name': sender_name, 'email': sender_email},
+        'to': [{'email': recipient}],
+        'subject': f'Нов Support билет #{ticket.pk} чака консултант',
+        'textContent': (
             f'Посетител поиска консултант за Support билет #{ticket.pk}.\n\n'
             f'Отворете билета: {ticket_url}'
         ),
-        '_template': 'table',
-        '_captcha': 'false',
     }).encode('utf-8')
 
     try:
-        endpoint = f'https://formsubmit.co/ajax/{recipient}'
         req = urlrequest.Request(
-            endpoint,
+            'https://api.brevo.com/v3/smtp/email',
             data=payload,
             headers={
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'api-key': api_key,
                 'User-Agent': 'MarevStarsSupport/1.0',
             },
             method='POST',
         )
         with urlrequest.urlopen(req, timeout=10) as response:
             body = response.read().decode('utf-8', errors='replace')
+            status = response.status
         result = json.loads(body or '{}')
-        if not 200 <= response.status < 300 or str(result.get('success')).lower() != 'true':
-            raise RuntimeError(result.get('message') or f'FormSubmit returned HTTP {response.status}')
-        print(f'[support-email] SENT through FormSubmit for ticket #{ticket.pk}', flush=True)
+        if not 200 <= status < 300 or not result.get('messageId'):
+            raise RuntimeError(result.get('message') or f'Brevo returned HTTP {status}: {body}')
+        print(
+            f'[support-email] SENT through Brevo for ticket #{ticket.pk}: {result["messageId"]}',
+            flush=True,
+        )
         return {'sent': True}
     except urlerror.HTTPError as exc:
         error_body = exc.read().decode('utf-8', errors='replace')
         print(
-            f'[support-email] FAILED through FormSubmit for ticket #{ticket.pk}: '
+            f'[support-email] FAILED through Brevo for ticket #{ticket.pk}: '
             f'HTTP {exc.code} {error_body}',
             flush=True,
         )
     except Exception as exc:
-        print(f'[support-email] FAILED through FormSubmit for ticket #{ticket.pk}: {exc!r}', flush=True)
-        logger.exception('FormSubmit notification failed for ticket #%s.', ticket.pk)
+        print(f'[support-email] FAILED through Brevo for ticket #{ticket.pk}: {exc!r}', flush=True)
+        logger.exception('Brevo notification failed for ticket #%s.', ticket.pk)
     return {
         'sent': False,
         'detail': 'Известието до консултанта не беше изпратено. Проверете Render Logs.',
