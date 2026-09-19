@@ -1,4 +1,6 @@
 import json
+import logging
+from threading import Thread
 
 from django.conf import settings
 from django.core.mail import send_mail
@@ -12,6 +14,8 @@ from django.core.management import call_command
 from django.views.decorators.http import require_GET, require_POST
 
 from .models import SupportMessage, SupportTicket, UserProfile
+
+logger = logging.getLogger(__name__)
 
 # --- Helper Functions ---
 def is_admin_or_head_coach(user):
@@ -300,21 +304,35 @@ def _last_bot_offered_consultant(ticket):
 
 
 def _notify_support_staff(ticket):
-    """Email the notification inbox once a visitor requests a consultant."""
+    """Queue the notification without delaying the visitor's chat response."""
     recipient = settings.SUPPORT_NOTIFICATION_EMAIL
     if not recipient or not settings.EMAIL_HOST_USER or not settings.EMAIL_HOST_PASSWORD:
+        logger.warning(
+            'Support email was not sent: EMAIL_HOST_USER, EMAIL_HOST_PASSWORD or '
+            'SUPPORT_NOTIFICATION_EMAIL is missing.'
+        )
         return
 
-    send_mail(
-        subject=f'Нов Support билет #{ticket.pk} чака консултант',
-        message=(
-            f'Посетител поиска консултант за билет #{ticket.pk}.\n\n'
-            f'Отворете билета: https://marevstars-com.onrender.com/support/ticket/{ticket.public_id}/'
-        ),
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[recipient],
-        fail_silently=True,
+    subject = f'Нов Support билет #{ticket.pk} чака консултант'
+    message = (
+        f'Посетител поиска консултант за билет #{ticket.pk}.\n\n'
+        f'Отворете билета: https://marevstars-com.onrender.com/support/ticket/{ticket.public_id}/'
     )
+
+    def send_notification():
+        try:
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[recipient],
+                fail_silently=False,
+            )
+            logger.info('Support notification email sent for ticket #%s.', ticket.pk)
+        except Exception:
+            logger.exception('Support notification email failed for ticket #%s.', ticket.pk)
+
+    Thread(target=send_notification, daemon=True).start()
 
 def _messages_data(ticket):
     return [
