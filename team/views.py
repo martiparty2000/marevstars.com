@@ -65,7 +65,7 @@ def _is_english(text):
     return any(word in words for word in (
         'hello', 'hi', 'how', 'what', 'when', 'where', 'can i', 'join',
         'club', 'training', 'schedule', 'coach', 'price', 'fees', 'please',
-        'goalkeeper', 'goalie', 'individual', 'registration', 'contact',
+        'goalkeeper', 'goalie', 'individual', 'registration', 'contact', 'free', 'trial',
     ))
 
 
@@ -81,6 +81,8 @@ def _support_reply(text):
     age_words = ('възраст', 'години', 'група', 'дете', 'age', 'years old', 'group')
     coach_words = ('треньор', 'марев', 'радев', 'coach', 'todor', 'blagovest', 'yordan')
     joining_words = ('запис', 'запиша', 'такса', 'цена', 'плащ', 'join', 'register', 'sign up', 'membership', 'fees', 'price')
+    fee_words = ('такса', 'цена', 'колко струва', 'плащ', 'fees', 'price', 'cost', 'payment')
+    free_first_words = ('безплат', 'първата тренировка', 'пробна тренировка', 'free', 'first training', 'trial')
     championship_words = ('първенств', 'мач', 'програма', 'съперник', 'championship', 'match', 'fixture', 'game')
 
     if any(word in message for word in goalkeeper_words):
@@ -90,6 +92,20 @@ def _support_reply(text):
             if english else
             'Да — предлагаме и вратарски тренировки към двете възрастови групи: 8–12 и 13–16 години. '
             'За да уточним най-подходящия вариант за детето, натиснете „Свържи ме с консултант“ и екипът ще ви отговори тук.'
+        )
+
+    if any(word in message for word in fee_words):
+        return (
+            'The monthly fee is 65 euros.'
+            if english else
+            'Месечната такса е 65 евро.'
+        )
+
+    if any(word in message for word in free_first_words):
+        return (
+            'Yes — the first training session is free.'
+            if english else
+            'Да — първата тренировка е безплатна.'
         )
 
     if any(word in message for word in individual_words):
@@ -187,6 +203,7 @@ def _support_requires_consultant(text):
         'възраст', 'години', 'група', 'дете', 'age', 'years old', 'group',
         'треньор', 'марев', 'радев', 'coach', 'todor', 'blagovest', 'yordan',
         'запис', 'запиша', 'такса', 'цена', 'плащ', 'join', 'register', 'sign up', 'membership', 'fees', 'price',
+        'безплат', 'първата тренировка', 'пробна тренировка', 'free', 'first training', 'trial',
         'първенств', 'мач', 'съперник', 'championship', 'match', 'fixture', 'game',
         'здрасти', 'здравей', 'хей', 'hello', 'hi',
     )
