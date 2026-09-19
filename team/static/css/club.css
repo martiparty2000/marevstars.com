@@ -36,6 +36,10 @@ h3 { font-size: 1.65rem; }
 .nav-links { display: flex; flex-wrap: wrap; gap: 8px 22px; }
 .nav-links a { display: inline-flex; align-items: center; min-height: 44px; font-size: .9rem; font-weight: 600; text-decoration: none; border-bottom: 2px solid transparent; }
 .nav-links a[aria-current] { color: var(--gold); border-color: var(--gold); }
+.language-switcher { display: inline-flex; align-items: center; margin-left: auto; border: 1px solid rgba(255,255,255,.22); border-radius: 4px; overflow: hidden; }
+.language-switcher a { min-width: 38px; padding: 7px 9px; color: var(--white); font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-align: center; text-decoration: none; }
+.language-switcher a:hover, .language-switcher a.is-current { background: var(--gold); color: var(--navy); }
+
 .site-main { padding-top: 0; padding-bottom: 80px; min-height: 65vh; }
 .eyebrow, .number-label { color: var(--gold); font-size: .72rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
 .eyebrow { margin-bottom: 18px; }
