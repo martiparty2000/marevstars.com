@@ -3,7 +3,7 @@ import logging
 from threading import Thread
 
 from django.conf import settings
-from urllib import request as urlrequest
+from urllib import request as urlrequest, error as urlerror
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -339,6 +339,17 @@ def _notify_support_staff(ticket):
                 raise RuntimeError(f'Resend returned HTTP {response.status}: {body}')
         print(f'[support-email] SENT through Resend for ticket #{ticket.pk}: {body}', flush=True)
         return {'sent': True}
+    except urlerror.HTTPError as exc:
+        error_body = exc.read().decode('utf-8', errors='replace')
+        print(
+            f'[support-email] FAILED through Resend for ticket #{ticket.pk}: '
+            f'HTTP {exc.code} {error_body}',
+            flush=True,
+        )
+        return {
+            'sent': False,
+            'detail': 'Resend отказа известието. Проверете Render Logs за причината.',
+        }
     except Exception as exc:
         print(f'[support-email] FAILED through Resend for ticket #{ticket.pk}: {exc!r}', flush=True)
         logger.exception('Resend notification failed for ticket #%s.', ticket.pk)
