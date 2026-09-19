@@ -2,6 +2,40 @@
 {% load static %}
 {% block title %}{% if site_language == 'en' %}Coaching Team | Marev Stars FC{% else %}Треньорски екип | ФК Марев Старс{% endif %}{% endblock %}
 {% block content %}
-<header class="page-heading"><p class="eyebrow">{% if site_language == 'en' %}The people behind the club{% else %}Хората зад клуба{% endif %}</p><h1>{% if site_language == 'en' %}Our coaches{% else %}Нашите треньори{% endif %}</h1><p class="lead">{% if site_language == 'en' %}Meet the Marev Stars coaching team and their football experience.{% else %}Запознайте се с екипа на Марев Старс и неговия опит във футбола.{% endif %}</p></header>
-<div class="coach-grid">{% for coach in coaches %}<article class="coach-card"><img class="coach-image" src="{% static 'images/'|add:coach.image %}" alt="{{ coach.name }}"><div class="coach-copy">{% if site_language == 'en' %}<p class="eyebrow">{% if coach.image == 'todor.png' %}Senior Coach{% elif coach.image == 'marev.png' %}Head Coach{% else %}Coach{% endif %}</p><h2>{{ coach.name }}</h2><p>{% if coach.image == 'todor.png' %}Former defender and long-serving Cherno More player, with experience in youth development and women’s football.{% elif coach.image == 'marev.png' %}Cherno More academy graduate with a career in football and futsal in Bulgaria and abroad.{% elif coach.image == 'radev.png' %}Central defender, captain and Bulgarian U19 champion with Cherno More in 2018.{% endif %}</p>{% else %}<p class="eyebrow">{{ coach.role }}</p><h2>{{ coach.name }}</h2><p>{% if coach.image == 'todor.png' %}Бивш защитник и дългогодишен футболист на „Черно море“, с опит в клубната школа и женския футбол.{% elif coach.image == 'marev.png' %}Юноша на „Черно море“ с кариера във футбола и футзала в България и чужбина.{% elif coach.image == 'radev.png' %}Централен защитник, капитан и шампион на България с юношите на „Черно море“ до 19 години през 2018 г.{% endif %}</p>{% endif %}<details><summary>{% if site_language == 'en' %}Football biography{% else %}Футболна биография{% endif %}</summary><p>{{ coach.bio }}</p></details></div></article>{% empty %}<p>{% if site_language == 'en' %}Team information will be added soon.{% else %}Информацията за екипа ще бъде добавена скоро.{% endif %}</p>{% endfor %}</div>
+<header class="page-heading">
+  <p class="eyebrow">{% if site_language == 'en' %}The people behind the club{% else %}Хората зад клуба{% endif %}</p>
+  <h1>{% if site_language == 'en' %}Our coaches{% else %}Нашите треньори{% endif %}</h1>
+  <p class="lead">{% if site_language == 'en' %}Meet the Marev Stars coaching team and their football experience.{% else %}Запознайте се с екипа на Марев Старс и неговия опит във футбола.{% endif %}</p>
+</header>
+<div class="coach-grid">
+{% for coach in coaches %}
+  <article class="coach-card">
+    <img class="coach-image" src="{% static 'images/'|add:coach.image %}" alt="{{ coach.name }}">
+    <div class="coach-copy">
+      {% if site_language == 'en' %}
+        <p class="eyebrow">{% if coach.image == 'todor.png' %}Senior Coach{% elif coach.image == 'marev.png' %}Head Coach{% else %}Coach{% endif %}</p>
+        <h2>{% if coach.image == 'todor.png' %}Todor Marev{% elif coach.image == 'marev.png' %}Blagovest Marev{% else %}Yordan Radev{% endif %}</h2>
+        <p>{% if coach.image == 'todor.png' %}Former defender and long-serving Cherno More player, with experience in youth development and women’s football.{% elif coach.image == 'marev.png' %}Cherno More academy graduate with a career in football and futsal in Bulgaria and abroad.{% else %}Central defender, captain and Bulgarian U19 champion with Cherno More in 2018.{% endif %}</p>
+        <details>
+          <summary>Football biography</summary>
+          {% if coach.image == 'todor.png' %}
+            <p>Todor Boychev Marev is a legendary Bulgarian footballer and defender. He holds Cherno More Varna’s A Group appearance record with 422 matches. Born in 1953, he came through every level of the club and made his first-team debut in 1972. He played 530 official matches for Cherno More in total — a national record for appearances with one club. For Bulgaria, he made 16 appearances for the senior national team and 36 for youth teams. He won the Footballer of Varna award in three consecutive seasons: 1976, 1977 and 1978. After finishing his playing career, he coached in Cherno More’s academy and led Grand Hotel Varna’s women’s team to two league titles.</p>
+          {% elif coach.image == 'marev.png' %}
+            <p>Blagovest Todorov Marev was born on 21 April 1983 in Varna, Bulgaria. A Cherno More academy graduate, he later played for Dobrudzha and Kaliakra. From 2007 to 2009 he was part of MFC Varna, one of Bulgaria’s leading futsal teams. In 2009–2010 he played for Croatia’s Bitumina, then returned to Bulgaria and represented Grand Pro, MFC Varna and Odessos Hidroremont. In 2013 he joined Malta’s Hibernians and became a Maltese champion. His time there was also linked with some of the Bulgarian national futsal team’s strongest results.</p>
+          {% else %}
+            <p>Yordan Radev was born in 2001 and plays as a central defender. He was captain and Bulgarian U19 champion with Cherno More in 2018. During the previous campaign, he briefly played on loan at Spartak Pleven before returning to Cherno More after financial difficulties at the Pleven club.</p>
+          {% endif %}
+        </details>
+      {% else %}
+        <p class="eyebrow">{{ coach.role }}</p>
+        <h2>{{ coach.name }}</h2>
+        <p>{% if coach.image == 'todor.png' %}Бивш защитник и дългогодишен футболист на „Черно море“, с опит в клубната школа и женския футбол.{% elif coach.image == 'marev.png' %}Юноша на „Черно море“ с кариера във футбола и футзала в България и чужбина.{% else %}Централен защитник, капитан и шампион на България с юношите на „Черно море“ до 19 години през 2018 г.{% endif %}</p>
+        <details><summary>Футболна биография</summary><p>{{ coach.bio }}</p></details>
+      {% endif %}
+    </div>
+  </article>
+{% empty %}
+  <p>{% if site_language == 'en' %}Team information will be added soon.{% else %}Информацията за екипа ще бъде добавена скоро.{% endif %}</p>
+{% endfor %}
+</div>
 {% endblock %}
