@@ -76,7 +76,5 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'marevstars.support@gmail.co
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 SUPPORT_NOTIFICATION_EMAIL = os.environ.get('SUPPORT_NOTIFICATION_EMAIL', 'marevstars.support@gmail.com')
-# Google Apps Script web app used to send Support notifications through Gmail.
-# Set both values only in Render environment variables; never commit them.
-GOOGLE_APPS_SCRIPT_URL = os.environ.get('GOOGLE_APPS_SCRIPT_URL', '')
-GOOGLE_APPS_SCRIPT_SECRET = os.environ.get('GOOGLE_APPS_SCRIPT_SECRET', '')
+# FormSubmit sends one email when a visitor asks for a consultant.
+FORMSUBMIT_RECIPIENT = os.environ.get('FORMSUBMIT_RECIPIENT', 'marevstars.support@gmail.com')
