@@ -81,17 +81,63 @@ def _support_reply(text):
     age_words = ('възраст', 'години', 'група', 'дете', 'age', 'years old', 'group')
     coach_words = ('треньор', 'марев', 'радев', 'coach', 'todor', 'blagovest', 'yordan')
     joining_words = ('запис', 'запиша', 'такса', 'цена', 'плащ', 'join', 'register', 'sign up', 'membership', 'fees', 'price')
-    fee_words = ('такса', 'цена', 'колко струва', 'плащ', 'fees', 'price', 'cost', 'payment')
+    fee_words = ('такса', 'цена', 'колко струва', 'fees', 'price', 'cost')
+    payment_words = ('как се плаща', 'плащане', 'в брой', 'cash', 'how to pay', 'payment method')
     free_first_words = ('безплат', 'първата тренировка', 'пробна тренировка', 'free', 'first training', 'trial')
+    equipment_words = ('какво да нося', 'какво носи', 'екипировка', 'калци', 'ръкавици', 'облекло', 'what to bring', 'equipment', 'gear')
+    experience_words = ('предишен опит', 'футболен опит', 'начинаещ', 'няма опит', 'experience', 'beginner')
+    holiday_words = ('ваканци', 'празниц', 'holiday', 'vacation', 'school break')
+    joining_late_words = ('по средата', 'средата на сезона', 'средата на месеца', 'късно', 'mid-season', 'mid season', 'join later')
+    capacity_words = ('места', 'лимит', 'свободни места', 'capacity', 'spots', 'places available')
     championship_words = ('първенств', 'мач', 'програма', 'съперник', 'championship', 'match', 'fixture', 'game')
 
     if any(word in message for word in goalkeeper_words):
         return (
-            'Yes — we offer goalkeeper training as part of both age groups. The groups are 8–12 and 13–16 years old. '
-            'For the most suitable option for your child, choose “Connect me with a consultant” and the team will reply here.'
+            'Yes — goalkeeper work is included in both age groups, 8–12 and 13–16. At the moment, we do not offer separate individual goalkeeper sessions.'
             if english else
-            'Да — предлагаме и вратарски тренировки към двете възрастови групи: 8–12 и 13–16 години. '
-            'За да уточним най-подходящия вариант за детето, натиснете „Свържи ме с консултант“ и екипът ще ви отговори тук.'
+            'Да — вратарската работа е част от двете възрастови групи: 8–12 и 13–16 години. Към момента не предлагаме отделни индивидуални тренировки само за вратари.'
+        )
+
+    if any(word in message for word in payment_words):
+        return (
+            'The monthly fee is paid in cash.'
+            if english else
+            'Месечната такса се заплаща в брой.'
+        )
+
+    if any(word in message for word in equipment_words):
+        return (
+            'For the first session, please bring sportswear, football socks and water. Goalkeepers should also bring goalkeeper gloves.'
+            if english else
+            'За първата тренировка носете спортно облекло, калци и вода. Ако детето е вратар, носете и вратарски ръкавици.'
+        )
+
+    if any(word in message for word in experience_words):
+        return (
+            'No previous football experience is required. The important thing is that the child wants to train and develop.'
+            if english else
+            'Не е нужен предишен футболен опит. Важно е детето да има желание да тренира и да се развива.'
+        )
+
+    if any(word in message for word in holiday_words):
+        return (
+            'The schedule can change during holidays and school breaks. Some sessions take place, while parents are informed in advance about others.'
+            if english else
+            'Графикът може да се променя през ваканциите и празниците. Някои тренировки се провеждат, а за други родителите се информират предварително.'
+        )
+
+    if any(word in message for word in joining_late_words):
+        return (
+            'Yes, children can join during the month or season. Contact us so we can arrange a suitable group and first session.'
+            if english else
+            'Да, детето може да се присъедини по средата на месеца или сезона. Свържете се с нас, за да уточним подходяща група и първа тренировка.'
+        )
+
+    if any(word in message for word in capacity_words):
+        return (
+            'There is currently no fixed limit on places in the groups.'
+            if english else
+            'Към момента няма фиксиран лимит на местата в групите.'
         )
 
     if any(word in message for word in fee_words):
@@ -204,6 +250,12 @@ def _support_requires_consultant(text):
         'треньор', 'марев', 'радев', 'coach', 'todor', 'blagovest', 'yordan',
         'запис', 'запиша', 'такса', 'цена', 'плащ', 'join', 'register', 'sign up', 'membership', 'fees', 'price',
         'безплат', 'първата тренировка', 'пробна тренировка', 'free', 'first training', 'trial',
+        'как се плаща', 'плащане', 'в брой', 'cash', 'how to pay', 'payment method',
+        'какво да нося', 'какво носи', 'екипировка', 'калци', 'ръкавици', 'облекло', 'what to bring', 'equipment', 'gear',
+        'предишен опит', 'футболен опит', 'начинаещ', 'няма опит', 'experience', 'beginner',
+        'ваканци', 'празниц', 'holiday', 'vacation', 'school break',
+        'по средата', 'средата на сезона', 'средата на месеца', 'късно', 'mid-season', 'mid season', 'join later',
+        'места', 'лимит', 'свободни места', 'capacity', 'spots', 'places available',
         'първенств', 'мач', 'съперник', 'championship', 'match', 'fixture', 'game',
         'здрасти', 'здравей', 'хей', 'hello', 'hi',
     )
