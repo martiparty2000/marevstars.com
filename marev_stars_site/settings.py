@@ -76,5 +76,8 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'marevstars.support@gmail.co
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 SUPPORT_NOTIFICATION_EMAIL = os.environ.get('SUPPORT_NOTIFICATION_EMAIL', 'marevstars.support@gmail.com')
-# FormSubmit sends one email when a visitor asks for a consultant.
-FORMSUBMIT_RECIPIENT = os.environ.get('FORMSUBMIT_RECIPIENT', 'marevstars.support@gmail.com')
+
+# Brevo sends one email when a visitor asks for a consultant.
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '')
+BREVO_SENDER_EMAIL = os.environ.get('BREVO_SENDER_EMAIL', 'marevstars.support@gmail.com')
+BREVO_SENDER_NAME = os.environ.get('BREVO_SENDER_NAME', 'Marev Stars')
