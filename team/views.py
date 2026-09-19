@@ -168,6 +168,38 @@ def _support_reply(text):
         'Мога да помогна с възрастови групи, часове, вратарски или индивидуални тренировки, място, треньори, предстоящи мачове и записване в Марев Старс. Какво ви интересува?'
     )
 
+
+def _support_requires_consultant(text):
+    """Return True only when the site does not contain a reliable answer."""
+    message = text.lower()
+    goalkeeper_words = ('вратар', 'вратарск', 'goalkeeper', 'goalie', 'keeper')
+    asks_for_person = ('кой', 'коя', 'кои', 'who', 'name', 'име')
+
+    # The site confirms goalkeeper training, but does not name a goalkeeper coach.
+    if any(word in message for word in goalkeeper_words) and any(word in message for word in asks_for_person):
+        return True
+
+    known_topics = (
+        'вратар', 'вратарск', 'goalkeeper', 'goalie', 'keeper',
+        'индивидуал', 'лична тренировка', 'private training', 'individual',
+        'график', 'час', 'кога', 'ден', 'schedule', 'time', 'when',
+        'адрес', 'къде', 'терен', 'локация', 'where', 'location', 'address',
+        'възраст', 'години', 'група', 'дете', 'age', 'years old', 'group',
+        'треньор', 'марев', 'радев', 'coach', 'todor', 'blagovest', 'yordan',
+        'запис', 'запиша', 'такса', 'цена', 'плащ', 'join', 'register', 'sign up', 'membership', 'fees', 'price',
+        'първенств', 'мач', 'съперник', 'championship', 'match', 'fixture', 'game',
+        'здрасти', 'здравей', 'хей', 'hello', 'hi',
+    )
+    return not any(word in message for word in known_topics)
+
+
+def _consultant_notice(text):
+    return (
+        'I do not have reliable information about this on the site, so I have sent your question to a consultant. They will reply here soon. You can send more details if needed.'
+        if _is_english(text) else
+        'Нямам надеждна информация за това в сайта, затова предадох въпроса ви на консултант. Той ще отговори тук скоро. Ако е нужно, можете да изпратите още детайли.'
+    )
+
 def _messages_data(ticket):
     return [
         {
@@ -194,7 +226,15 @@ def support_start(request):
         return JsonResponse({'error': 'Напишете съобщение до 2000 символа.'}, status=400)
     ticket = SupportTicket.objects.create(title=_support_title(text))
     SupportMessage.objects.create(ticket=ticket, author_type='visitor', text=text)
-    SupportMessage.objects.create(ticket=ticket, author_type='bot', text=_support_reply(text))
+    needs_consultant = _support_requires_consultant(text)
+    if needs_consultant:
+        ticket.escalated = True
+        ticket.save(update_fields=['escalated', 'updated_at'])
+    SupportMessage.objects.create(
+        ticket=ticket,
+        author_type='bot',
+        text=_consultant_notice(text) if needs_consultant else _support_reply(text),
+    )
     return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'title': ticket.title, 'status': ticket.status, 'escalated': ticket.escalated, 'messages': _messages_data(ticket)})
 
 
@@ -220,8 +260,15 @@ def support_message(request, public_id):
         return JsonResponse({'error': 'Напишете съобщение до 2000 символа.'}, status=400)
     SupportMessage.objects.create(ticket=ticket, author_type='visitor', text=text)
     if not ticket.escalated:
-        SupportMessage.objects.create(ticket=ticket, author_type='bot', text=_support_reply(text))
-        ticket.save()
+        needs_consultant = _support_requires_consultant(text)
+        if needs_consultant:
+            ticket.escalated = True
+            ticket.save(update_fields=['escalated', 'updated_at'])
+        SupportMessage.objects.create(
+            ticket=ticket,
+            author_type='bot',
+            text=_consultant_notice(text) if needs_consultant else _support_reply(text),
+        )
     ticket.refresh_from_db()
     return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'status': ticket.status, 'escalated': ticket.escalated, 'messages': _messages_data(ticket)})
 
