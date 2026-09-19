@@ -1,7 +1,5 @@
 import json
 import logging
-from threading import Thread
-
 from django.conf import settings
 from urllib import request as urlrequest, error as urlerror
 
@@ -305,58 +303,52 @@ def _last_bot_offered_consultant(ticket):
 
 
 def _notify_support_staff(ticket):
-    """Send the consultant notification and return its real delivery result."""
-    recipient = settings.SUPPORT_NOTIFICATION_EMAIL
-    api_key = settings.RESEND_API_KEY
-    if not recipient or not api_key:
-        detail = 'Липсва RESEND_API_KEY или SUPPORT_NOTIFICATION_EMAIL в Render.'
-        print(f'[support-email] NOT SENT for ticket #{ticket.pk}: {detail}', flush=True)
+    """Notify the consultant through the Google Apps Script Gmail relay."""
+    endpoint = settings.GOOGLE_APPS_SCRIPT_URL
+    secret = settings.GOOGLE_APPS_SCRIPT_SECRET
+    if not endpoint or not secret:
+        detail = 'Липсва настройка за Google Apps Script в Render.'
+        print(f'[support-email] SKIPPED for ticket #{ticket.pk}: {detail}', flush=True)
         return {'sent': False, 'detail': detail}
 
+    ticket_url = f'https://marevstars-com.onrender.com/support/ticket/{ticket.public_id}/'
     payload = json.dumps({
-        'from': settings.RESEND_FROM_EMAIL,
-        'to': [recipient],
+        'secret': secret,
         'subject': f'Нов Support билет #{ticket.pk} чака консултант',
         'text': (
-            f'Посетител поиска консултант за билет #{ticket.pk}.\n\n'
-            f'Отворете билета: https://marevstars-com.onrender.com/support/ticket/{ticket.public_id}/'
+            f'Посетител поиска консултант за Support билет #{ticket.pk}.\n\n'
+            f'Отворете билета: {ticket_url}'
         ),
     }).encode('utf-8')
 
     try:
         req = urlrequest.Request(
-            'https://api.resend.com/emails',
+            endpoint,
             data=payload,
-            headers={
-                'Authorization': f'Bearer {api_key}',
-                'Content-Type': 'application/json',
-            },
+            headers={'Content-Type': 'application/json'},
             method='POST',
         )
-        with urlrequest.urlopen(req, timeout=6) as response:
+        with urlrequest.urlopen(req, timeout=8) as response:
             body = response.read().decode('utf-8', errors='replace')
-            if not 200 <= response.status < 300:
-                raise RuntimeError(f'Resend returned HTTP {response.status}: {body}')
-        print(f'[support-email] SENT through Resend for ticket #{ticket.pk}: {body}', flush=True)
+            result = json.loads(body or '{}')
+        if not 200 <= response.status < 300 or result.get('ok') is not True:
+            raise RuntimeError(result.get('error') or f'Google Apps Script returned HTTP {response.status}')
+        print(f'[support-email] SENT through Google Apps Script for ticket #{ticket.pk}', flush=True)
         return {'sent': True}
     except urlerror.HTTPError as exc:
         error_body = exc.read().decode('utf-8', errors='replace')
         print(
-            f'[support-email] FAILED through Resend for ticket #{ticket.pk}: '
+            f'[support-email] FAILED through Google Apps Script for ticket #{ticket.pk}: '
             f'HTTP {exc.code} {error_body}',
             flush=True,
         )
-        return {
-            'sent': False,
-            'detail': 'Resend отказа известието. Проверете Render Logs за причината.',
-        }
     except Exception as exc:
-        print(f'[support-email] FAILED through Resend for ticket #{ticket.pk}: {exc!r}', flush=True)
-        logger.exception('Resend notification failed for ticket #%s.', ticket.pk)
-        return {
-            'sent': False,
-            'detail': 'Известието до консултанта не беше изпратено. Проверете Render Logs.',
-        }
+        print(f'[support-email] FAILED through Google Apps Script for ticket #{ticket.pk}: {exc!r}', flush=True)
+        logger.exception('Google Apps Script notification failed for ticket #%s.', ticket.pk)
+    return {
+        'sent': False,
+        'detail': 'Известието до консултанта не беше изпратено. Проверете Render Logs.',
+    }
 
 def _messages_data(ticket):
     return [
