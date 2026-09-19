@@ -195,9 +195,9 @@ def _support_requires_consultant(text):
 
 def _consultant_notice(text):
     return (
-        'I do not have reliable information about this on the site, so I have sent your question to a consultant. They will reply here soon. You can send more details if needed.'
+        'I do not have reliable information about this on the site. Would you like me to connect you with a consultant?'
         if _is_english(text) else
-        'Нямам надеждна информация за това в сайта, затова предадох въпроса ви на консултант. Той ще отговори тук скоро. Ако е нужно, можете да изпратите още детайли.'
+        'Нямам надеждна информация за това в сайта. Искате ли да ви насоча към консултант?'
     )
 
 def _messages_data(ticket):
@@ -227,9 +227,6 @@ def support_start(request):
     ticket = SupportTicket.objects.create(title=_support_title(text))
     SupportMessage.objects.create(ticket=ticket, author_type='visitor', text=text)
     needs_consultant = _support_requires_consultant(text)
-    if needs_consultant:
-        ticket.escalated = True
-        ticket.save(update_fields=['escalated', 'updated_at'])
     SupportMessage.objects.create(
         ticket=ticket,
         author_type='bot',
@@ -261,9 +258,6 @@ def support_message(request, public_id):
     SupportMessage.objects.create(ticket=ticket, author_type='visitor', text=text)
     if not ticket.escalated:
         needs_consultant = _support_requires_consultant(text)
-        if needs_consultant:
-            ticket.escalated = True
-            ticket.save(update_fields=['escalated', 'updated_at'])
         SupportMessage.objects.create(
             ticket=ticket,
             author_type='bot',
