@@ -1,3 +1,4 @@
+import html
 import json
 import logging
 from django.conf import settings
@@ -303,65 +304,104 @@ def _last_bot_offered_consultant(ticket):
 
 
 def _notify_support_staff(ticket):
-    """Send one consultant-escalation notification through the Brevo HTTPS API."""
-    recipient = settings.SUPPORT_NOTIFICATION_EMAIL
+    """Notify every active Support consultant through Brevo."""
     api_key = settings.BREVO_API_KEY
     sender_email = settings.BREVO_SENDER_EMAIL
     sender_name = settings.BREVO_SENDER_NAME
+    consultants = list(
+        UserProfile.objects.filter(is_staff=True)
+        .exclude(email='')
+        .values_list('email', flat=True)
+        .distinct()
+    )
 
-    if not all((recipient, api_key, sender_email)):
-        detail = 'Липсва BREVO_API_KEY, BREVO_SENDER_EMAIL или SUPPORT_NOTIFICATION_EMAIL в Render.'
+    if not all((consultants, api_key, sender_email)):
+        detail = 'Липсва активен консултант с имейл, BREVO_API_KEY или BREVO_SENDER_EMAIL в Render.'
         print(f'[support-email] SKIPPED for ticket #{ticket.pk}: {detail}', flush=True)
         return {'sent': False, 'detail': detail}
 
     ticket_url = f'https://marevstars-com.onrender.com/support/ticket/{ticket.public_id}/'
-    payload = json.dumps({
-        'sender': {'name': sender_name, 'email': sender_email},
-        'to': [{'email': recipient}],
-        'subject': f'Нов Support билет #{ticket.pk} чака консултант',
-        'textContent': (
-            f'Посетител поиска консултант за Support билет #{ticket.pk}.\n\n'
-            f'Отворете билета: {ticket_url}'
-        ),
-    }).encode('utf-8')
+    latest_visitor_message = (
+        ticket.messages.filter(author_type='visitor').order_by('-created_at').first()
+    )
+    request_text = latest_visitor_message.text if latest_visitor_message else 'Няма допълнително съобщение.'
+    received_at = ticket.created_at.strftime('%d.%m.%Y · %H:%M')
 
-    try:
-        req = urlrequest.Request(
-            'https://api.brevo.com/v3/smtp/email',
-            data=payload,
-            headers={
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'api-key': api_key,
-                'User-Agent': 'MarevStarsSupport/1.0',
-            },
-            method='POST',
-        )
-        with urlrequest.urlopen(req, timeout=10) as response:
-            body = response.read().decode('utf-8', errors='replace')
-            status = response.status
-        result = json.loads(body or '{}')
-        if not 200 <= status < 300 or not result.get('messageId'):
-            raise RuntimeError(result.get('message') or f'Brevo returned HTTP {status}: {body}')
-        print(
-            f'[support-email] SENT through Brevo for ticket #{ticket.pk}: {result["messageId"]}',
-            flush=True,
-        )
-        return {'sent': True}
-    except urlerror.HTTPError as exc:
-        error_body = exc.read().decode('utf-8', errors='replace')
-        print(
-            f'[support-email] FAILED through Brevo for ticket #{ticket.pk}: '
-            f'HTTP {exc.code} {error_body}',
-            flush=True,
-        )
-    except Exception as exc:
-        print(f'[support-email] FAILED through Brevo for ticket #{ticket.pk}: {exc!r}', flush=True)
-        logger.exception('Brevo notification failed for ticket #%s.', ticket.pk)
+    subject = f'[Marev Stars Support] Билет #{ticket.pk} чака консултант'
+    text_content = (
+        'Здравейте,\n\n'
+        'Има ново запитване, което изисква отговор от консултант.\n\n'
+        f'Номер на билет: #{ticket.pk}\n'
+        f'Тема: {ticket.title}\n'
+        f'Получено: {received_at}\n\n'
+        'Последно съобщение от посетителя:\n'
+        f'{request_text}\n\n'
+        f'Отворете билета и отговорете: {ticket_url}\n\n'
+        'Това е автоматично известие от Marev Stars Support.'
+    )
+    html_content = (
+        '<div style="font-family:Arial,sans-serif;color:#172b3a;line-height:1.55">'
+        '<h2 style="margin:0 0 16px;color:#12344d">Нов билет чака консултант</h2>'
+        '<p>Здравейте,</p>'
+        '<p>Има ново запитване, което изисква отговор от консултант.</p>'
+        '<table style="border-collapse:collapse;margin:16px 0">'
+        f'<tr><td style="padding:4px 18px 4px 0"><strong>Номер:</strong></td><td>#{ticket.pk}</td></tr>'
+        f'<tr><td style="padding:4px 18px 4px 0"><strong>Тема:</strong></td><td>{html.escape(ticket.title)}</td></tr>'
+        f'<tr><td style="padding:4px 18px 4px 0"><strong>Получено:</strong></td><td>{received_at}</td></tr>'
+        '</table>'
+        '<p><strong>Последно съобщение от посетителя:</strong></p>'
+        f'<blockquote style="margin:0 0 20px;padding:12px 16px;border-left:4px solid #f0c44c;background:#f6f8fa;white-space:pre-wrap">{html.escape(request_text)}</blockquote>'
+        f'<p><a href="{ticket_url}" style="display:inline-block;padding:10px 16px;background:#12344d;color:#fff;text-decoration:none;border-radius:4px">Отвори билета</a></p>'
+        '<p style="color:#5f6b76;font-size:12px">Автоматично известие от Marev Stars Support.</p>'
+        '</div>'
+    )
+
+    sent_count = 0
+    failed_recipients = []
+    for recipient in consultants:
+        payload = json.dumps({
+            'sender': {'name': sender_name, 'email': sender_email},
+            'to': [{'email': recipient}],
+            'subject': subject,
+            'textContent': text_content,
+            'htmlContent': html_content,
+        }).encode('utf-8')
+        try:
+            req = urlrequest.Request(
+                'https://api.brevo.com/v3/smtp/email',
+                data=payload,
+                headers={
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'api-key': api_key,
+                    'User-Agent': 'MarevStarsSupport/1.0',
+                },
+                method='POST',
+            )
+            with urlrequest.urlopen(req, timeout=10) as response:
+                body = response.read().decode('utf-8', errors='replace')
+                status = response.status
+            result = json.loads(body or '{}')
+            if not 200 <= status < 300 or not result.get('messageId'):
+                raise RuntimeError(result.get('message') or f'Brevo returned HTTP {status}: {body}')
+            sent_count += 1
+            print(f'[support-email] SENT through Brevo for ticket #{ticket.pk} to {recipient}: {result["messageId"]}', flush=True)
+        except urlerror.HTTPError as exc:
+            error_body = exc.read().decode('utf-8', errors='replace')
+            failed_recipients.append(recipient)
+            print(f'[support-email] FAILED through Brevo for ticket #{ticket.pk} to {recipient}: HTTP {exc.code} {error_body}', flush=True)
+        except Exception as exc:
+            failed_recipients.append(recipient)
+            print(f'[support-email] FAILED through Brevo for ticket #{ticket.pk} to {recipient}: {exc!r}', flush=True)
+            logger.exception('Brevo notification failed for ticket #%s.', ticket.pk)
+
+    if sent_count:
+        return {'sent': True, 'sent_count': sent_count, 'failed_recipients': failed_recipients}
     return {
         'sent': False,
-        'detail': 'Известието до консултанта не беше изпратено. Проверете Render Logs.',
+        'detail': 'Известието до консултантите не беше изпратено. Проверете Render Logs.',
     }
+
 
 def _messages_data(ticket):
     return [
