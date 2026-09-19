@@ -1,6 +1,6 @@
 (() => {
  const root=document.querySelector('.support-widget'); if(!root)return;
- const panel=root.querySelector('.support-panel'), list=root.querySelector('.support-messages'), form=root.querySelector('.support-form'), input=form.querySelector('textarea'), escalate=root.querySelector('.support-escalate'), closeTicket=root.querySelector('.support-close-ticket'), meta=root.querySelector('.support-ticket-meta'), historyBox=root.querySelector('.support-history-list'), closeDialog=root.querySelector('.support-close-dialog'), closeCancel=root.querySelector('.support-close-cancel'), closeConfirm=root.querySelector('.support-close-confirm');
+ const panel=root.querySelector('.support-panel'), list=root.querySelector('.support-messages'), form=root.querySelector('.support-form'), input=form.querySelector('textarea'), escalate=root.querySelector('.support-escalate'), closeTicket=root.querySelector('.support-close-ticket'), meta=root.querySelector('.support-ticket-meta'), historyBox=root.querySelector('.support-history-list');
  let ticket=localStorage.getItem('marev_support_ticket'), timer, messageFingerprint='';
  const blank='00000000-0000-0000-0000-000000000000', csrf=()=>document.cookie.split('; ').find(x=>x.startsWith('csrftoken='))?.split('=')[1]||'', url=end=>root.dataset.threadUrl.replace(blank,ticket)+end, closeUrl=()=>root.dataset.closeUrl.replace(blank,ticket);
  const api=(u,o={})=>fetch(u,{...o,headers:{'Content-Type':'application/json','X-CSRFToken':csrf()}}).then(async r=>{const raw=await r.text();let d={};try{d=JSON.parse(raw)}catch{}if(!r.ok){const err=Error(d.error||'Възникна проблем.');err.status=r.status;throw err}return d});
@@ -17,9 +17,5 @@
  input.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit()}};
  form.onsubmit=async e=>{e.preventDefault();const text=input.value.trim();if(!text)return;input.disabled=true;try{const d=ticket?await api(url('message/'),{method:'POST',body:JSON.stringify({text})}):await api(root.dataset.startUrl,{method:'POST',body:JSON.stringify({text})});if(!ticket){ticket=d.ticket;localStorage.setItem('marev_support_ticket',ticket);save(ticket)}const hasBot=d.messages.at(-1)?.author==='bot';draw(hasBot?d.messages.slice(0,-1):d.messages);state(d);if(hasBot){list.insertAdjacentHTML('beforeend','<article class="support-message support-typing"><span></span><span></span><span></span></article>');setTimeout(()=>draw(d.messages),2300)}input.value=''}catch(err){alert(err.message||'Възникна проблем.')}input.disabled=false;input.focus()};
  escalate.onclick=async()=>{const d=await api(url('escalate/'),{method:'POST',body:'{}'});draw(d.messages);state(d)};
- const hideCloseDialog=()=>{closeDialog.hidden=true;};
- closeTicket.onclick=()=>{closeDialog.hidden=false;closeConfirm.focus()};
- closeCancel.onclick=hideCloseDialog;
- closeDialog.onclick=e=>{if(e.target===closeDialog)hideCloseDialog()};
- closeConfirm.onclick=async()=>{try{const d=await api(closeUrl(),{method:'POST',body:'{}'});draw(d.messages);state(d);hideCloseDialog()}catch(err){alert(err.message||'Възникна проблем.')}};
+ closeTicket.onclick=async()=>{try{const d=await api(closeUrl(),{method:'POST',body:'{}'});draw(d.messages);state(d)}catch(err){alert(err.message||'Възникна проблем.')}};
 })();
