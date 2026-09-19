@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}{% if site_language == 'en' %}Training | Marev Stars FC{% else %}Тренировки | ФК Марев Старс{% endif %}
-{% endif %}
-{% endblock %}
+{% block title %}{% if site_language == 'en' %}Training | Marev Stars FC{% else %}Тренировки | ФК Марев Старс{% endif %}{% endblock %}
 {% block content %}
 {% if site_language == 'en' %}
 <header class="page-heading"><p class="eyebrow">On the pitch every week</p><h1>Training</h1><p class="lead">Find the right group and contact us to register.</p></header>
