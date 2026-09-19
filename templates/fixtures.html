@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
-{% block title %}Програма U15 | ФК Марев Старс{% endblock %}
+{% block title %}{% if site_language == 'en' %}U15 Fixtures | Marev Stars FC{% else %}Програма U15 | ФК Марев Старс{% endif %}{% endblock %}
 {% block content %}
 <header class="page-heading fixtures-heading">
-    <p class="eyebrow">Сезон 2026/27 · U15</p>
-    <h1>Програма на<br><span>първенството</span></h1>
+    <p class="eyebrow">{% if site_language == 'en' %}Season 2026/27 · U15{% else %}Сезон 2026/27 · U15{% endif %}</p>
+    <h1>{% if site_language == 'en' %}Championship<br><span>fixtures</span>{% else %}Програма на<br><span>първенството</span>{% endif %}</h1>
 </header>
-<section class="fixtures" aria-label="Предстоящи мачове">
-    <div class="fixtures-intro"><strong>Предстоящи мачове</strong><a class="text-link" href="https://bfu-tournaments.com/tournaments/2/387/?tid=98&amp;season=1440&amp;view=upcoming-matches" target="_blank" rel="noopener noreferrer">Официална програма <span aria-hidden="true">↗</span></a></div>
+<section class="fixtures" aria-label="{% if site_language == 'en' %}Upcoming matches{% else %}Предстоящи мачове{% endif %}">
+    <div class="fixtures-intro"><strong>{% if site_language == 'en' %}Upcoming matches{% else %}Предстоящи мачове{% endif %}</strong><a class="text-link" href="https://bfu-tournaments.com/tournaments/2/387/?tid=98&amp;season=1440&amp;view=upcoming-matches" target="_blank" rel="noopener noreferrer">{% if site_language == 'en' %}Official fixtures{% else %}Официална програма{% endif %} <span aria-hidden="true">↗</span></a></div>
     <ol class="fixtures-list">
         {% for match in upcoming_matches %}
-        <li class="fixture {% if match.is_home_match %}fixture-home{% else %}fixture-away{% endif %}"><p class="fixture-round">Кръг {{ match.round_number }}</p><time datetime="{{ match.match_date|date:'Y-m-d' }}"><span>{{ match.match_date|date:'d' }}</span> {{ match.match_date|date:'F' }}<small>{{ match.match_date|date:'l' }} · {{ match.match_time|time:'H:i' }}</small></time><div class="fixture-teams"><strong>{{ match.home_team }}</strong><span>—</span><strong>{{ match.away_team }}</strong></div><div class="fixture-place"><b>{% if match.is_home_match %}Домакин{% else %}Гост{% endif %}</b><span>{% if match.is_home_match %}{{ match.venue|default:'Спортпалас' }}{% else %}Гостуване{% endif %}</span></div></li>
-        {% empty %}<li class="fixture-empty">Няма предстоящи мачове.</li>{% endfor %}
+        <li class="fixture {% if match.is_home_match %}fixture-home{% else %}fixture-away{% endif %}"><p class="fixture-round">{% if site_language == 'en' %}Round{% else %}Кръг{% endif %} {{ match.round_number }}</p><time datetime="{{ match.match_date|date:'Y-m-d' }}"><span>{{ match.match_date|date:'d' }}</span> {{ match.match_date|date:'F' }}<small>{{ match.match_date|date:'l' }} · {{ match.match_time|time:'H:i' }}</small></time><div class="fixture-teams"><strong>{{ match.home_team }}</strong><span>—</span><strong>{{ match.away_team }}</strong></div><div class="fixture-place"><b>{% if match.is_home_match %}{% if site_language == 'en' %}Home{% else %}Домакин{% endif %}{% else %}{% if site_language == 'en' %}Away{% else %}Гост{% endif %}{% endif %}</b><span>{% if match.is_home_match %}{{ match.venue|default:'Спортпалас' }}{% else %}{% if site_language == 'en' %}Away match{% else %}Гостуване{% endif %}{% endif %}</span></div></li>
+        {% empty %}<li class="fixture-empty">{% if site_language == 'en' %}There are no upcoming matches.{% else %}Няма предстоящи мачове.{% endif %}</li>{% endfor %}
     </ol>
 </section>
 {% endblock %}

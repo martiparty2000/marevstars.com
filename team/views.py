@@ -1,6 +1,7 @@
 import html
 import json
 import logging
+import re
 from django.conf import settings
 from urllib import request as urlrequest, error as urlerror
 
@@ -67,12 +68,11 @@ def cookies_view(request):
 
 
 def _is_english(text):
-    words = text.lower()
-    return any(word in words for word in (
-        'hello', 'hi', 'how', 'what', 'when', 'where', 'can i', 'join',
-        'club', 'training', 'schedule', 'coach', 'price', 'fees', 'please',
-        'goalkeeper', 'goalie', 'individual', 'registration', 'contact', 'free', 'trial',
-    ))
+    """Use one response language only: Cyrillic means Bulgarian, Latin means English."""
+    cleaned = text.strip()
+    if re.search(r'[А-Яа-яЁё]', cleaned):
+        return False
+    return bool(re.search(r'[A-Za-z]', cleaned))
 
 
 def _support_reply(text):

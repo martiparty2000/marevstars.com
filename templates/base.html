@@ -1,35 +1,39 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="bg">
+<html lang="{% if site_language == 'en' %}en{% else %}bg{% endif %}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="ФК Марев Старс - футболни тренировки за деца от 8 до 16 години във Варна. График, треньорски екип и контакти за записване.">
+    <meta name="description" content="ФК Марев Старс — футболни тренировки за деца от 8 до 16 години във Варна. График, треньорски екип и контакти за записване.">
     <meta name="theme-color" content="#0b2033">
-    <title>{% block title %}ФК Марев Старс | Футбол във Варна{% endblock %}</title>
+    <title>{% block title %}{% if site_language == 'en' %}Marev Stars FC | Football in Varna{% else %}ФК Марев Старс | Футбол във Варна{% endif %}{% endblock %}</title>
     <link rel="icon" type="image/png" href="{% static 'images/favicon.ico.png' %}">
     <link rel="stylesheet" href="{% static 'css/club.css' %}">
     <script src="{% static 'js/club.js' %}" defer></script>
 </head>
 <body>
-<a class="skip-link" href="#main">Към съдържанието</a>
+<a class="skip-link" href="#main">{% if site_language == 'en' %}Skip to content{% else %}Към съдържанието{% endif %}</a>
 <header class="site-header">
-    <nav class="site-nav" aria-label="Основна навигация">
-        <a class="logo-wrap" href="{% url 'team:home' %}" aria-label="Марев Старс — начало">
+    <nav class="site-nav" aria-label="{% if site_language == 'en' %}Main navigation{% else %}Основна навигация{% endif %}">
+        <a class="logo-wrap" href="{% url 'team:home' %}" aria-label="{% if site_language == 'en' %}Marev Stars — home{% else %}Марев Старс — начало{% endif %}">
             <img src="{% static 'images/logo.png' %}" alt="" class="logo-img" width="48" height="60">
-            <span class="logo-text">MAREV STARS<small>ФУТБОЛЕН КЛУБ · ВАРНА</small></span>
+            <span class="logo-text">MAREV STARS<small>{% if site_language == 'en' %}FOOTBALL CLUB · VARNA{% else %}ФУТБОЛЕН КЛУБ · ВАРНА{% endif %}</small></span>
         </a>
         <div class="nav-links">
             {% with current=request.resolver_match.url_name %}
-            <a href="{% url 'team:home' %}" {% if current == 'home' %}aria-current="page"{% endif %}>Начало</a>
-            <a href="{% url 'team:schedule' %}" {% if current == 'schedule' %}aria-current="page"{% endif %}>Тренировки</a>
-            <a href="{% url 'team:fixtures' %}" {% if current == 'fixtures' %}aria-current="page"{% endif %}>Първенство</a>
-            <a href="{% url 'team:coaches' %}" {% if current == 'coaches' %}aria-current="page"{% endif %}>Треньори</a>
-            <a href="{% url 'team:contact' %}" {% if current == 'contact' %}aria-current="page"{% endif %}>Контакти</a>
+            <a href="{% url 'team:home' %}" {% if current == 'home' %}aria-current="page"{% endif %}>{% if site_language == 'en' %}Home{% else %}Начало{% endif %}</a>
+            <a href="{% url 'team:schedule' %}" {% if current == 'schedule' %}aria-current="page"{% endif %}>{% if site_language == 'en' %}Training{% else %}Тренировки{% endif %}</a>
+            <a href="{% url 'team:fixtures' %}" {% if current == 'fixtures' %}aria-current="page"{% endif %}>{% if site_language == 'en' %}Championship{% else %}Първенство{% endif %}</a>
+            <a href="{% url 'team:coaches' %}" {% if current == 'coaches' %}aria-current="page"{% endif %}>{% if site_language == 'en' %}Coaches{% else %}Треньори{% endif %}</a>
+            <a href="{% url 'team:contact' %}" {% if current == 'contact' %}aria-current="page"{% endif %}>{% if site_language == 'en' %}Contact{% else %}Контакти{% endif %}</a>
             {% endwith %}
             {% if user.is_authenticated and user.is_staff or user.is_superuser %}
             <a href="{% url 'team:support_dashboard' %}">Support</a>
             {% endif %}
+        </div>
+        <div class="language-switcher" aria-label="{% if site_language == 'en' %}Choose language{% else %}Избор на език{% endif %}">
+            <a{% if site_language == 'bg' %} class="is-current"{% endif %} href="?lang=bg" hreflang="bg" lang="bg">BG</a>
+            <a{% if site_language == 'en' %} class="is-current"{% endif %} href="?lang=en" hreflang="en" lang="en">EN</a>
         </div>
     </nav>
 </header>
@@ -41,21 +45,21 @@
 </main>
 <footer class="site-footer">
     <div class="footer-inner">
-        <div class="footer-brand"><strong>МАРЕВ СТАРС</strong><p>Грешките ни учат, победите ни вдъхновяват.</p></div>
-        <nav class="footer-legal" aria-label="Правна информация"><strong>Информация</strong><a href="{% url 'team:terms' %}">Общи условия</a><a href="{% url 'team:privacy' %}">Поверителност</a><a href="{% url 'team:cookies' %}">Бисквитки</a></nav>
-        <div class="footer-contact"><strong>Връзка</strong><a href="tel:+359899173417">089 917 3417</a><button class="footer-support support-open" type="button">Support</button><div class="social-links" aria-label="Социални мрежи"><a href="https://www.facebook.com/marevstars/?locale=bg_BG" target="_blank" rel="noopener noreferrer">Facebook ↗</a><a href="https://www.youtube.com/@marevstars" target="_blank" rel="noopener noreferrer">YouTube ↗</a></div></div>
-        <p class="copyright">© {% now 'Y' %} ФК Марев Старс · Варна</p>
+        <div class="footer-brand"><strong>MAREV STARS</strong><p>{% if site_language == 'en' %}Mistakes teach us. Victories inspire us.{% else %}Грешките ни учат, победите ни вдъхновяват.{% endif %}</p></div>
+        <nav class="footer-legal" aria-label="{% if site_language == 'en' %}Legal information{% else %}Правна информация{% endif %}"><strong>{% if site_language == 'en' %}Information{% else %}Информация{% endif %}</strong><a href="{% url 'team:terms' %}">{% if site_language == 'en' %}Terms{% else %}Общи условия{% endif %}</a><a href="{% url 'team:privacy' %}">{% if site_language == 'en' %}Privacy{% else %}Поверителност{% endif %}</a><a href="{% url 'team:cookies' %}">{% if site_language == 'en' %}Cookies{% else %}Бисквитки{% endif %}</a></nav>
+        <div class="footer-contact"><strong>{% if site_language == 'en' %}Contact{% else %}Връзка{% endif %}</strong><a href="tel:+359899173417">089 917 3417</a><button class="footer-support support-open" type="button">Support</button><div class="social-links" aria-label="Социални мрежи"><a href="https://www.facebook.com/marevstars/?locale=bg_BG" target="_blank" rel="noopener noreferrer">Facebook ↗</a><a href="https://www.youtube.com/@marevstars" target="_blank" rel="noopener noreferrer">YouTube ↗</a></div></div>
+        <p class="copyright">© {% now 'Y' %} {% if site_language == 'en' %}Marev Stars FC · Varna{% else %}ФК Марев Старс · Варна{% endif %}</p>
     </div>
 </footer>
-<div class="support-widget" data-start-url="{% url 'team:support_start' %}" data-thread-url="{% url 'team:support_thread' public_id='00000000-0000-0000-0000-000000000000' %}" data-close-url="{% url 'team:support_close' public_id='00000000-0000-0000-0000-000000000000' %}">
+<div class="support-widget" data-language="{{ site_language }}" data-start-url="{% url 'team:support_start' %}" data-thread-url="{% url 'team:support_thread' public_id='00000000-0000-0000-0000-000000000000' %}" data-close-url="{% url 'team:support_close' public_id='00000000-0000-0000-0000-000000000000' %}">
     {% csrf_token %}
     <button class="support-launcher" type="button" aria-expanded="false" aria-controls="support-panel">Support <span aria-hidden="true">●</span></button>
-    <section class="support-panel" id="support-panel" hidden aria-label="Support чат">
-        <header><div><strong>Support</strong><small>Марев Старс</small></div><div><button class="support-history" type="button">История</button><button class="support-new" type="button">Нов чат</button><button class="support-close" type="button" aria-label="Затвори Support">×</button></div></header>
+    <section class="support-panel" id="support-panel" hidden aria-label="{% if site_language == 'en' %}Support chat{% else %}Support чат{% endif %}">
+        <header><div><strong>Support</strong><small>MAREV STARS</small></div><div><button class="support-history" type="button">{% if site_language == 'en' %}History{% else %}История{% endif %}</button><button class="support-new" type="button">{% if site_language == 'en' %}New chat{% else %}Нов чат{% endif %}</button><button class="support-close" type="button" aria-label="{% if site_language == 'en' %}Close Support{% else %}Затвори Support{% endif %}">×</button></div></header>
         <div class="support-history-list" hidden></div>
         <div class="support-messages" aria-live="polite"></div>
-        <div class="support-actions"><button class="support-escalate" type="button" hidden>Свържи ме с консултант</button><button class="support-close-ticket" type="button" hidden>Затвори билет</button></div>
-        <div class="support-ticket-meta" hidden></div><form class="support-form"><label class="sr-only" for="support-text">Вашето съобщение</label><textarea id="support-text" maxlength="2000" required placeholder="Напишете въпроса си..."></textarea><button type="submit" aria-label="Изпрати">➜</button></form>
+        <div class="support-actions"><button class="support-escalate" type="button" hidden>{% if site_language == 'en' %}Connect me with a consultant{% else %}Свържи ме с консултант{% endif %}</button><button class="support-close-ticket" type="button" hidden>{% if site_language == 'en' %}Close ticket{% else %}Затвори билет{% endif %}</button></div>
+        <div class="support-ticket-meta" hidden></div><form class="support-form"><label class="sr-only" for="support-text">{% if site_language == 'en' %}Your message{% else %}Вашето съобщение{% endif %}</label><textarea id="support-text" maxlength="2000" required placeholder="{% if site_language == 'en' %}Write your question...{% else %}Напишете въпроса си...{% endif %}"></textarea><button type="submit" aria-label="{% if site_language == 'en' %}Send{% else %}Изпрати{% endif %}">➜</button></form>
     </section>
 </div>
 </body>

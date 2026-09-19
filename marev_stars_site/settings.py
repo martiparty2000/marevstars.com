@@ -47,6 +47,7 @@ TEMPLATES = [{
             'django.contrib.auth.context_processors.auth',
             'django.contrib.messages.context_processors.messages',
             'team.context_processors.pending_approvals_processor',
+            'team.context_processors.site_language_processor',
         ],
     },
 }]
