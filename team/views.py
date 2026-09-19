@@ -307,10 +307,7 @@ def _notify_support_staff(ticket):
     """Queue the notification without delaying the visitor's chat response."""
     recipient = settings.SUPPORT_NOTIFICATION_EMAIL
     if not recipient or not settings.EMAIL_HOST_USER or not settings.EMAIL_HOST_PASSWORD:
-        logger.warning(
-            'Support email was not sent: EMAIL_HOST_USER, EMAIL_HOST_PASSWORD or '
-            'SUPPORT_NOTIFICATION_EMAIL is missing.'
-        )
+        print('[support-email] NOT SENT: missing EMAIL_HOST_USER, EMAIL_HOST_PASSWORD or SUPPORT_NOTIFICATION_EMAIL.', flush=True)
         return
 
     subject = f'Нов Support билет #{ticket.pk} чака консултант'
@@ -328,8 +325,9 @@ def _notify_support_staff(ticket):
                 recipient_list=[recipient],
                 fail_silently=False,
             )
-            logger.info('Support notification email sent for ticket #%s.', ticket.pk)
-        except Exception:
+            print(f'[support-email] SENT for ticket #{ticket.pk}.', flush=True)
+        except Exception as exc:
+            print(f'[support-email] FAILED for ticket #{ticket.pk}: {exc!r}', flush=True)
             logger.exception('Support notification email failed for ticket #%s.', ticket.pk)
 
     Thread(target=send_notification, daemon=True).start()
