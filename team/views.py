@@ -3,7 +3,8 @@ import logging
 from threading import Thread
 
 from django.conf import settings
-from django.core.mail import send_mail
+from urllib import request as urlrequest
+
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -304,31 +305,41 @@ def _last_bot_offered_consultant(ticket):
 
 
 def _notify_support_staff(ticket):
-    """Queue the notification without delaying the visitor's chat response."""
+    """Send the consultant notification through Resend's HTTPS API."""
     recipient = settings.SUPPORT_NOTIFICATION_EMAIL
-    if not recipient or not settings.EMAIL_HOST_USER or not settings.EMAIL_HOST_PASSWORD:
-        print('[support-email] NOT SENT: missing EMAIL_HOST_USER, EMAIL_HOST_PASSWORD or SUPPORT_NOTIFICATION_EMAIL.', flush=True)
+    api_key = settings.RESEND_API_KEY
+    if not recipient or not api_key:
+        print('[support-email] NOT SENT: missing SUPPORT_NOTIFICATION_EMAIL or RESEND_API_KEY.', flush=True)
         return
 
-    subject = f'Нов Support билет #{ticket.pk} чака консултант'
-    message = (
-        f'Посетител поиска консултант за билет #{ticket.pk}.\n\n'
-        f'Отворете билета: https://marevstars-com.onrender.com/support/ticket/{ticket.public_id}/'
-    )
+    payload = json.dumps({
+        'from': settings.RESEND_FROM_EMAIL,
+        'to': [recipient],
+        'subject': f'Нов Support билет #{ticket.pk} чака консултант',
+        'text': (
+            f'Посетител поиска консултант за билет #{ticket.pk}.\n\n'
+            f'Отворете билета: https://marevstars-com.onrender.com/support/ticket/{ticket.public_id}/'
+        ),
+    }).encode('utf-8')
 
     def send_notification():
         try:
-            send_mail(
-                subject=subject,
-                message=message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[recipient],
-                fail_silently=False,
+            req = urlrequest.Request(
+                'https://api.resend.com/emails',
+                data=payload,
+                headers={
+                    'Authorization': f'Bearer {api_key}',
+                    'Content-Type': 'application/json',
+                },
+                method='POST',
             )
-            print(f'[support-email] SENT for ticket #{ticket.pk}.', flush=True)
+            with urlrequest.urlopen(req, timeout=10) as response:
+                if not 200 <= response.status < 300:
+                    raise RuntimeError(f'Resend returned HTTP {response.status}')
+            print(f'[support-email] SENT through Resend for ticket #{ticket.pk}.', flush=True)
         except Exception as exc:
-            print(f'[support-email] FAILED for ticket #{ticket.pk}: {exc!r}', flush=True)
-            logger.exception('Support notification email failed for ticket #%s.', ticket.pk)
+            print(f'[support-email] FAILED through Resend for ticket #{ticket.pk}: {exc!r}', flush=True)
+            logger.exception('Resend notification failed for ticket #%s.', ticket.pk)
 
     Thread(target=send_notification, daemon=True).start()
 
