@@ -305,12 +305,13 @@ def _last_bot_offered_consultant(ticket):
 
 
 def _notify_support_staff(ticket):
-    """Send the consultant notification through Resend's HTTPS API."""
+    """Send the consultant notification and return its real delivery result."""
     recipient = settings.SUPPORT_NOTIFICATION_EMAIL
     api_key = settings.RESEND_API_KEY
     if not recipient or not api_key:
-        print('[support-email] NOT SENT: missing SUPPORT_NOTIFICATION_EMAIL or RESEND_API_KEY.', flush=True)
-        return
+        detail = 'Липсва RESEND_API_KEY или SUPPORT_NOTIFICATION_EMAIL в Render.'
+        print(f'[support-email] NOT SENT for ticket #{ticket.pk}: {detail}', flush=True)
+        return {'sent': False, 'detail': detail}
 
     payload = json.dumps({
         'from': settings.RESEND_FROM_EMAIL,
@@ -322,26 +323,29 @@ def _notify_support_staff(ticket):
         ),
     }).encode('utf-8')
 
-    def send_notification():
-        try:
-            req = urlrequest.Request(
-                'https://api.resend.com/emails',
-                data=payload,
-                headers={
-                    'Authorization': f'Bearer {api_key}',
-                    'Content-Type': 'application/json',
-                },
-                method='POST',
-            )
-            with urlrequest.urlopen(req, timeout=10) as response:
-                if not 200 <= response.status < 300:
-                    raise RuntimeError(f'Resend returned HTTP {response.status}')
-            print(f'[support-email] SENT through Resend for ticket #{ticket.pk}.', flush=True)
-        except Exception as exc:
-            print(f'[support-email] FAILED through Resend for ticket #{ticket.pk}: {exc!r}', flush=True)
-            logger.exception('Resend notification failed for ticket #%s.', ticket.pk)
-
-    Thread(target=send_notification, daemon=True).start()
+    try:
+        req = urlrequest.Request(
+            'https://api.resend.com/emails',
+            data=payload,
+            headers={
+                'Authorization': f'Bearer {api_key}',
+                'Content-Type': 'application/json',
+            },
+            method='POST',
+        )
+        with urlrequest.urlopen(req, timeout=6) as response:
+            body = response.read().decode('utf-8', errors='replace')
+            if not 200 <= response.status < 300:
+                raise RuntimeError(f'Resend returned HTTP {response.status}: {body}')
+        print(f'[support-email] SENT through Resend for ticket #{ticket.pk}: {body}', flush=True)
+        return {'sent': True}
+    except Exception as exc:
+        print(f'[support-email] FAILED through Resend for ticket #{ticket.pk}: {exc!r}', flush=True)
+        logger.exception('Resend notification failed for ticket #%s.', ticket.pk)
+        return {
+            'sent': False,
+            'detail': 'Известието до консултанта не беше изпратено. Проверете Render Logs.',
+        }
 
 def _messages_data(ticket):
     return [
@@ -409,7 +413,7 @@ def support_message(request, public_id):
                 author_type='bot',
                 text=_consultant_escalation_notice(text),
             )
-            _notify_support_staff(ticket)
+            notification = _notify_support_staff(ticket)
         else:
             needs_consultant = _support_requires_consultant(text)
             SupportMessage.objects.create(
@@ -418,7 +422,7 @@ def support_message(request, public_id):
                 text=_consultant_notice(text) if needs_consultant else _support_reply(text),
             )
     ticket.refresh_from_db()
-    return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'status': ticket.status, 'escalated': ticket.escalated, 'messages': _messages_data(ticket)})
+    return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'status': ticket.status, 'escalated': ticket.escalated, 'messages': _messages_data(ticket), 'notification': locals().get('notification')})
 
 
 @require_POST
@@ -436,8 +440,8 @@ def support_escalate(request, public_id):
         author_type='bot',
         text=_consultant_escalation_notice(last_message.text if last_message else ''),
     )
-    _notify_support_staff(ticket)
-    return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'status': ticket.status, 'messages': _messages_data(ticket), 'escalated': True})
+    notification = _notify_support_staff(ticket)
+    return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'status': ticket.status, 'messages': _messages_data(ticket), 'escalated': True, 'notification': notification})
 
 @require_POST
 def support_close(request, public_id):
