@@ -1,38 +1,17 @@
 {% extends 'base.html' %}
-{% load static %}
 {% block title %}{% if site_language == 'en' %}Contact | Marev Stars FC{% else %}Контакти | ФК Марев Старс{% endif %}{% endblock %}
 {% block content %}
 {% if site_language == 'en' %}
 <section class="page-heading contact-heading"><p class="eyebrow">LET'S TALK ABOUT FOOTBALL</p><h1>We are here to help</h1><p class="lead">For registration, group questions or individual training, choose the most convenient way to contact us.</p></section>
-<section class="contact-grid contact-grid-two" aria-label="Ways to contact us"><article class="contact-card contact-card-primary contact-card-call"><div><p class="eyebrow">FASTEST</p><h2>Call us</h2><p>For registration or a specific question, speak directly with the head coach.</p></div><a class="button" href="tel:+359899173417">089 917 3417 <span aria-hidden="true">↗</span></a><small>This is usually the fastest way to receive an answer.</small></article><article class="contact-card contact-card-support"><div><p class="eyebrow">ONLINE SUPPORT</p><h2>Write to us here</h2><p>Ask about the schedule, groups, training or location. If needed, a consultant will take over the conversation.</p></div><button class="button button-outline support-open" type="button">Open Support <span aria-hidden="true">→</span></button><small>Your conversation history remains available in this browser.</small></article></section>
-{% else %}
-{% extends 'base.html' %}
-{% load static %}
-
-<section class="page-heading contact-heading">
-    <p class="eyebrow">ДА ПОГОВОРИМ ЗА ФУТБОЛ</p>
-    <h1>Очакваме ви</h1>
-    <p class="lead">За записване, въпроси за групите или индивидуална тренировка, изберете най-удобния начин да се свържете с нас.</p>
+<section class="contact-grid contact-grid-two" aria-label="Ways to contact us">
+<article class="contact-card contact-card-primary contact-card-call"><div><p class="eyebrow">FASTEST</p><h2>Call us</h2><p>For registration or a specific question, speak directly with the head coach.</p></div><a class="button" href="tel:+359899173417">089 917 3417 <span aria-hidden="true">↗</span></a><small>This is usually the fastest way to receive an answer.</small></article>
+<article class="contact-card contact-card-support"><div><p class="eyebrow">ONLINE SUPPORT</p><h2>Write to us here</h2><p>Ask about the schedule, groups, training or location. If needed, a consultant will take over the conversation.</p></div><button class="button button-outline support-open" type="button">Open Support <span aria-hidden="true">→</span></button><small>Your conversation history remains available in this browser.</small></article>
 </section>
+{% else %}
+<section class="page-heading contact-heading"><p class="eyebrow">ДА ПОГОВОРИМ ЗА ФУТБОЛ</p><h1>Очакваме ви</h1><p class="lead">За записване, въпроси за групите или индивидуална тренировка, изберете най-удобния начин да се свържете с нас.</p></section>
 <section class="contact-grid contact-grid-two" aria-label="Начини за връзка">
-    <article class="contact-card contact-card-primary contact-card-call">
-        <div>
-            <p class="eyebrow">НАЙ-БЪРЗО</p>
-            <h2>Обадете се</h2>
-            <p>За записване или конкретен въпрос разговаряйте директно с главния треньор.</p>
-        </div>
-        <a class="button" href="tel:+359899173417">089 917 3417 <span aria-hidden="true">↗</span></a>
-        <small>Обикновено това е най-бързият начин да получите отговор.</small>
-    </article>
-    <article class="contact-card contact-card-support">
-        <div>
-            <p class="eyebrow">ОНЛАЙН SUPPORT</p>
-            <h2>Пишете ни тук</h2>
-            <p>Попитайте за график, група, тренировки или място. Ако е нужно, разговорът се поема от консултант.</p>
-        </div>
-        <button class="button button-outline support-open" type="button">Отвори Support <span aria-hidden="true">→</span></button>
-        <small>Историята на разговора остава достъпна в този браузър.</small>
-    </article>
+<article class="contact-card contact-card-primary contact-card-call"><div><p class="eyebrow">НАЙ-БЪРЗО</p><h2>Обадете се</h2><p>За записване или конкретен въпрос разговаряйте директно с главния треньор.</p></div><a class="button" href="tel:+359899173417">089 917 3417 <span aria-hidden="true">↗</span></a><small>Обикновено това е най-бързият начин да получите отговор.</small></article>
+<article class="contact-card contact-card-support"><div><p class="eyebrow">ОНЛАЙН SUPPORT</p><h2>Пишете ни тук</h2><p>Попитайте за график, група, тренировки или място. Ако е нужно, разговорът се поема от консултант.</p></div><button class="button button-outline support-open" type="button">Отвори Support <span aria-hidden="true">→</span></button><small>Историята на разговора остава достъпна в този браузър.</small></article>
 </section>
 {% endif %}
 {% endblock %}
