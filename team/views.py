@@ -276,8 +276,9 @@ def _is_consultant_confirmation(text):
     message = ' '.join(text.lower().split()).strip(' .!?')
     confirmations = (
         'да', 'да моля', 'да, моля', 'искам консултант', 'искам да говоря с консултант',
+        'може ли консултант', 'може ли да говоря с консултант', 'може ли да ме свържете с консултант',
         'свържи ме с консултант', 'насочи ме към консултант',
-        'yes', 'yes please', 'i want a consultant', 'connect me with a consultant',
+        'yes', 'yes please', 'can i speak to a consultant', 'i want a consultant', 'connect me with a consultant',
     )
     return message in confirmations
 
