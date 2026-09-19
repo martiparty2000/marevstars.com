@@ -1,7 +1,7 @@
 import json
 import logging
 from django.conf import settings
-from urllib import parse as urlparse, request as urlrequest, error as urlerror
+from urllib import request as urlrequest, error as urlerror
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -311,7 +311,7 @@ def _notify_support_staff(ticket):
         return {'sent': False, 'detail': detail}
 
     ticket_url = f'https://marevstars-com.onrender.com/support/ticket/{ticket.public_id}/'
-    payload = urlparse.urlencode({
+    payload = json.dumps({
         '_subject': f'Нов Support билет #{ticket.pk} чака консултант',
         'ticket_number': ticket.pk,
         'message': (
@@ -329,16 +329,17 @@ def _notify_support_staff(ticket):
             data=payload,
             headers={
                 'Accept': 'application/json',
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
                 'User-Agent': 'MarevStarsSupport/1.0',
             },
             method='POST',
         )
         with urlrequest.urlopen(req, timeout=10) as response:
             body = response.read().decode('utf-8', errors='replace')
-        if not 200 <= response.status < 300:
-            raise RuntimeError(f'FormSubmit returned HTTP {response.status}: {body}')
-        print(f'[support-email] SENT through FormSubmit for ticket #{ticket.pk}: {body}', flush=True)
+        result = json.loads(body or '{}')
+        if not 200 <= response.status < 300 or str(result.get('success')).lower() != 'true':
+            raise RuntimeError(result.get('message') or f'FormSubmit returned HTTP {response.status}')
+        print(f'[support-email] SENT through FormSubmit for ticket #{ticket.pk}', flush=True)
         return {'sent': True}
     except urlerror.HTTPError as exc:
         error_body = exc.read().decode('utf-8', errors='replace')
