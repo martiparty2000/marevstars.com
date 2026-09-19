@@ -311,7 +311,7 @@ def _notify_support_staff(ticket):
     consultants = list(
         UserProfile.objects.filter(is_staff=True)
         .exclude(email='')
-        .values_list('email', flat=True)
+        .values_list('full_name', 'email')
         .distinct()
     )
 
@@ -328,37 +328,37 @@ def _notify_support_staff(ticket):
     received_at = ticket.created_at.strftime('%d.%m.%Y · %H:%M')
 
     subject = f'[Marev Stars Support] Билет #{ticket.pk} чака консултант'
-    text_content = (
-        'Здравейте,\n\n'
-        'Има ново запитване, което изисква отговор от консултант.\n\n'
-        f'Номер на билет: #{ticket.pk}\n'
-        f'Тема: {ticket.title}\n'
-        f'Получено: {received_at}\n\n'
-        'Последно съобщение от посетителя:\n'
-        f'{request_text}\n\n'
-        f'Отворете билета и отговорете: {ticket_url}\n\n'
-        'Това е автоматично известие от Marev Stars Support.'
-    )
-    html_content = (
-        '<div style="font-family:Arial,sans-serif;color:#172b3a;line-height:1.55">'
-        '<h2 style="margin:0 0 16px;color:#12344d">Нов билет чака консултант</h2>'
-        '<p>Здравейте,</p>'
-        '<p>Има ново запитване, което изисква отговор от консултант.</p>'
-        '<table style="border-collapse:collapse;margin:16px 0">'
-        f'<tr><td style="padding:4px 18px 4px 0"><strong>Номер:</strong></td><td>#{ticket.pk}</td></tr>'
-        f'<tr><td style="padding:4px 18px 4px 0"><strong>Тема:</strong></td><td>{html.escape(ticket.title)}</td></tr>'
-        f'<tr><td style="padding:4px 18px 4px 0"><strong>Получено:</strong></td><td>{received_at}</td></tr>'
-        '</table>'
-        '<p><strong>Последно съобщение от посетителя:</strong></p>'
-        f'<blockquote style="margin:0 0 20px;padding:12px 16px;border-left:4px solid #f0c44c;background:#f6f8fa;white-space:pre-wrap">{html.escape(request_text)}</blockquote>'
-        f'<p><a href="{ticket_url}" style="display:inline-block;padding:10px 16px;background:#12344d;color:#fff;text-decoration:none;border-radius:4px">Отвори билета</a></p>'
-        '<p style="color:#5f6b76;font-size:12px">Автоматично известие от Marev Stars Support.</p>'
-        '</div>'
-    )
-
     sent_count = 0
     failed_recipients = []
-    for recipient in consultants:
+    for full_name, recipient in consultants:
+        greeting_name = full_name.strip() or 'консултанте'
+        text_content = (
+            f'Здравейте, {greeting_name},\n\n'
+            'Има ново запитване, което изисква отговор от консултант.\n\n'
+            f'Номер на билет: #{ticket.pk}\n'
+            f'Тема: {ticket.title}\n'
+            f'Получено: {received_at}\n\n'
+            'Последно съобщение от посетителя:\n'
+            f'{request_text}\n\n'
+            f'Отворете билета и отговорете: {ticket_url}\n\n'
+            'Това е автоматично известие от Marev Stars Support.'
+        )
+        html_content = (
+            '<div style="font-family:Arial,sans-serif;color:#172b3a;line-height:1.55">'
+            '<h2 style="margin:0 0 16px;color:#12344d">Нов билет чака консултант</h2>'
+            f'<p>Здравейте, {html.escape(greeting_name)},</p>'
+            '<p>Има ново запитване, което изисква отговор от консултант.</p>'
+            '<table style="border-collapse:collapse;margin:16px 0">'
+            f'<tr><td style="padding:4px 18px 4px 0"><strong>Номер:</strong></td><td>#{ticket.pk}</td></tr>'
+            f'<tr><td style="padding:4px 18px 4px 0"><strong>Тема:</strong></td><td>{html.escape(ticket.title)}</td></tr>'
+            f'<tr><td style="padding:4px 18px 4px 0"><strong>Получено:</strong></td><td>{received_at}</td></tr>'
+            '</table>'
+            '<p><strong>Последно съобщение от посетителя:</strong></p>'
+            f'<blockquote style="margin:0 0 20px;padding:12px 16px;border-left:4px solid #f0c44c;background:#f6f8fa;white-space:pre-wrap">{html.escape(request_text)}</blockquote>'
+            f'<p><a href="{ticket_url}" style="display:inline-block;padding:10px 16px;background:#12344d;color:#fff;text-decoration:none;border-radius:4px">Отвори билета</a></p>'
+            '<p style="color:#5f6b76;font-size:12px">Автоматично известие от Marev Stars Support.</p>'
+            '</div>'
+        )
         payload = json.dumps({
             'sender': {'name': sender_name, 'email': sender_email},
             'to': [{'email': recipient}],
