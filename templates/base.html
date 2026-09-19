@@ -31,10 +31,6 @@
             <a href="{% url 'team:support_dashboard' %}">Support</a>
             {% endif %}
         </div>
-        <div class="language-switcher" aria-label="Избор на език">
-            <a class="is-current" href="{{ request.get_full_path }}" hreflang="bg" lang="bg">BG</a>
-            <a href="https://translate.google.com/translate?sl=bg&amp;tl=en&amp;u={{ request.build_absolute_uri|urlencode }}" hreflang="en" lang="en">EN</a>
-        </div>
     </nav>
 </header>
 <main id="main" class="site-main" tabindex="-1">
