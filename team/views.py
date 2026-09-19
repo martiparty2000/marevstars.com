@@ -269,6 +269,32 @@ def _consultant_notice(text):
         'Нямам надеждна информация за това в сайта. Искате ли да ви насоча към консултант?'
     )
 
+
+def _is_consultant_confirmation(text):
+    message = ' '.join(text.lower().split()).strip(' .!?')
+    confirmations = (
+        'да', 'да моля', 'да, моля', 'искам консултант', 'искам да говоря с консултант',
+        'свържи ме с консултант', 'насочи ме към консултант',
+        'yes', 'yes please', 'i want a consultant', 'connect me with a consultant',
+    )
+    return message in confirmations
+
+
+def _consultant_escalation_notice(text):
+    return (
+        'Your request is with a consultant now. They will reply here soon. You can still send more details in this chat if needed.'
+        if _is_english(text) else
+        'Запитването вече е при консултант. Той ще ви отговори тук скоро. Ако е нужно, можете да изпратите още информация в този разговор.'
+    )
+
+
+def _last_bot_offered_consultant(ticket):
+    last_bot = ticket.messages.filter(author_type='bot').order_by('-created_at').first()
+    return bool(last_bot and (
+        'Искате ли да ви насоча към консултант?' in last_bot.text
+        or 'Would you like me to connect you with a consultant?' in last_bot.text
+    ))
+
 def _messages_data(ticket):
     return [
         {
@@ -324,14 +350,24 @@ def support_message(request, public_id):
     text = str(data.get('text', '')).strip()
     if not text or len(text) > 2000:
         return JsonResponse({'error': 'Напишете съобщение до 2000 символа.'}, status=400)
+    had_consultant_offer = _last_bot_offered_consultant(ticket)
     SupportMessage.objects.create(ticket=ticket, author_type='visitor', text=text)
     if not ticket.escalated:
-        needs_consultant = _support_requires_consultant(text)
-        SupportMessage.objects.create(
-            ticket=ticket,
-            author_type='bot',
-            text=_consultant_notice(text) if needs_consultant else _support_reply(text),
-        )
+        if had_consultant_offer and _is_consultant_confirmation(text):
+            ticket.escalated = True
+            ticket.save(update_fields=['escalated', 'updated_at'])
+            SupportMessage.objects.create(
+                ticket=ticket,
+                author_type='bot',
+                text=_consultant_escalation_notice(text),
+            )
+        else:
+            needs_consultant = _support_requires_consultant(text)
+            SupportMessage.objects.create(
+                ticket=ticket,
+                author_type='bot',
+                text=_consultant_notice(text) if needs_consultant else _support_reply(text),
+            )
     ticket.refresh_from_db()
     return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'status': ticket.status, 'escalated': ticket.escalated, 'messages': _messages_data(ticket)})
 
@@ -344,8 +380,11 @@ def support_escalate(request, public_id):
     ticket.escalated = True
     ticket.save()
     last_message = ticket.messages.filter(author_type='visitor').last()
-    notice = 'Your request is with a consultant now. They will reply here soon. You can still send more details in this chat if needed.' if last_message and _is_english(last_message.text) else 'Запитването вече е при консултант. Той ще ви отговори тук скоро. Ако е нужно, можете да изпратите още информация в този разговор.'
-    SupportMessage.objects.create(ticket=ticket, author_type='bot', text=notice)
+    SupportMessage.objects.create(
+        ticket=ticket,
+        author_type='bot',
+        text=_consultant_escalation_notice(last_message.text if last_message else ''),
+    )
     return JsonResponse({'ticket': str(ticket.public_id), 'number': ticket.pk, 'status': ticket.status, 'messages': _messages_data(ticket), 'escalated': True})
 
 @require_POST
