@@ -65,36 +65,109 @@ def _is_english(text):
     return any(word in words for word in (
         'hello', 'hi', 'how', 'what', 'when', 'where', 'can i', 'join',
         'club', 'training', 'schedule', 'coach', 'price', 'fees', 'please',
+        'goalkeeper', 'goalie', 'individual', 'registration', 'contact',
     ))
 
 
 def _support_reply(text):
+    """Answer common questions using verified information published on this site."""
     message = text.lower()
-    if _is_english(text):
-        if any(word in message for word in ('join', 'register', 'sign up', 'become a member', 'club')):
-            return 'To join Marev Stars, please look at the Training page first and choose the suitable age group and time. Then call us on 089 917 3417, or choose “Connect me with a consultant” and the team will reply here.'
-        if any(word in message for word in ('schedule', 'time', 'when', 'training')):
-            return 'You can find the full schedule in the Training page. The 8–12 group trains Monday, Wednesday and Thursday, 18:00–19:00; the 13–16 group trains Monday, Wednesday and Friday, 20:00–21:00.'
-        if any(word in message for word in ('where', 'location', 'address')):
-            return 'Group training takes place at Sportna ploshtadka “Studentska”, football pitch “Zhechka Karamfilova”. You can also find the location in the Training section.'
-        if any(word in message for word in ('coach', 'marev', 'radev')):
-            return 'Our coaches are Todor Marev, Blagovest Marev and Yordan Radev. Please see the Coaches section to learn more about them.'
-        if any(word in message for word in ('hello', 'hi')):
-            return 'Hi! 🙂 How can I help? You can ask about training, the schedule, age groups, coaches, location, or joining the club.'
-        return 'I can help with training, the schedule, groups, coaches, location, or joining the club. What would you like to know?'
-    if any(word in message for word in ('здрасти', 'здравей', 'хей')):
-        return 'Здрасти! 🙂 Кажи ми какво те интересува и ще помогна — например график, група за детето, място на тренировките или записване.'
-    if any(word in message for word in ('график', 'час', 'кога', 'ден')):
-        return 'Групата за 8–12 г. тренира понеделник, сряда и четвъртък от 18:00 до 19:00. За 13–16 г. тренировките са понеделник, сряда и петък от 20:00 до 21:00.'
-    if any(word in message for word in ('адрес', 'къде', 'терен', 'локация')):
-        return 'Груповите тренировки са на Спортна площадка „Студентска“ — футболно игрище „Жечка Карамфилова“.'
-    if any(word in message for word in ('възраст', 'години', 'група', 'дете')):
-        return 'Работим с групи за деца и младежи от 8 до 16 години. Можете да видите графика в секция „Тренировки“. '
-    if any(word in message for word in ('треньор', 'марев', 'радев')):
-        return 'Екипът ни включва Тодор Марев, Благовест Марев и Йордан Радев. Повече за тях има в секция „Треньори“. '
-    if any(word in message for word in ('запис', 'такса', 'цена', 'индивидуал')):
-        return 'За записване, такси или индивидуална тренировка първо вижте секция „Тренировки“. Ако имате въпрос, изберете „Свържи ме с консултант“ и екипът ще ви отговори тук.'
-    return 'Мога да помогна с тренировки, график, възрастови групи, треньори, мястото и записването. За кое от тези неща питаш?'
+    english = _is_english(text)
+
+    goalkeeper_words = ('вратар', 'вратарск', 'goalkeeper', 'goalie', 'keeper')
+    individual_words = ('индивидуал', 'лична тренировка', 'private training', 'individual')
+    schedule_words = ('график', 'час', 'кога', 'ден', 'schedule', 'time', 'when')
+    location_words = ('адрес', 'къде', 'терен', 'локация', 'where', 'location', 'address')
+    age_words = ('възраст', 'години', 'група', 'дете', 'age', 'years old', 'group')
+    coach_words = ('треньор', 'марев', 'радев', 'coach', 'todor', 'blagovest', 'yordan')
+    joining_words = ('запис', 'запиша', 'такса', 'цена', 'плащ', 'join', 'register', 'sign up', 'membership', 'fees', 'price')
+    championship_words = ('първенств', 'мач', 'програма', 'съперник', 'championship', 'match', 'fixture', 'game')
+
+    if any(word in message for word in goalkeeper_words):
+        return (
+            'Yes — we offer goalkeeper training as part of both age groups. The groups are 8–12 and 13–16 years old. '
+            'For the most suitable option for your child, choose “Connect me with a consultant” and the team will reply here.'
+            if english else
+            'Да — предлагаме и вратарски тренировки към двете възрастови групи: 8–12 и 13–16 години. '
+            'За да уточним най-подходящия вариант за детето, натиснете „Свържи ме с консултант“ и екипът ще ви отговори тук.'
+        )
+
+    if any(word in message for word in individual_words):
+        return (
+            'Individual training is available on ul. “Fernando Magellan”. The day and time are arranged individually. '
+            'Please call 089 917 3417 or connect with a consultant here to arrange it.'
+            if english else
+            'Индивидуалните тренировки са на ул. „Фернандо Магелан“, като денят и часът се уговарят индивидуално. '
+            'Можете да се обадите на 089 917 3417 или да се свържете с консултант тук, за да уточните удобен час.'
+        )
+
+    if any(word in message for word in schedule_words):
+        return (
+            'The 8–12 group trains Monday, Wednesday and Thursday, 18:00–19:00. '
+            'The 13–16 group trains Monday, Wednesday and Friday, 20:00–21:00.'
+            if english else
+            'Групата за 8–12 г. тренира в понеделник, сряда и четвъртък от 18:00 до 19:00. '
+            'За 13–16 г. тренировките са в понеделник, сряда и петък от 20:00 до 21:00.'
+        )
+
+    if any(word in message for word in location_words):
+        return (
+            'Group training takes place at Sportna ploshtadka “Studentska”, football pitch “Zhechka Karamfilova”. '
+            'Individual training is held on ul. “Fernando Magellan”.'
+            if english else
+            'Груповите тренировки са на Спортна площадка „Студентска“ — футболно игрище „Жечка Карамфилова“. '
+            'Индивидуалните тренировки са на ул. „Фернандо Магелан“.'
+        )
+
+    if any(word in message for word in age_words):
+        return (
+            'We work with children and teenagers from 8 to 16 years old: 8–12 and 13–16. '
+            'Tell me the child’s age and I can point you to the right group.'
+            if english else
+            'Работим с деца и младежи от 8 до 16 години — група 8–12 и група 13–16 години. '
+            'Кажете ми на колко е детето и ще ви насоча към правилната група.'
+        )
+
+    if any(word in message for word in coach_words):
+        return (
+            'The coaching team includes Todor Marev (Senior Coach), Blagovest Marev (Head Coach) and Yordan Radev (Coach). '
+            'You can read their football biographies in the Coaches section.'
+            if english else
+            'Треньорският екип е Тодор Марев — старши треньор, Благовест Марев — главен треньор, и Йордан Радев — треньор. '
+            'Повече за футболната им биография има в секция „Треньори“.'
+        )
+
+    if any(word in message for word in championship_words):
+        return (
+            'The U15 upcoming-match programme is available in the “Championship” section of the site. '
+            'It includes the date, time, opponent and whether the match is home or away.'
+            if english else
+            'Програмата на предстоящите мачове на U15 е в секция „Първенство“. '
+            'Там са посочени дата, час, съперник и дали мачът е домакински или гостуване.'
+        )
+
+    if any(word in message for word in joining_words):
+        return (
+            'For joining, fees or another specific question, call the Head Coach on 089 917 3417. '
+            'You can also choose “Connect me with a consultant” and send the child’s age here.'
+            if english else
+            'За записване, такси или друг конкретен въпрос се обадете на главния треньор на 089 917 3417. '
+            'Можете и да натиснете „Свържи ме с консултант“ и да изпратите възрастта на детето тук.'
+        )
+
+    if any(word in message for word in ('здрасти', 'здравей', 'хей', 'hello', 'hi')):
+        return (
+            'Hi! 🙂 I can help with age groups, the schedule, goalkeeper and individual training, locations, coaches, matches, or joining the club. What would you like to know?'
+            if english else
+            'Здравейте! 🙂 Мога да помогна с възрастови групи, график, вратарски и индивидуални тренировки, място, треньори, мачове или записване. Какво ви интересува?'
+        )
+
+    return (
+        'I can help with age groups, training times, goalkeeper or individual training, locations, coaches, upcoming matches and joining Marev Stars. What would you like to know?'
+        if english else
+        'Мога да помогна с възрастови групи, часове, вратарски или индивидуални тренировки, място, треньори, предстоящи мачове и записване в Марев Старс. Какво ви интересува?'
+    )
+
 def _messages_data(ticket):
     return [
         {
