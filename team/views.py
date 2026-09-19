@@ -1,7 +1,7 @@
 import json
 import logging
 from django.conf import settings
-from urllib import request as urlrequest, error as urlerror
+from urllib import parse as urlparse, request as urlrequest, error as urlerror
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -303,48 +303,53 @@ def _last_bot_offered_consultant(ticket):
 
 
 def _notify_support_staff(ticket):
-    """Notify the consultant through the Google Apps Script Gmail relay."""
-    endpoint = settings.GOOGLE_APPS_SCRIPT_URL
-    secret = settings.GOOGLE_APPS_SCRIPT_SECRET
-    if not endpoint or not secret:
-        detail = 'Липсва настройка за Google Apps Script в Render.'
+    """Send a consultant-escalation notification through FormSubmit."""
+    recipient = settings.FORMSUBMIT_RECIPIENT
+    if not recipient:
+        detail = 'Липсва FORMSUBMIT_RECIPIENT в Render.'
         print(f'[support-email] SKIPPED for ticket #{ticket.pk}: {detail}', flush=True)
         return {'sent': False, 'detail': detail}
 
     ticket_url = f'https://marevstars-com.onrender.com/support/ticket/{ticket.public_id}/'
-    payload = json.dumps({
-        'secret': secret,
-        'subject': f'Нов Support билет #{ticket.pk} чака консултант',
-        'text': (
+    payload = urlparse.urlencode({
+        '_subject': f'Нов Support билет #{ticket.pk} чака консултант',
+        'ticket_number': ticket.pk,
+        'message': (
             f'Посетител поиска консултант за Support билет #{ticket.pk}.\n\n'
             f'Отворете билета: {ticket_url}'
         ),
+        '_template': 'table',
+        '_captcha': 'false',
     }).encode('utf-8')
 
     try:
+        endpoint = f'https://formsubmit.co/ajax/{recipient}'
         req = urlrequest.Request(
             endpoint,
             data=payload,
-            headers={'Content-Type': 'application/json'},
+            headers={
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'User-Agent': 'MarevStarsSupport/1.0',
+            },
             method='POST',
         )
-        with urlrequest.urlopen(req, timeout=8) as response:
+        with urlrequest.urlopen(req, timeout=10) as response:
             body = response.read().decode('utf-8', errors='replace')
-            result = json.loads(body or '{}')
-        if not 200 <= response.status < 300 or result.get('ok') is not True:
-            raise RuntimeError(result.get('error') or f'Google Apps Script returned HTTP {response.status}')
-        print(f'[support-email] SENT through Google Apps Script for ticket #{ticket.pk}', flush=True)
+        if not 200 <= response.status < 300:
+            raise RuntimeError(f'FormSubmit returned HTTP {response.status}: {body}')
+        print(f'[support-email] SENT through FormSubmit for ticket #{ticket.pk}: {body}', flush=True)
         return {'sent': True}
     except urlerror.HTTPError as exc:
         error_body = exc.read().decode('utf-8', errors='replace')
         print(
-            f'[support-email] FAILED through Google Apps Script for ticket #{ticket.pk}: '
+            f'[support-email] FAILED through FormSubmit for ticket #{ticket.pk}: '
             f'HTTP {exc.code} {error_body}',
             flush=True,
         )
     except Exception as exc:
-        print(f'[support-email] FAILED through Google Apps Script for ticket #{ticket.pk}: {exc!r}', flush=True)
-        logger.exception('Google Apps Script notification failed for ticket #%s.', ticket.pk)
+        print(f'[support-email] FAILED through FormSubmit for ticket #{ticket.pk}: {exc!r}', flush=True)
+        logger.exception('FormSubmit notification failed for ticket #%s.', ticket.pk)
     return {
         'sent': False,
         'detail': 'Известието до консултанта не беше изпратено. Проверете Render Logs.',
