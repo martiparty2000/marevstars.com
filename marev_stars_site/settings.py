@@ -76,3 +76,5 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'marevstars.support@gmail.co
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 SUPPORT_NOTIFICATION_EMAIL = os.environ.get('SUPPORT_NOTIFICATION_EMAIL', 'marevstars.support@gmail.com')
+RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
+RESEND_FROM_EMAIL = os.environ.get('RESEND_FROM_EMAIL', 'Marev Stars Support <onboarding@resend.dev>')
