@@ -598,3 +598,15 @@ details p { padding-top: 12px; }
 @media (prefers-reduced-motion:reduce) {
   .support-typing span { animation:none; opacity:.8; }
 }
+
+/* Home page: player development section */
+.first-training-link { margin-top: 8px; min-height: auto; font-size: .82rem; }
+.player-development { margin-top: 38px; padding-top: 42px; border-top: 1px solid var(--line); }
+.player-development .section-heading { margin-bottom: 28px; }
+.player-development .lead { margin-top: 12px; }
+.development-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.development-card { min-height: 188px; padding: 24px; border: 1px solid var(--line); border-top: 3px solid var(--gold); border-radius: 4px; background: var(--panel); box-shadow: var(--shadow); }
+.development-icon { display: inline-grid; place-items: center; width: 38px; height: 38px; margin-bottom: 17px; border: 1px solid var(--line); border-radius: 4px; color: var(--gold); font-size: 1.15rem; }
+.development-card h3 { margin: 0 0 8px; font-size: 1.25rem; }
+.development-card p { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.6; }
+@media (max-width: 760px) { .development-grid { grid-template-columns: 1fr; } }
