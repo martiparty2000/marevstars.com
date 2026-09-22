@@ -610,3 +610,8 @@ details p { padding-top: 12px; }
 .development-card h3 { margin: 0 0 8px; font-size: 1.25rem; }
 .development-card p { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.6; }
 @media (max-width: 760px) { .development-grid { grid-template-columns: 1fr; } }
+
+/* Contact page without the public Support card */
+.contact-grid-single { grid-template-columns: minmax(0, 680px); max-width: 680px; }
+.contact-grid-single .contact-card { min-height: 310px; justify-content: space-between; }
+.contact-grid-single .contact-card small { color: var(--muted); font-size: .8rem; border-top: 1px solid var(--line); padding-top: 14px; }
