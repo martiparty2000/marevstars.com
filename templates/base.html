@@ -45,7 +45,6 @@
 </main>
 <footer class="site-footer">
     <div class="footer-inner">
-        <div class="footer-brand"><strong>MAREV STARS</strong><p>{% if site_language == 'en' %}Mistakes teach us. Victories inspire us.{% else %}Грешките ни учат, победите ни вдъхновяват.{% endif %}</p></div>
         <nav class="footer-legal" aria-label="{% if site_language == 'en' %}Legal information{% else %}Правна информация{% endif %}"><strong>{% if site_language == 'en' %}Information{% else %}Информация{% endif %}</strong><a href="{% url 'team:terms' %}">{% if site_language == 'en' %}Terms{% else %}Общи условия{% endif %}</a><a href="{% url 'team:privacy' %}">{% if site_language == 'en' %}Privacy{% else %}Поверителност{% endif %}</a><a href="{% url 'team:cookies' %}">{% if site_language == 'en' %}Cookies{% else %}Бисквитки{% endif %}</a></nav>
         <div class="footer-contact"><strong>{% if site_language == 'en' %}Contact{% else %}Връзка{% endif %}</strong><a href="tel:+359899173417">089 917 3417</a><button class="footer-support support-open" type="button">Support</button><div class="social-links" aria-label="Социални мрежи"><a href="https://www.facebook.com/marevstars/?locale=bg_BG" target="_blank" rel="noopener noreferrer">Facebook ↗</a><a href="https://www.youtube.com/@marevstars" target="_blank" rel="noopener noreferrer">YouTube ↗</a></div></div>
         <p class="copyright">© {% now 'Y' %} {% if site_language == 'en' %}Marev Stars FC · Varna{% else %}ФК Марев Старс · Варна{% endif %}</p>
