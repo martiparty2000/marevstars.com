@@ -615,3 +615,21 @@ details p { padding-top: 12px; }
 .contact-grid-single { grid-template-columns: minmax(0, 680px); max-width: 680px; }
 .contact-grid-single .contact-card { min-height: 310px; justify-content: space-between; }
 .contact-grid-single .contact-card small { color: var(--muted); font-size: .8rem; border-top: 1px solid var(--line); padding-top: 14px; }
+
+/* Practical training information */
+.training-private-card { margin-top: 28px; }
+.first-training-info { margin-top: 58px; }
+.first-training-info .section-heading { margin-bottom: 28px; }
+.first-training-info .lead { margin-top: 12px; }
+.first-info-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.first-info-grid article { min-height: 200px; padding: 22px; border: 1px solid var(--line); border-top: 3px solid var(--gold); border-radius: 8px; background: #102b42; }
+.first-info-grid article > span { display: grid; place-items: center; width: 38px; height: 38px; margin-bottom: 16px; border: 1px solid var(--line); border-radius: 4px; color: var(--gold); font-size: 1.1rem; font-weight: 800; }
+.first-info-grid h3 { margin: 0 0 9px; font-size: 1.05rem; }
+.first-info-grid p { margin: 0; color: var(--muted); font-size: .85rem; line-height: 1.55; }
+.training-callout { display: flex; justify-content: space-between; align-items: center; gap: 28px; margin-top: 48px; padding: 26px 30px; border: 1px solid var(--line); border-radius: 8px; background: linear-gradient(135deg, #102b42, #14354c); }
+.training-callout .eyebrow { margin-bottom: 8px; }
+.training-callout h2 { font-size: 1.65rem; }
+.training-callout p:not(.eyebrow) { margin: 10px 0 0; color: var(--muted); }
+.training-callout .button { flex-shrink: 0; }
+@media (max-width: 900px) { .first-info-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .first-info-grid { grid-template-columns: 1fr; } .training-callout { align-items: flex-start; flex-direction: column; padding: 22px; } }
